@@ -1,4 +1,4 @@
-package com.example.co_opapp
+package com.example.co_opapp.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -7,7 +7,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-
+import com.example.co_opapp.Service.AuthService
+import com.example.co_opapp.ui.components.LoginButtons
 
 
 @Composable

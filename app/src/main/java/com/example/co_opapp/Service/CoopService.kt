@@ -1,15 +1,20 @@
-package com.example.co_opapp
+package com.example.co_opapp.Service
 
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.co_opapp.data_model.AnswerRequest
+import com.example.co_opapp.data_model.AnswerResponse
+import com.example.co_opapp.data_model.GameRoom
+import com.example.co_opapp.data_model.GameState
+import com.example.co_opapp.data_model.Player
+import com.example.co_opapp.data_model.TriviaQuestion
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import java.net.Inet4Address
 import java.net.NetworkInterface
 
 interface GameApiService {
@@ -17,10 +22,10 @@ interface GameApiService {
     suspend fun getRandomQuestion(
         @Query("difficulty") difficulty: String? = null,
         @Query("category") category: String? = null
-    ): retrofit2.Response<TriviaQuestion>
+    ): Response<TriviaQuestion>
 
     @POST("api/game/questions/check-answer")
-    suspend fun checkAnswer(@Body answerRequest: AnswerRequest): retrofit2.Response<AnswerResponse>
+    suspend fun checkAnswer(@Body answerRequest: AnswerRequest): Response<AnswerResponse>
 }
 
 class CoOpGameService {
@@ -55,7 +60,7 @@ class CoOpGameService {
         return try {
             NetworkInterface.getNetworkInterfaces().toList()
                 .flatMap { it.inetAddresses.toList() }
-                .firstOrNull { !it.isLoopbackAddress && it is java.net.Inet4Address }
+                .firstOrNull { !it.isLoopbackAddress && it is Inet4Address }
                 ?.hostAddress
         } catch (e: Exception) {
             Log.e("CoOpGameService", "Error getting IP address", e)

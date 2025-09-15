@@ -1,4 +1,4 @@
-package com.example.co_opapp
+package com.example.co_opapp.Service
 
 import retrofit2.Response
 import retrofit2.http.GET
