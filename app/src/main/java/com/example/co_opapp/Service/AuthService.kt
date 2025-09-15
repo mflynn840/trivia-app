@@ -59,7 +59,7 @@ class AuthService {
             val response = authApi?.login(UserCredentials(username, password))
             if (response?.isSuccessful == true) {
                 val loginResponse = response.body()
-                //_currentPlayer.value = Player(username = username) // Update current player state
+                _currentPlayer.value = Player(username = username, id = loginResponse.id)
                 authToken = loginResponse?.token  // Store auth token
                 true
             } else false

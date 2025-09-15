@@ -8,6 +8,8 @@ import com.example.spring_boot.Service.QuestionService;
 import com.example.spring_boot.Model.Question;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/questions")
@@ -29,13 +31,29 @@ public class QuestionController {
         }
     }
     
-    @GetMapping("/random")
-    public ResponseEntity<List<Question>> getRandomQuestions(@RequestParam(defaultValue = "5") int count){
+    @GetMapping("/randoms/{count}")
+    public ResponseEntity<List<Question>> getRandomQuestions(@PathVariable int count){
         try{
             List<Question> questions = this.questionService.getRandomQuestions(count);
             return ResponseEntity.ok(questions);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<?> getRandomQuestion(
+            @RequestParam(required = false) String difficulty,
+            @RequestParam(required = false) String category) {
+        try {
+            Question question = questionService.getRandomQuestion(difficulty, category);
+            if (question != null) {
+                return ResponseEntity.ok(question);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to fetch random question: " + e.getMessage()));
         }
     }
     
@@ -48,4 +66,21 @@ public class QuestionController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/get_by/{id}")
+    public ResponseEntity<?> getQuestionById(@PathVariable Long id) {
+        try {
+            Optional<Question> question = questionService.findById(id);
+            if (question.isPresent()) {
+                return ResponseEntity.ok(question.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to fetch question: " + e.getMessage()));
+        }
+    }
+
+
+
 }
