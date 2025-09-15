@@ -161,4 +161,18 @@ class CoOpGameService {
             _gameState.value = currentRoom
         }
     }
+
+    fun startTriviaGame() {
+        currentRoom?.let { room ->
+            if (room.players.size >= 2) {
+                val updatedRoom = room.copy(
+                    isGameStarted = true,
+                    gameState = GameState.IN_PROGRESS,
+                    currentPlayerIndex = 0
+                )
+                currentRoom = updatedRoom
+                _gameState.value = updatedRoom
+            }
+        }
+    }
 }

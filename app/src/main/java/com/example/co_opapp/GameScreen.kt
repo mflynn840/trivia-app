@@ -15,33 +15,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
+
+
 
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit
 ) {
-    val gameNetworkService = remember { GameNetworkService() }
+    // Network service
+    val gameNetworkService = remember { CoOpGameService() }
     val gameState by gameNetworkService.gameState.collectAsState()
     val connectionStatus by gameNetworkService.connectionStatus.collectAsState()
-    
-    // Animation for the light
+
+    // Infinite light animation
     val infiniteTransition = rememberInfiniteTransition(label = "light_animation")
     val lightAlpha by infiniteTransition.animateFloat(
         initialValue = 0.3f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = EaseInOutSine),
+            animation = tween(durationMillis = 1000, easing = EaseInOutSine),
             repeatMode = RepeatMode.Reverse
         ),
         label = "light_alpha"
     )
-    
-    // Check if it's current player's turn
+
     val isMyTurn = gameNetworkService.isCurrentPlayerTurn()
     val currentPlayer = gameNetworkService.getCurrentPlayer()
-    
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -59,38 +60,31 @@ fun GameScreen(
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
-            Button(onClick = onNavigateBack) {
+            Button(onClick = { onNavigateBack() }) {
                 Text("Leave Game")
             }
         }
-        
-        // Game status
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
+
+        // Game status card
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = "Game Status",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-                
                 Spacer(modifier = Modifier.height(8.dp))
-                
                 Text(
                     text = "Current Turn: ${currentPlayer?.username ?: "Unknown"}",
                     style = MaterialTheme.typography.bodyLarge
                 )
-                
                 Text(
                     text = "Players: ${gameState?.players?.size ?: 0}/${gameState?.maxPlayers ?: 4}",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
-        
+
         // Main game area
         Card(
             modifier = Modifier
@@ -110,11 +104,8 @@ fun GameScreen(
                         .size(200.dp)
                         .clip(CircleShape)
                         .background(
-                            if (isMyTurn) {
-                                Color.Green.copy(alpha = lightAlpha)
-                            } else {
-                                Color.Red.copy(alpha = 0.3f)
-                            }
+                            if (isMyTurn) Color.Green.copy(alpha = lightAlpha)
+                            else Color.Red.copy(alpha = 0.3f)
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -125,21 +116,17 @@ fun GameScreen(
                         fontWeight = FontWeight.Bold
                     )
                 }
-                
+
                 Spacer(modifier = Modifier.height(32.dp))
-                
+
                 // Action button
                 Button(
-                    onClick = {
-                        if (isMyTurn) {
-                            gameNetworkService.completeTurn()
-                        }
-                    },
+                    onClick = { gameNetworkService.completeTurn() },
                     modifier = Modifier.size(120.dp),
                     enabled = isMyTurn && gameState?.gameState == GameState.IN_PROGRESS,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isMyTurn) MaterialTheme.colorScheme.primary 
-                                       else MaterialTheme.colorScheme.surfaceVariant
+                        containerColor = if (isMyTurn) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.surfaceVariant
                     )
                 ) {
                     Text(
@@ -148,9 +135,9 @@ fun GameScreen(
                         fontWeight = FontWeight.Bold
                     )
                 }
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 // Instructions
                 Text(
                     text = if (isMyTurn) {
@@ -163,30 +150,22 @@ fun GameScreen(
                 )
             }
         }
-        
+
         // Players list
         gameState?.let { room ->
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "Players",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
-                    
                     Spacer(modifier = Modifier.height(8.dp))
-                    
-                    LazyColumn(
-                        modifier = Modifier.height(120.dp)
-                    ) {
+                    LazyColumn(modifier = Modifier.height(120.dp)) {
                         items(room.players) { player ->
                             val isCurrentPlayer = player.id == currentPlayer?.id
                             val isMyPlayer = player.id == gameNetworkService.getMyPlayer()?.id
-                            
+
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -195,23 +174,22 @@ fun GameScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "${player.username}${if (player.isHost) " (Host)" else ""}${if (isMyPlayer) " (You)" else ""}",
+                                    text = buildString {
+                                        append(player.username)
+                                        if (player.isHost) append(" (Host)")
+                                        if (isMyPlayer) append(" (You)")
+                                    },
                                     fontSize = 16.sp,
                                     fontWeight = if (isCurrentPlayer) FontWeight.Bold else FontWeight.Normal
                                 )
-                                
-                                if (isCurrentPlayer) {
-                                    Text(
-                                        text = "← Current Turn",
-                                        color = MaterialTheme.colorScheme.primary,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                } else {
-                                    Text(
-                                        text = "Waiting",
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
+                                Text(
+                                    text = if (isCurrentPlayer) "← Current Turn" else "Waiting",
+                                    color = if (isCurrentPlayer)
+                                        MaterialTheme.colorScheme.primary
+                                    else
+                                        MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontWeight = if (isCurrentPlayer) FontWeight.Bold else FontWeight.Normal
+                                )
                             }
                         }
                     }
