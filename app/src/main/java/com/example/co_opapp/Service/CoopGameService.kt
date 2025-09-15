@@ -8,18 +8,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.example.co_opapp.Interface.GameDriver
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
+import com.example.co_opapp.Interface.BackendQuestionApi
 
-interface BackendApi {
-    @GET("api/game/questions/random")
-    suspend fun getRandomQuestion(): Response<TriviaQuestion>
-
-    @POST("api/game/questions/check-answer")
-    suspend fun checkAnswer(@Body answerRequest: AnswerRequest): Response<AnswerResponse>
-}
 
 
 class CoopGameService : GameDriver {
@@ -31,7 +21,7 @@ class CoopGameService : GameDriver {
         .build()
 
 
-    private val gameApi = retrofit.create(BackendApi::class.java)
+    private val gameApi = retrofit.create(BackendQuestionApi::class.java)
 
     // --- QuizService state flows ---
     private val _currentQuestion = MutableStateFlow<TriviaQuestion?>(null)

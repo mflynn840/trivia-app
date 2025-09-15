@@ -16,7 +16,7 @@ import com.example.co_opapp.ui.theme.CoopAppTheme
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.LoginScreen
 import com.example.co_opapp.ui.screens.QuizScreen
-import com.example.co_opapp.ui.screens.LobbyScreen
+//import com.example.co_opapp.ui.screens.LobbyScreen
 import com.example.co_opapp.Service.CoopGameService
 import com.example.co_opapp.Service.SoloGameService
 
@@ -101,7 +101,7 @@ fun CoopApp() {
             }
         }
 
-        composable("lobby") {
+        /*composable("lobby") {
             // Keep the CoOpGameService across navigation
             val coopService = remember { CoopGameService() }
 
@@ -118,7 +118,7 @@ fun CoopApp() {
                     }
                 )
             }
-        }
+        }*/
 
         composable("coopQuiz") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
