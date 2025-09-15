@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.example.co_opapp.ui.components.AnswerButton
 import com.example.co_opapp.ui.components.QuestionCard
 import com.example.co_opapp.data_model.TriviaQuestion
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @Composable
@@ -26,10 +27,12 @@ fun QuizScreen(
     val questionIndex by quizService.questionIndex.collectAsState(initial = 0)
     val totalQuestions by quizService.totalQuestions.collectAsState(initial = 0)
     val error by quizService.error.collectAsState(initial = null as String?)
-    val currentQuestion by quizService.currentQuestion.collectAsState(initial = null)
 
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
+    val currentQuestion by quizService.currentQuestion.collectAsState(initial = null)
+
+
 
     // Fetch the first question once when the composable enters composition
     LaunchedEffect(Unit) {
