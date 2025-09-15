@@ -2,10 +2,20 @@ package com.example.co_opapp.data_model
 
 // --- User/Auth ---
 data class UserCredentials(val username: String, val password: String)
-data class LoginResponse(val token: String, val username: String, val role: String)
+data class LoginResponse(
+    val token: String,
+    val username: String,
+    val role: String,
+    val id : Long,
+)
 
 
-enum class GameState { WAITING, IN_PROGRESS, FINISHED, WAITING_FOR_PLAYERS }
+enum class GameState {
+    WAITING,
+    IN_PROGRESS,
+    FINISHED,
+    WAITING_FOR_PLAYERS
+}
 
 data class GameRoom(
     val hostId: String,
@@ -32,7 +42,7 @@ data class TriviaQuestion(
 
 // LAN-friendly player model
 data class Player(
-    val id: String,
+    val id: Long,
     val username: String,
     val score: Int = 0,
     val isHost: Boolean = false,

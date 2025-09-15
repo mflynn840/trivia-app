@@ -83,6 +83,7 @@ public class AuthController {
             response.put("token", token);
             response.put("username", player.getUsername());
             response.put("role", player.getRole().name());
+            response.put("id", player.getId());
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
