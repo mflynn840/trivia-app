@@ -22,7 +22,7 @@ data class GameRoom(
 // --- Trivia ---
 // LAN-friendly question model
 data class TriviaQuestion(
-    val id: String,
+    val id: Long,
     val questionText: String,
     val option1: String,
     val option2: String,
@@ -37,16 +37,6 @@ data class Player(
     val score: Int = 0,
     val isHost: Boolean = false,
     val isReady: Boolean = false
-)
-
-// Question model for LAN game
-data class Question(
-    val id: Long,
-    val questionText: String,
-    val option1: String,
-    val option2: String,
-    val option3: String,
-    val option4: String
 )
 
 data class AnswerRequest(val questionId: Long, val answer: String)
