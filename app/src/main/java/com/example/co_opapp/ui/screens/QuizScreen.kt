@@ -17,20 +17,26 @@ import com.example.co_opapp.data_model.TriviaQuestion
 
 @Composable
 fun QuizScreen(
-    quizService: QuizService, // <-- Service-agnostic
+    // Service providing questions, answers, score, etc.
+    quizService: QuizService,
     modifier: Modifier = Modifier,
+    // Callback for "Back" navigation
     onNavigateBack: () -> Unit = {},
+    // Callback when game ends
     onGameComplete: (score: Int, totalQuestions: Int) -> Unit = { _, _ -> }
 ) {
+
+    // Observe state flows from the QuizService
     val score by quizService.score.collectAsState(initial = 0)
     val questionIndex by quizService.questionIndex.collectAsState(initial = 0)
     val totalQuestions by quizService.totalQuestions.collectAsState(initial = 0)
     val error by quizService.error.collectAsState(initial = null as String?)
     val currentQuestion by quizService.currentQuestion.collectAsState<TriviaQuestion?>(initial = null)
 
-
+    // Track which answer the user has currently selected
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
 
+    // Fetch the first question if not already loaded
     LaunchedEffect(currentQuestion) {
         if (currentQuestion == null) {
             quizService.fetchNextQuestion()
@@ -41,6 +47,7 @@ fun QuizScreen(
         // ... background image and overlay ...
 
         when {
+            // --- ERROR STATE ---
             error != null -> {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,6 +60,7 @@ fun QuizScreen(
                 }
             }
 
+            // --- QUESTION DISPLAY ---
             currentQuestion != null -> {
                 val question = currentQuestion!!
                 val options = listOf(
@@ -66,10 +74,10 @@ fun QuizScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    Text("Question ${questionIndex} of $totalQuestions", color = Color.White)
 
                     QuestionCard(question.text)
 
+                    // Display answer options as buttons
                     options.forEach { answer ->
                         AnswerButton(
                             text = answer,
@@ -79,6 +87,7 @@ fun QuizScreen(
                         )
                     }
 
+                    // Submit button
                     Button(
                         onClick = {
                             selectedAnswer?.let { answer ->
@@ -95,14 +104,18 @@ fun QuizScreen(
                 }
             }
 
+            // --- QUIZ COMPLETE STATE ---
             else -> {
-                // End of quiz
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    // Show final score
                     Text("Quiz Complete! Score: $score / $totalQuestions")
+
+                    // Back button
                     Button(onClick = onNavigateBack) { Text("Back") }
                 }
             }
