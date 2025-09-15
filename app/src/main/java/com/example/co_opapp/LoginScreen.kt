@@ -14,8 +14,6 @@ import kotlinx.coroutines.withContext                // For withContext to switc
 import androidx.compose.ui.platform.LocalContext     // For LocalContext
 
 
-
-
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
@@ -54,22 +52,28 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(onClick = {
-            // LOGIN
             CoroutineScope(Dispatchers.IO).launch {
+                val gameNetworkService = GameNetworkService()
                 try {
-                    val gameNetworkService = GameNetworkService()
-                    val success = gameNetworkService.login(username, password)
+                    val response = gameNetworkService.authApi?.login(
+                        UserCredentials(username, password)
+                    )
+
                     withContext(Dispatchers.Main) {
-                        if (success) {
+                        if (response == null) {
+                            message = "Error: Could not reach server"
+                        } else if (response.isSuccessful) {
                             message = "Login successful"
                             onNavigateToLobby()
                         } else {
-                            message = "Login failed: Invalid credentials"
+                            // Try to extract error message from backend response
+                            val errorBody = response.errorBody()?.string()
+                            message = "Login failed: ${errorBody ?: "Unknown error"}"
                         }
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        message = "Error: ${e.message}"
+                        message = "Login failed: ${e.message}"
                     }
                 }
             }
@@ -80,21 +84,26 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(onClick = {
-            // REGISTER
             CoroutineScope(Dispatchers.IO).launch {
+                val gameNetworkService = GameNetworkService()
                 try {
-                    val gameNetworkService = GameNetworkService()
-                    val success = gameNetworkService.register(username, password)
+                    val response = gameNetworkService.authApi?.register(
+                        UserCredentials(username, password)
+                    )
+
                     withContext(Dispatchers.Main) {
-                        message = if (success) {
-                            "Registration successful"
+                        if (response == null) {
+                            message = "Error: Could not reach server"
+                        } else if (response.isSuccessful) {
+                            message = "Registration successful"
                         } else {
-                            "Registration failed: Username may already exist"
+                            val errorBody = response.errorBody()?.string()
+                            message = "Registration failed: ${errorBody ?: "Unknown error"}"
                         }
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        message = "Error: ${e.message}"
+                        message = "Registration failed: ${e.message}"
                     }
                 }
             }
@@ -104,7 +113,6 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Skip login button for testing
         Button(
             onClick = { onNavigateToLobby() },
             modifier = Modifier.fillMaxWidth()
@@ -116,6 +124,4 @@ fun LoginScreen(
 
         Text(text = message)
     }
-
-
 }

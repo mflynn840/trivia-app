@@ -60,7 +60,7 @@ data class AnswerResponse(
 )
 
 class GameNetworkService {
-    private var authApi: AuthApiService? = null
+    var authApi: AuthApiService? = null
     private var gameApi: GameApiService? = null
     private var authToken: String? = null
     
@@ -84,7 +84,7 @@ class GameNetworkService {
     
     private fun initializeApiServices() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://172.24.160.1:8080/") // Backend URL
+            .baseUrl("http://10.0.2.2:8080/") // Backend URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         
