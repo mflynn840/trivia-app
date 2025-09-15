@@ -17,11 +17,6 @@ import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.LobbyScreen
 import com.example.co_opapp.ui.screens.LoginScreen
 
-import com.example.co_opapp.ui.screens.CoopGameScreen
-import com.example.co_opapp.ui.screens.SoloGameScreen
-
-
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +77,7 @@ fun CoopApp() {
         //Single player quiz game
         composable("singlePlayerQuiz") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                SoloGameScreen(
+                QuizScreen(
                     modifier = Modifier.padding(innerPadding),
                     isSinglePlayer = true,
                     onNavigateBack = {

@@ -1,297 +1,100 @@
 package com.example.co_opapp.ui.screens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import QuizService
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.co_opapp.R
 import com.example.co_opapp.ui.components.AnswerButton
-import com.example.co_opapp.ui.components.Question
 import com.example.co_opapp.ui.components.QuestionCard
+import com.example.co_opapp.data_model.TriviaQuestion
+
 
 @Composable
 fun QuizScreen(
+    quizService: QuizService, // <-- Service-agnostic
     modifier: Modifier = Modifier,
-    isSinglePlayer: Boolean = true,
     onNavigateBack: () -> Unit = {},
     onGameComplete: (score: Int, totalQuestions: Int) -> Unit = { _, _ -> }
 ) {
+    val score by quizService.score.collectAsState(initial = 0)
+    val questionIndex by quizService.questionIndex.collectAsState(initial = 0)
+    val totalQuestions by quizService.totalQuestions.collectAsState(initial = 0)
+    val error by quizService.error.collectAsState(initial = null as String?)
+    val currentQuestion by quizService.currentQuestion.collectAsState<TriviaQuestion?>(initial = null)
 
-// Holds current quiz questions
-    var questions by remember { mutableStateOf<List<Question>>(emptyList()) }
-// Current question index
-    var currentIndex by remember { mutableStateOf(0) }
 
-    var selectedAnswer by remember { mutableStateOf<String?>(null) } // Currently selected answer
+    var selectedAnswer by remember { mutableStateOf<String?>(null) }
 
-    var submittedAnswers by remember { mutableStateOf(mutableListOf<String>()) } // All submitted answers
-
-    var isLoading by remember { mutableStateOf(true) } // Loading state
-
-    var error by remember { mutableStateOf<String?>(null) } // Error state
-
-    var score by remember { mutableStateOf(0) }  // Player's score
-
-    var retryKey by remember { mutableStateOf(0) } // Key to trigger retry
-    
-    // Sample questions for fallback (or initial demo)
-    fun getSampleQuestions(): List<Question> {
-        return listOf(
-            Question("What is 2 + 2?", listOf("2", "3", "4", "5"), "4"),
-            Question("Capital of France?", listOf("Berlin", "Madrid", "Paris", "Rome"), "Paris"),
-            Question(
-                "Which planet is the Red Planet?",
-                listOf("Venus", "Mars", "Jupiter", "Saturn"),
-                "Mars"
-            ),
-            Question(
-                "What is the largest mammal?",
-                listOf("Elephant", "Blue Whale", "Giraffe", "Hippo"),
-                "Blue Whale"
-            ),
-            Question(
-                "Who painted the Mona Lisa?",
-                listOf("Van Gogh", "Picasso", "Da Vinci", "Michelangelo"),
-                "Da Vinci"
-            )
-        )
-    }
-
-    // Load questions (for now, fallback to sample)
-    LaunchedEffect(retryKey) {
-        try {
-            isLoading = true
-            error = null
-            questions = getSampleQuestions()
-            isLoading = false
-        } catch (e: Exception) {
-            error = "Failed to load questions: ${e.message}"
-            isLoading = false
+    LaunchedEffect(currentQuestion) {
+        if (currentQuestion == null) {
+            quizService.fetchNextQuestion()
         }
     }
-
-    // Calculate score when game ends
-    LaunchedEffect(submittedAnswers, questions) {
-        if (currentIndex >= questions.size && questions.isNotEmpty()) {
-            val correctAnswers = submittedAnswers.zip(questions).count { (userAnswer, question) ->
-                userAnswer == question.correctAnswer
-            }
-            score = correctAnswers
-            onGameComplete(score, questions.size)
-        }
-    }
-
-    // 🎨 Background painter (make sure forest_background.png/jpg is in res/drawable)
-    val backgroundPainter = painterResource(id = R.drawable.forest_background)
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Background image
-        Image(
-            painter = backgroundPainter,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+        // ... background image and overlay ...
 
-        // Optional: dark overlay to keep text readable
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f))
-        )
-
-        // Foreground content
         when {
-            isLoading -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.align(Alignment.Center)
-                ) {
-                    CircularProgressIndicator()
-                    Text("Loading questions...", style = MaterialTheme.typography.bodyLarge, color = Color.White)
-                }
-            }
-
             error != null -> {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(16.dp)
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Text(
-                        text = error!!,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                    Button(onClick = {
-                        retryKey++
-                        currentIndex = 0
-                        submittedAnswers.clear()
-                        selectedAnswer = null
-                    }) {
-                        Text("Retry")
-                    }
-                    Button(onClick = onNavigateBack) {
-                        Text("Go Back")
-                    }
+                    Text("Error: $error", color = MaterialTheme.colorScheme.error)
+                    Button(onClick = { quizService.resetGame() }) { Text("Retry") }
+                    Button(onClick = onNavigateBack) { Text("Go Back") }
                 }
             }
 
-            currentIndex < questions.size -> {
-                val currentQuestion = questions[currentIndex]
-
+            currentQuestion != null -> {
+                val question = currentQuestion!!
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    // Header with back button
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Button(
-                            onClick = onNavigateBack,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF311B92) // Deep twilight purple
-                            )
-                        ) {
-                            Text("Back", color = Color.White)
-                        }
+                    Text("Question ${questionIndex} of $totalQuestions", color = Color.White)
 
+                    QuestionCard(question.text)
 
-                        Text(
-                            text = "Question ${currentIndex + 1} of ${questions.size}",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-
-                        Spacer(modifier = Modifier.width(80.dp))
-                    }
-
-                    // Question card with translucent background
-                    QuestionCard(
-                        question = currentQuestion.text,
-                        fontSize = 24.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(160.dp),
-                        backgroundColor = Color(0xCCB39DDB) // translucent purple
-                    )
-
-                    // Answer buttons with lighter translucent purple
-                    currentQuestion.answers.forEach { answer ->
+                    question.options.forEach { answer ->
                         AnswerButton(
                             text = answer,
                             isSelected = (answer == selectedAnswer),
-                            onClick = { selectedAnswer = answer },
-                            backgroundColor = Color(0xCCB39DDB)
+                            onClick = { selectedAnswer = answer }
                         )
                     }
 
-                    // Submit button
                     Button(
                         onClick = {
-                            submittedAnswers.add(selectedAnswer ?: "")
-                            selectedAnswer = null
-                            currentIndex++
+                            selectedAnswer?.let { answer ->
+                                // Submit answer & fetch next question
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    quizService.submitAnswer(answer)
+                                    quizService.fetchNextQuestion()
+                                }
+                                selectedAnswer = null
+                            }
                         },
-                        enabled = selectedAnswer != null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text("Submit", fontSize = 18.sp)
-                    }
+                        enabled = selectedAnswer != null
+                    ) { Text("Submit") }
                 }
             }
 
             else -> {
-                // End of quiz: show results
+                // End of quiz
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Text(
-                        "Quiz Completed! 🎉",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-
-                    Text(
-                        "Your Score: $score/${questions.size}",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Show detailed results
-                    questions.forEachIndexed { index, question ->
-                        val userAnswer = submittedAnswers.getOrNull(index) ?: ""
-                        val isCorrect = userAnswer == question.correctAnswer
-
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = if (isCorrect)
-                                    Color(0xFFFFFFFF)
-                                else
-                                    Color(0xFFFFFFFF)
-                            )
-                        ) {
-                            Column(modifier = Modifier.padding(12.dp)) {
-                                Text(
-                                    "Q${index + 1}: ${question.text}",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Text(
-                                    "Your answer: $userAnswer",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (isCorrect) Color(0xFF4CAF50) else Color(0xFFF44336)
-                                )
-                                Text(
-                                    "Correct answer: ${question.correctAnswer}",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF000000)
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(
-                        onClick = onNavigateBack,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Back to Menu")
-                    }
+                    Text("Quiz Complete! Score: $score / $totalQuestions")
+                    Button(onClick = onNavigateBack) { Text("Back") }
                 }
             }
         }
