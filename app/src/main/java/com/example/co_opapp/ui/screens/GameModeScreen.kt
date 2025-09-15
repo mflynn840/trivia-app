@@ -12,6 +12,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.ui.components.CharacterImageCircle
 import com.example.co_opapp.ui.components.GameModeCard
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import com.example.co_opapp.R
 
 @Composable
 fun GameModeScreen(
@@ -21,20 +27,20 @@ fun GameModeScreen(
     onNavigateToCharacterMode: () -> Unit = {},
     onNavigateBack: () -> Unit = {}
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB))
-                )
-            )
-    ) {
-        // Character circle in the top-right
-        CharacterImageCircle(
-            modifier = Modifier.align(Alignment.TopEnd)
+    Box(modifier = modifier.fillMaxSize()) {
+
+        // Background image (Game Mode Screen)
+        Image(
+            painter = painterResource(id = R.drawable.forest_lobby),
+            contentDescription = "Lobby Background",
+            contentScale = ContentScale.Crop, // Fill the entire screen
+            modifier = Modifier.fillMaxSize()
         )
 
+        // Character circle in top-right
+        CharacterImageCircle(modifier = Modifier.align(Alignment.TopEnd))
+
+        // Main column with game mode cards
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -46,7 +52,7 @@ fun GameModeScreen(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.White // use white if image is dark
             )
 
             GameModeCard(
