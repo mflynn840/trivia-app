@@ -1,4 +1,4 @@
-
+package com.example.co_opapp.Service
 
 import android.util.Log
 import com.example.co_opapp.data_model.*
@@ -7,21 +7,32 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.example.co_opapp.GameDriver
+import com.example.co_opapp.Service.AnswerResponse
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
 
+interface BackendApi {
+    @GET("api/game/questions/random")
+    suspend fun getRandomQuestion(): Response<TriviaQuestion>
 
-interface coopGameApi {
-
+    @POST("api/game/questions/check-answer")
+    suspend fun checkAnswer(@Body answerRequest: AnswerRequest): Response<AnswerResponse>
 }
 
 
-class CoopGameService : QuizService {
+class CoopGameService : GameDriver {
 
     // --- Backend API ---
     private val retrofit = Retrofit.Builder()
         .baseUrl("http://192.168.4.21:8080/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-    private val gameApi: GameApiService = retrofit.create(GameApiService::class.java)
+
+
+    private val gameApi = retrofit.create(BackendApi::class.java)
 
     // --- QuizService state flows ---
     private val _currentQuestion = MutableStateFlow<TriviaQuestion?>(null)
@@ -153,7 +164,7 @@ class CoopGameService : QuizService {
     // --- Backend helpers ---
     private suspend fun getRandomQuestion(difficulty: String? = "easy", category: String? = null): TriviaQuestion? {
         return try {
-            gameApi.getRandomQuestion(difficulty, category).body()
+            gameApi.getRandomQuestion().body()
         } catch (e: Exception) {
             Log.e("CoopGameService", "Failed to fetch question", e)
             null

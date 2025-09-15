@@ -12,8 +12,11 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
+import com.example.co_opapp.GameDriver
+
+
 // Retrofit API interface for solo game
-interface SoloGameApi {
+interface BackendApi {
     @GET("api/game/questions/random")
     suspend fun getRandomQuestion(): Response<TriviaQuestion>
 
@@ -26,29 +29,19 @@ data class AnswerResponse(
     val correct: Boolean
 )
 
-// QuizService interface to unify solo and coop usage
-interface QuizService {
-    val currentQuestion: StateFlow<TriviaQuestion?>
-    val score: StateFlow<Int>
-    val questionIndex: StateFlow<Int>
-    val totalQuestions: StateFlow<Int>
-    val error: StateFlow<String?>
-
-    suspend fun fetchNextQuestion()
-    suspend fun submitAnswer(answer: String): Boolean
-    fun resetGame()
-}
 
 // SoloGameService implementation
-class SoloGameService : QuizService {
+class SoloGameService : GameDriver {
 
     private val retrofit = Retrofit.Builder()
         .baseUrl("http://192.168.4.21:8080/") // replace with your backend URL
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    private val api = retrofit.create(SoloGameApi::class.java)
+    //use retrofit to create an instance of the backend API
+    private val api = retrofit.create(BackendApi::class.java)
 
+    //create variables to store a solo game state
     private val _currentQuestion = MutableStateFlow<TriviaQuestion?>(null)
     override val currentQuestion: StateFlow<TriviaQuestion?> = _currentQuestion.asStateFlow()
 
@@ -64,6 +57,8 @@ class SoloGameService : QuizService {
     private val _error = MutableStateFlow<String?>(null)
     override val error: StateFlow<String?> = _error.asStateFlow()
 
+
+    //implement the functionality to fetch another question
     override suspend fun fetchNextQuestion() {
         try {
             val response = api.getRandomQuestion()
@@ -89,6 +84,7 @@ class SoloGameService : QuizService {
 
     override suspend fun submitAnswer(answer: String): Boolean {
         val question = _currentQuestion.value ?: return false
+
         return try {
             val response = api.checkAnswer(AnswerRequest(question.id, answer))
             val correct = response.body()?.correct ?: false

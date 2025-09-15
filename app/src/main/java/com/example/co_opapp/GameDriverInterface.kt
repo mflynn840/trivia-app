@@ -1,3 +1,5 @@
+package com.example.co_opapp
+
 import com.example.co_opapp.data_model.TriviaQuestion
 import kotlinx.coroutines.flow.StateFlow
 
@@ -5,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 // -Single player quiz service (host a singleplayer game)
 // -multiplayer quiz service (host a coop game)
 
-interface QuizService {
+interface GameDriver {
     val currentQuestion: StateFlow<TriviaQuestion?>   // Current question
     val score: StateFlow<Int>                         // Current score
     val questionIndex: StateFlow<Int>                 // Current question number
