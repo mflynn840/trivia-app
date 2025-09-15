@@ -41,7 +41,7 @@ data class Player(
 
 // Question model for LAN game
 data class Question(
-    val id: String,
+    val id: Long,
     val questionText: String,
     val option1: String,
     val option2: String,
