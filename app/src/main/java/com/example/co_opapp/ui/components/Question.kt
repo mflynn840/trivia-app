@@ -1,4 +1,4 @@
-package com.example.trivia_game
+package com.example.co_opapp.ui.components
 
 data class Question(
     val text: String,

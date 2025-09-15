@@ -1,34 +1,46 @@
-# Co-op LAN Game App
+# Trivia Game App
 
-A simple Android multiplayer game where up to 4 players can join a LAN game and take turns clicking a button when their light is green.
+A comprehensive Android trivia game with both single-player and co-op multiplayer modes, featuring a modern UI and backend integration.
 
 ## Features
 
 - **Authentication**: Login/Register system (with testing bypass)
-- **LAN Multiplayer**: Host or join games on the same local network
-- **Turn-based Gameplay**: Players take turns clicking a button when their light is green
-- **Real-time Updates**: Game state updates in real-time across all players
-- **Modern UI**: Built with Jetpack Compose and Material Design 3
+- **Single Player Mode**: Play trivia questions solo and test your knowledge
+- **Co-op Multiplayer**: Host or join games on the same local network with up to 4 players
+- **Trivia Questions**: Dynamic question loading from backend with fallback to sample questions
+- **Modern UI**: Beautiful Jetpack Compose interface with Material Design 3
+- **Backend Integration**: Spring Boot backend with question management and random question generation
+- **Score Tracking**: Track your performance and see detailed results
 
 ## How to Play
 
+### Single Player Mode
 1. **Login**: Use the login screen or click "Skip Login (Testing)" for quick access
-2. **Lobby**: 
+2. **Choose Mode**: Select "Single Player" from the game mode selection screen
+3. **Play**: Answer trivia questions and see your score at the end
+
+### Co-op Multiplayer Mode
+1. **Login**: Use the login screen or click "Skip Login (Testing)" for quick access
+2. **Choose Mode**: Select "Co-op Mode" from the game mode selection screen
+3. **Lobby**: 
    - **Host a Game**: Click "Host Game" to create a new game room
    - **Join a Game**: Enter the host's IP address and click "Join Game"
-3. **Ready Up**: All players must click "Ready" before the game can start
-4. **Play**: 
+4. **Ready Up**: All players must click "Ready" before the game can start
+5. **Play**: 
    - The host clicks "Start Game" when everyone is ready
-   - Players take turns - only the current player's light will be green
-   - Click the button when it's your turn
-   - The turn automatically passes to the next player
+   - Players take turns answering trivia questions
+   - See final scores and results
 
 ## Technical Details
 
 - **Architecture**: MVVM with Jetpack Compose
-- **Networking**: Socket.IO for real-time communication (simplified for demo)
+- **Frontend**: Android app with Jetpack Compose UI
+- **Backend**: Spring Boot REST API with JPA/Hibernate
+- **Database**: SQLite for question storage
+- **Networking**: Retrofit for API calls, Socket.IO for real-time communication (co-op mode)
 - **Navigation**: Navigation Compose for screen transitions
 - **State Management**: StateFlow for reactive UI updates
+- **Question Management**: Dynamic loading with random question generation
 
 ## Setup
 
