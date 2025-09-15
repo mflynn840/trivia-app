@@ -159,11 +159,12 @@ fun QuizScreen(
                         Button(
                             onClick = onNavigateBack,
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                containerColor = Color(0xFF311B92) // Deep twilight purple
                             )
                         ) {
-                            Text("Back")
+                            Text("Back", color = Color.White)
                         }
+
 
                         Text(
                             text = "Question ${currentIndex + 1} of ${questions.size}",
@@ -260,7 +261,7 @@ fun QuizScreen(
                                 Text(
                                     "Your answer: $userAnswer",
                                     fontSize = 14.sp,
-                                    color = if (isCorrect) Color(0xFF4CAF50) else Color(0xFFF44336)
+                                    color = if (isCorrect) Color(0xFF4CAF50) else Color(0xCCB39DDB)
                                 )
                                 Text(
                                     "Correct answer: ${question.correctAnswer}",
