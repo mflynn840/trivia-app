@@ -1,18 +1,24 @@
 package com.example.co_opapp
 
-import androidx.compose.foundation.layout.*              // For Column, Spacer, etc.
-import androidx.compose.material3.*                    // For OutlinedTextField, Button, Text, etc.
-import androidx.compose.runtime.*                      // For remember, mutableStateOf, etc.
-import androidx.compose.ui.Alignment                  // For Alignment.CenterHorizontally
-import androidx.compose.ui.Modifier                    // For Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation  // For password field masking
-import androidx.compose.ui.unit.dp                      // For dp
-import kotlinx.coroutines.CoroutineScope              // For CoroutineScope
-import kotlinx.coroutines.Dispatchers                 // For Dispatchers.IO and Dispatchers.Main
-import kotlinx.coroutines.launch                     // For launch coroutine
-import kotlinx.coroutines.withContext                // For withContext to switch between threads
-import androidx.compose.ui.platform.LocalContext     // For LocalContext
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import com.google.gson.Gson
 
+// Data class to parse backend error responses
+data class ApiError(
+    val error: String? = null,
+    val message: String? = null
+)
 
 @Composable
 fun LoginScreen(
@@ -51,6 +57,7 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
 
+        // LOGIN BUTTON
         Button(onClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 val gameNetworkService = GameNetworkService()
@@ -66,9 +73,14 @@ fun LoginScreen(
                             message = "Login successful"
                             onNavigateToLobby()
                         } else {
-                            // Try to extract error message from backend response
                             val errorBody = response.errorBody()?.string()
-                            message = "Login failed: ${errorBody ?: "Unknown error"}"
+                            val errorMessage = try {
+                                val apiError = Gson().fromJson(errorBody, ApiError::class.java)
+                                apiError.error ?: apiError.message ?: "Unknown error"
+                            } catch (e: Exception) {
+                                errorBody ?: "Unknown error"
+                            }
+                            message = "Login failed: $errorMessage"
                         }
                     }
                 } catch (e: Exception) {
@@ -83,6 +95,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // REGISTER BUTTON
         Button(onClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 val gameNetworkService = GameNetworkService()
@@ -98,7 +111,13 @@ fun LoginScreen(
                             message = "Registration successful"
                         } else {
                             val errorBody = response.errorBody()?.string()
-                            message = "Registration failed: ${errorBody ?: "Unknown error"}"
+                            val errorMessage = try {
+                                val apiError = Gson().fromJson(errorBody, ApiError::class.java)
+                                apiError.error ?: apiError.message ?: "Unknown error"
+                            } catch (e: Exception) {
+                                errorBody ?: "Unknown error"
+                            }
+                            message = "Registration failed: $errorMessage"
                         }
                     }
                 } catch (e: Exception) {
@@ -113,6 +132,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Skip login for testing
         Button(
             onClick = { onNavigateToLobby() },
             modifier = Modifier.fillMaxWidth()
