@@ -11,8 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.google.gson.Gson
 
-
-
 // Data class to parse backend error responses
 data class ApiError(
     val error: String? = null,
@@ -23,6 +21,7 @@ data class ApiError(
 fun LoginButtons(
     username: String,
     password: String,
+    authService: AuthService,
     onNavigateToLobby: () -> Unit,
     messageState: MutableState<String>
 ) {
@@ -31,27 +30,14 @@ fun LoginButtons(
         Button(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val gameNetworkService = GameNetworkService()
                     try {
-                        val response = gameNetworkService.authApi?.login(
-                            UserCredentials(username, password)
-                        )
-
+                        val success = authService.login(username, password)
                         withContext(Dispatchers.Main) {
-                            if (response == null) {
-                                messageState.value = "Error: Could not reach server"
-                            } else if (response.isSuccessful) {
+                            if (success) {
                                 messageState.value = "Login successful"
                                 onNavigateToLobby()
                             } else {
-                                val errorBody = response.errorBody()?.string()
-                                val errorMessage = try {
-                                    val apiError = Gson().fromJson(errorBody, ApiError::class.java)
-                                    apiError.error ?: apiError.message ?: "Unknown error"
-                                } catch (e: Exception) {
-                                    errorBody ?: "Unknown error"
-                                }
-                                messageState.value = "Login failed: $errorMessage"
+                                messageState.value = "Login failed: Invalid credentials"
                             }
                         }
                     } catch (e: Exception) {
@@ -72,26 +58,13 @@ fun LoginButtons(
         Button(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val gameNetworkService = GameNetworkService()
                     try {
-                        val response = gameNetworkService.authApi?.register(
-                            UserCredentials(username, password)
-                        )
-
+                        val success = authService.register(username, password)
                         withContext(Dispatchers.Main) {
-                            if (response == null) {
-                                messageState.value = "Error: Could not reach server"
-                            } else if (response.isSuccessful) {
+                            if (success) {
                                 messageState.value = "Registration successful"
                             } else {
-                                val errorBody = response.errorBody()?.string()
-                                val errorMessage = try {
-                                    val apiError = Gson().fromJson(errorBody, ApiError::class.java)
-                                    apiError.error ?: apiError.message ?: "Unknown error"
-                                } catch (e: Exception) {
-                                    errorBody ?: "Unknown error"
-                                }
-                                messageState.value = "Registration failed: $errorMessage"
+                                messageState.value = "Registration failed"
                             }
                         }
                     } catch (e: Exception) {

@@ -19,6 +19,9 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     val message = remember { mutableStateOf("") }
 
+    // Create a single instance of AuthService
+    val authService = remember { AuthService() }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -46,12 +49,13 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Use the extracted buttons composable
+        // Pass the authService to the buttons
         LoginButtons(
             username = username,
             password = password,
+            authService = authService,
             onNavigateToLobby = onNavigateToLobby,
-            messageState = message
+            messageState = message,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
