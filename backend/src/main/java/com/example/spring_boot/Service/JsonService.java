@@ -45,18 +45,15 @@ public class JsonService {
                 // Randomize the order of answers
                 Collections.shuffle(allAnswers, new Random());
 
-                // Create the question object and assign options
+                // Create the question object
                 Question question = new Question();
                 question.setId((long) id++);
                 question.setQuestion(questionText);
-
-                question.setOptionA(allAnswers.get(0));
-                question.setOptionB(allAnswers.get(1));
-                question.setOptionC(allAnswers.get(2));
-                question.setOptionD(allAnswers.get(3));
-
-                // Set the correct answer
                 question.setCorrectAnswer(correctAnswer);
+                question.setIncorrectAnswers(incorrectAnswers);
+                question.setCategory(questionNode.get("category").asText());
+                question.setDifficulty(questionNode.get("difficulty").asText());
+                question.setType(questionNode.get("type").asText());
 
                 // Save the question into the database
                 questionRepository.save(question);

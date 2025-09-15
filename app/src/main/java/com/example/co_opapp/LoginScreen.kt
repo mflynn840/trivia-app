@@ -57,23 +57,14 @@ fun LoginScreen(
             // LOGIN
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = RetrofitClient.authApi.login(UserCredentials(username, password))
-                    if (response.isSuccessful) {
-                        val token = response.body()?.token
-                        if (token != null) {
-                            saveJwtToken(context, token)
-                            withContext(Dispatchers.Main) {
-                                message = "Login successful"
-                                onNavigateToLobby()
-                            }
+                    val gameNetworkService = GameNetworkService()
+                    val success = gameNetworkService.login(username, password)
+                    withContext(Dispatchers.Main) {
+                        if (success) {
+                            message = "Login successful"
+                            onNavigateToLobby()
                         } else {
-                            withContext(Dispatchers.Main) {
-                                message = "Invalid token received"
-                            }
-                        }
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            message = "Login failed: ${response.code()}"
+                            message = "Login failed: Invalid credentials"
                         }
                     }
                 } catch (e: Exception) {
@@ -92,12 +83,13 @@ fun LoginScreen(
             // REGISTER
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = RetrofitClient.authApi.register(UserCredentials(username, password))
+                    val gameNetworkService = GameNetworkService()
+                    val success = gameNetworkService.register(username, password)
                     withContext(Dispatchers.Main) {
-                        message = if (response.isSuccessful) {
+                        message = if (success) {
                             "Registration successful"
                         } else {
-                            "Registration failed: ${response.code()}"
+                            "Registration failed: Username may already exist"
                         }
                     }
                 } catch (e: Exception) {

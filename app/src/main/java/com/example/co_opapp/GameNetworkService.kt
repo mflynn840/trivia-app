@@ -1,18 +1,69 @@
 package com.example.co_opapp
 
 import android.util.Log
-import io.socket.client.IO
-import io.socket.client.Socket
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.json.JSONObject
-import java.net.InetAddress
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.*
+import com.google.gson.annotations.SerializedName
 import java.net.NetworkInterface
-import java.util.*
+
+// API interfaces
+interface AuthApiService {
+    @POST("api/auth/register")
+    suspend fun register(@Body credentials: UserCredentials): retrofit2.Response<Map<String, String>>
+    
+    @POST("api/auth/login")
+    suspend fun login(@Body credentials: UserCredentials): retrofit2.Response<LoginResponse>
+    
+    @POST("api/auth/validate")
+    suspend fun validateToken(@Header("Authorization") token: String): retrofit2.Response<Map<String, Any>>
+}
+
+interface GameApiService {
+    @GET("api/game/questions/random")
+    suspend fun getRandomQuestion(
+        @Query("difficulty") difficulty: String? = null,
+        @Query("category") category: String? = null
+    ): retrofit2.Response<TriviaQuestion>
+    
+    @POST("api/game/questions/check-answer")
+    suspend fun checkAnswer(@Body answerRequest: AnswerRequest): retrofit2.Response<AnswerResponse>
+}
+
+// Data classes
+data class UserCredentials(
+    val username: String,
+    val password: String
+)
+
+data class LoginResponse(
+    val token: String,
+    val username: String,
+    val role: String
+)
+
+data class AnswerRequest(
+    val questionId: Long,
+    val answer: String
+)
+
+data class AnswerResponse(
+    val correct: Boolean,
+    val correctAnswer: String
+)
 
 class GameNetworkService {
-    private var socket: Socket? = null
+    private var authApi: AuthApiService? = null
+    private var gameApi: GameApiService? = null
+    private var authToken: String? = null
+    
     var isHost = false
         private set
     private var currentPlayer: Player? = null
@@ -26,6 +77,20 @@ class GameNetworkService {
     
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+    
+    init {
+        initializeApiServices()
+    }
+    
+    private fun initializeApiServices() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://172.24.160.1:8080/") // Backend URL
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        
+        authApi = retrofit.create(AuthApiService::class.java)
+        gameApi = retrofit.create(GameApiService::class.java)
+    }
     
     fun getLocalIpAddress(): String? {
         try {
@@ -147,8 +212,6 @@ class GameNetworkService {
     }
     
     fun leaveGame() {
-        socket?.disconnect()
-        socket = null
         currentPlayer = null
         currentRoom = null
         _gameState.value = null
@@ -171,4 +234,129 @@ class GameNetworkService {
     fun getCurrentPlayerInfo(): Player? = currentPlayer
     
     fun getMyPlayer(): Player? = currentPlayer
+    
+    // Authentication methods
+    suspend fun register(username: String, password: String): Boolean {
+        return try {
+            val response = authApi?.register(UserCredentials(username, password))
+            response?.isSuccessful == true
+        } catch (e: Exception) {
+            Log.e("GameNetworkService", "Registration failed", e)
+            false
+        }
+    }
+    
+    suspend fun login(username: String, password: String): Boolean {
+        return try {
+            val response = authApi?.login(UserCredentials(username, password))
+            if (response?.isSuccessful == true) {
+                val loginResponse = response.body()
+                authToken = loginResponse?.token
+                currentPlayer = Player(username = username)
+                _connectionStatus.value = true
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            Log.e("GameNetworkService", "Login failed", e)
+            false
+        }
+    }
+    
+    // Trivia game methods
+    suspend fun getRandomQuestion(): TriviaQuestion? {
+        return try {
+            val response = gameApi?.getRandomQuestion("easy", null)
+            if (response?.isSuccessful == true) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("GameNetworkService", "Failed to get question", e)
+            null
+        }
+    }
+    
+    suspend fun submitAnswer(questionId: Long, answer: String): Boolean {
+        return try {
+            val response = gameApi?.checkAnswer(AnswerRequest(questionId, answer))
+            if (response?.isSuccessful == true) {
+                val answerResponse = response.body()
+                val isCorrect = answerResponse?.correct ?: false
+                
+                // Update player score if correct
+                if (isCorrect) {
+                    currentPlayer?.let { player ->
+                        val updatedPlayer = player.copy(score = player.score + 1)
+                        currentPlayer = updatedPlayer
+                        updateGameState()
+                    }
+                }
+                
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            Log.e("GameNetworkService", "Failed to submit answer", e)
+            false
+        }
+    }
+    
+    private fun updateGameState() {
+        currentRoom?.let { room ->
+            val updatedPlayers = room.players.map { player ->
+                if (player.id == currentPlayer?.id) currentPlayer!! else player
+            }
+            val updatedRoom = room.copy(players = updatedPlayers)
+            currentRoom = updatedRoom
+            _gameState.value = updatedRoom
+        }
+    }
+    
+    fun startTriviaGame() {
+        currentRoom?.let { room ->
+            if (room.players.size >= 2) {
+                val updatedRoom = room.copy(
+                    isGameStarted = true,
+                    gameState = GameState.IN_PROGRESS,
+                    currentPlayerIndex = 0,
+                    currentRound = 1
+                )
+                currentRoom = updatedRoom
+                _gameState.value = updatedRoom
+                
+                // Load first question
+                CoroutineScope(Dispatchers.IO).launch {
+                    val question = getRandomQuestion()
+                    question?.let { q ->
+                        val roomWithQuestion = currentRoom?.copy(currentQuestion = q)
+                        currentRoom = roomWithQuestion
+                        _gameState.value = roomWithQuestion
+                    }
+                }
+            }
+        }
+    }
+    
+    fun nextTurn() {
+        currentRoom?.let { room ->
+            val nextPlayerIndex = (room.currentPlayerIndex + 1) % room.players.size
+            val updatedRoom = room.copy(currentPlayerIndex = nextPlayerIndex)
+            currentRoom = updatedRoom
+            _gameState.value = updatedRoom
+            
+            // Load next question
+            CoroutineScope(Dispatchers.IO).launch {
+                val question = getRandomQuestion()
+                question?.let { q ->
+                    val roomWithQuestion = currentRoom?.copy(currentQuestion = q)
+                    currentRoom = roomWithQuestion
+                    _gameState.value = roomWithQuestion
+                }
+            }
+        }
+    }
 }
