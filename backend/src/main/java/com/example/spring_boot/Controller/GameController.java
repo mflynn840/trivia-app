@@ -31,6 +31,7 @@ public class GameController {
         try {
             List<Question> questions;
             
+            
             if (difficulty != null && category != null) {
                 questions = questionRepository.findByDifficultyAndCategory(difficulty, category);
             } else if (difficulty != null) {
@@ -52,37 +53,8 @@ public class GameController {
         }
     }
 
-    @GetMapping("/questions/{id}")
-    public ResponseEntity<?> getQuestionById(@PathVariable Long id) {
-        try {
-            Optional<Question> question = questionRepository.findById(id);
-            if (question.isPresent()) {
-                return ResponseEntity.ok(question.get());
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to fetch question: " + e.getMessage()));
-        }
-    }
 
-    @GetMapping("/questions/random")
-    public ResponseEntity<?> getRandomQuestion(
-            @RequestParam(required = false) String difficulty,
-            @RequestParam(required = false) String category) {
-        try {
-            Question question = questionService.getRandomQuestion(difficulty, category);
-            if (question != null) {
-                return ResponseEntity.ok(question);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to fetch random question: " + e.getMessage()));
-        }
-    }
-
-    @PostMapping("/questions/check-answer")
+    @PostMapping("/check-answer")
     public ResponseEntity<?> checkAnswer(@RequestBody Map<String, Object> request) {
         try {
             Long questionId = Long.valueOf(request.get("questionId").toString());
