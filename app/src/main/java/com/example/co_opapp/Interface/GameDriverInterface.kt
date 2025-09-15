@@ -1,4 +1,4 @@
-package com.example.co_opapp
+package com.example.co_opapp.Interface
 
 import com.example.co_opapp.data_model.TriviaQuestion
 import kotlinx.coroutines.flow.StateFlow
