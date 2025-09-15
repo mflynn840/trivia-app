@@ -23,7 +23,8 @@ import androidx.compose.ui.unit.sp
 fun AnswerButton(
     text: String,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    backgroundColor: Color
 ) {
     val backgroundColor = if (isSelected) Color(0xFF4CAF50) else Color(0xFFF3E5F5)
     val textColor = if (isSelected) Color.White else Color.Black
