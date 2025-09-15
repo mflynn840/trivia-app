@@ -31,19 +31,17 @@ fun QuizScreen(
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
-    // Fetch first question if not loaded
+    // Fetch the first question once when the composable enters composition
     LaunchedEffect(Unit) {
-        if (currentQuestion == null) {
-            quizService.fetchNextQuestion()
-        }
+        quizService.fetchNextQuestion()
     }
 
-    // Trigger onGameComplete if quiz is finished
-    LaunchedEffect(currentQuestion, totalQuestions) {
-        if (currentQuestion == null && questionIndex > 0 && totalQuestions > 0) {
+    LaunchedEffect(questionIndex, totalQuestions) {
+        if (questionIndex >= totalQuestions && totalQuestions > 0) {
             onGameComplete(score, totalQuestions)
         }
     }
+
 
     Box(modifier = modifier.fillMaxSize()) {
 
