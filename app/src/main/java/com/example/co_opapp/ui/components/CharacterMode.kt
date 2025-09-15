@@ -1,23 +1,36 @@
-package com.example.co_opapp.ui.screens
+package com.example.co_opapp.ui.components
 
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.co_opapp.ui.components.GameModeCard
+import androidx.compose.foundation.border
 
+
+// ---------------- Character Mode Screen ----------------
 @Composable
-fun GameModeScreen(
+fun CharacterModeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToSinglePlayer: () -> Unit = {},
-    onNavigateToCoOp: () -> Unit = {},
-    onNavigateToCharacterMode: () -> Unit = {}, // Callback for Character Customization
+    onNavigateToCustomization: () -> Unit = {}, // Navigate to customization screen
     onNavigateBack: () -> Unit = {}
 ) {
     Box(
@@ -25,7 +38,7 @@ fun GameModeScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB))
+                    colors = listOf(Color(0xFFFFF8E1), Color(0xFFFFECB3)) // warm yellow gradient
                 )
             ),
         contentAlignment = Alignment.Center
@@ -35,40 +48,20 @@ fun GameModeScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier.padding(32.dp)
         ) {
-            // Title
             Text(
-                text = "Choose Game Mode",
+                text = "Character Mode",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
 
-            // Game mode options
-            GameModeCard(
-                icon = "🎮",
-                title = "Single Player",
-                description = "Play alone and test your knowledge",
-                buttonText = "Start Single Player",
-                buttonColor = Color(0xFF4CAF50),
-                onClick = onNavigateToSinglePlayer
-            )
-
-            GameModeCard(
-                icon = "👥",
-                title = "Co-op Mode",
-                description = "Play with friends on the same network",
-                buttonText = "Start Co-op Game",
-                buttonColor = Color(0xFF2196F3),
-                onClick = onNavigateToCoOp
-            )
-
-            // NEW Character Customization button
+            // Button to navigate to Character Customization Screen
             Button(
-                onClick = onNavigateToCharacterMode,
+                onClick = onNavigateToCustomization,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp), // moderately sized
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800)) // orange
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
             ) {
                 Text("Character Customization")
             }
@@ -81,7 +74,7 @@ fun GameModeScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
             ) {
-                Text("Back to Login")
+                Text("Back")
             }
         }
     }
