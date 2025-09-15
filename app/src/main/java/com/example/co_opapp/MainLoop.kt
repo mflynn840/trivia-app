@@ -19,7 +19,6 @@ import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.LobbyScreen
 import com.example.co_opapp.ui.screens.LoginScreen
 import com.example.co_opapp.ui.screens.QuizScreen
-import com.example.co_opapp.ui.screens.TriviaGameScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
