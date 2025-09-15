@@ -12,13 +12,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
+// Retrofit interface defining API endpoints for authentication
 interface AuthApiService {
+    // Endpoint to register a new user
     @POST("api/auth/register")
     suspend fun register(@Body credentials: UserCredentials): Response<Map<String, String>>
-
+    // Endpoint to log in an existing user
     @POST("api/auth/login")
     suspend fun login(@Body credentials: UserCredentials): Response<LoginResponse>
-
+    // Endpoint to validate an existing token
     @POST("api/auth/validate")
     suspend fun validateToken(@Header("Authorization") token: String): Response<Map<String, Any>>
 }
