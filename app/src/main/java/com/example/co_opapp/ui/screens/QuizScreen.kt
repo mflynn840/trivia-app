@@ -247,9 +247,9 @@ fun QuizScreen(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(
                                 containerColor = if (isCorrect)
-                                    Color(0xEDE8F5E9)
+                                    Color(0xCCB39DDB)
                                 else
-                                    Color(0xEDFFEBEE)
+                                    Color(0xCCB39DDB)
                             )
                         ) {
                             Column(modifier = Modifier.padding(12.dp)) {
