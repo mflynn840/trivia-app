@@ -101,7 +101,7 @@ fun CoopApp() {
             }
         }
 
-        composable("lobby") {
+        /*composable("lobby") {
             // Keep the CoOpGameService across navigation
             val coopService = remember { CoopGameService() }
 
@@ -118,7 +118,7 @@ fun CoopApp() {
                     }
                 )
             }
-        }
+        }*/
 
         composable("coopQuiz") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
