@@ -247,26 +247,28 @@ fun QuizScreen(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(
                                 containerColor = if (isCorrect)
-                                    Color(0xCCB39DDB)
+                                    Color(0xFFFFFFFF)
                                 else
-                                    Color(0xCCB39DDB)
+                                    Color(0xFFFFFFFF)
                             )
                         ) {
                             Column(modifier = Modifier.padding(12.dp)) {
                                 Text(
                                     "Q${index + 1}: ${question.text}",
                                     fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium
+                                    fontWeight = FontWeight.Bold
                                 )
                                 Text(
                                     "Your answer: $userAnswer",
                                     fontSize = 14.sp,
-                                    color = if (isCorrect) Color(0xFF4CAF50) else Color(0xCCB39DDB)
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (isCorrect) Color(0xFF4CAF50) else Color(0xFFF44336)
                                 )
                                 Text(
                                     "Correct answer: ${question.correctAnswer}",
                                     fontSize = 14.sp,
-                                    color = Color(0xFF4CAF50)
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF000000)
                                 )
                             }
                         }
