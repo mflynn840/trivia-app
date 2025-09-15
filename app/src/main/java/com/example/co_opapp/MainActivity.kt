@@ -15,6 +15,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.co_opapp.ui.theme.CoopAppTheme
+import com.example.co_opapp.ui.screens.GameModeScreen
+import com.example.co_opapp.ui.screens.QuizScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +43,44 @@ fun CoopApp() {
                 LoginScreen(
                     modifier = Modifier.padding(innerPadding),
                     onNavigateToLobby = {
+                        navController.navigate("gameMode")
+                    }
+                )
+            }
+        }
+        
+        composable("gameMode") {
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                GameModeScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onNavigateToSinglePlayer = {
+                        navController.navigate("singlePlayerQuiz")
+                    },
+                    onNavigateToCoOp = {
                         navController.navigate("lobby")
+                    },
+                    onNavigateBack = {
+                        navController.navigate("login") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    }
+                )
+            }
+        }
+        
+        composable("singlePlayerQuiz") {
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                QuizScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    isSinglePlayer = true,
+                    onNavigateBack = {
+                        navController.navigate("gameMode") {
+                            popUpTo("gameMode") { inclusive = true }
+                        }
+                    },
+                    onGameComplete = { score, total ->
+                        // Handle game completion for single player
+                        // Could navigate to a results screen or back to menu
                     }
                 )
             }
@@ -52,12 +91,29 @@ fun CoopApp() {
                 LobbyScreen(
                     modifier = Modifier.padding(innerPadding),
                     onNavigateToGame = {
-                        navController.navigate("game")
+                        navController.navigate("coOpQuiz")
                     },
                     onNavigateBack = {
-                        navController.navigate("login") {
-                            popUpTo("login") { inclusive = true }
+                        navController.navigate("gameMode") {
+                            popUpTo("gameMode") { inclusive = true }
                         }
+                    }
+                )
+            }
+        }
+        
+        composable("coOpQuiz") {
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                QuizScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    isSinglePlayer = false,
+                    onNavigateBack = {
+                        navController.navigate("lobby") {
+                            popUpTo("lobby") { inclusive = true }
+                        }
+                    },
+                    onGameComplete = { score, total ->
+                        // Handle game completion for co-op
                     }
                 )
             }

@@ -89,10 +89,14 @@ A full-stack Android multiplayer trivia game with a Spring Boot backend and SQLi
 
 ## API Endpoints
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `POST /api/auth/validate` - Validate JWT token
+- **Architecture**: MVVM with Jetpack Compose
+- **Frontend**: Android app with Jetpack Compose UI
+- **Backend**: Spring Boot REST API with JPA/Hibernate
+- **Database**: SQLite for question storage
+- **Networking**: Retrofit for API calls, Socket.IO for real-time communication (co-op mode)
+- **Navigation**: Navigation Compose for screen transitions
+- **State Management**: StateFlow for reactive UI updates
+- **Question Management**: Dynamic loading with random question generation
 
 ### Game
 - `GET /api/game/questions/random` - Get random question
