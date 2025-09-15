@@ -7,10 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,7 +16,12 @@ import com.example.co_opapp.ui.theme.CoopAppTheme
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.LobbyScreen
 import com.example.co_opapp.ui.screens.LoginScreen
-import com.example.co_opapp.ui.screens.QuizScreen
+
+import com.example.co_opapp.ui.screens.CoopGameScreen
+import com.example.co_opapp.ui.screens.SoloGameScreen
+
+
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,12 +37,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CoopApp() {
+
+    //the main loop contains a controller for switching between pages
     val navController = rememberNavController()
-    
+
+    //start on the login page
     NavHost(
         navController = navController,
         startDestination = "login"
     ) {
+
+        //when the player completes login, go to the "select game-mode screen"
         composable("login") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 LoginScreen(
@@ -50,7 +58,8 @@ fun CoopApp() {
                 )
             }
         }
-        
+
+        //when the player selects a game mode, go to that game mode
         composable("gameMode") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 GameModeScreen(
@@ -69,10 +78,11 @@ fun CoopApp() {
                 )
             }
         }
-        
+
+        //Single player quiz game
         composable("singlePlayerQuiz") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                QuizScreen(
+                SoloGameScreen(
                     modifier = Modifier.padding(innerPadding),
                     isSinglePlayer = true,
                     onNavigateBack = {
@@ -87,7 +97,8 @@ fun CoopApp() {
                 )
             }
         }
-        
+
+        //Join a coop game (lobby screen
         composable("lobby") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 LobbyScreen(
@@ -103,10 +114,11 @@ fun CoopApp() {
                 )
             }
         }
-        
+
+        //Play a coop quiz game
         composable("coOpQuiz") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                QuizScreen(
+                CoopGameScreen(
                     modifier = Modifier.padding(innerPadding),
                     isSinglePlayer = false,
                     onNavigateBack = {
@@ -120,34 +132,5 @@ fun CoopApp() {
                 )
             }
         }
-        
-        composable("game") {
-            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                TriviaGameScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    onNavigateBack = {
-                        navController.navigate("lobby") {
-                            popUpTo("lobby") { inclusive = true }
-                        }
-                    }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CoopAppTheme {
-        Greeting("Android")
     }
 }
