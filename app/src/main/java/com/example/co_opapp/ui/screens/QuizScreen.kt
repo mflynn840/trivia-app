@@ -11,9 +11,9 @@ import androidx.compose.ui.unit.dp
 import com.example.co_opapp.ui.components.AnswerButton
 import com.example.co_opapp.ui.components.QuestionCard
 import com.example.co_opapp.data_model.TriviaQuestion
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
+
+
 
 @Composable
 fun QuizScreen(
@@ -26,23 +26,7 @@ fun QuizScreen(
     val questionIndex by quizService.questionIndex.collectAsState(initial = 0)
     val totalQuestions by quizService.totalQuestions.collectAsState(initial = 0)
     val error by quizService.error.collectAsState(initial = null as String?)
-
-
-    //get the current question
-    val currentQuestion by produceState<TriviaQuestion?>(initialValue = null, quizService) {
-        // Whenever the service updates, fetch the next question if needed
-        quizService.currentQuestion.collect { question ->
-            if (question == null) {
-                // Fetch next question from backend
-                try {
-                    quizService.fetchNextQuestion()
-                } catch (e: Exception) {
-                    // Optionally handle error
-                }
-            }
-            value = question
-        }
-    }
+    val currentQuestion by quizService.currentQuestion.collectAsState<TriviaQuestion?>(initial = null)
 
 
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
@@ -77,7 +61,6 @@ fun QuizScreen(
                     question.option3,
                     question.option4
                 )
-
                 Column(
                     modifier = Modifier.fillMaxSize().padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -85,7 +68,7 @@ fun QuizScreen(
                 ) {
                     Text("Question ${questionIndex} of $totalQuestions", color = Color.White)
 
-                    QuestionCard(question.questionText)
+                    QuestionCard(question.text)
 
                     options.forEach { answer ->
                         AnswerButton(
