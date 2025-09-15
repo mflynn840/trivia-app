@@ -15,26 +15,29 @@ import com.example.co_opapp.ui.screens.GameModeCard
 @Composable
 fun GameModeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToSinglePlayer: () -> Unit = {},
-    onNavigateToCoOp: () -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onNavigateToSinglePlayer: () -> Unit = {}, // Callback when Single Player is chosen
+    onNavigateToCoOp: () -> Unit = {}, // Callback when Co-op is chosen
+    onNavigateBack: () -> Unit = {} // Callback for going back to Login screen
 ) {
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(
+                // Gradient background for nicer UI
                 Brush.verticalGradient(
                     colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB)) // light blue gradient
                 )
             ),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center // Center everything inside the Box
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier.padding(32.dp)
         ) {
-            // Title
+
+            // Screen title
             Text(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
@@ -42,7 +45,7 @@ fun GameModeScreen(
                 color = Color.Black
             )
 
-            // Single Player
+            // Game Mode option: Single Player
             GameModeCard(
                 icon = "🎮",
                 title = "Single Player",
@@ -52,7 +55,7 @@ fun GameModeScreen(
                 onClick = onNavigateToSinglePlayer
             )
 
-            // Co-op
+            // Game Mode option: Co-op
             GameModeCard(
                 icon = "👥",
                 title = "Co-op Mode",
