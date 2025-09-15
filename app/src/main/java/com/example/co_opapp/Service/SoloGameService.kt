@@ -12,7 +12,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-import com.example.co_opapp.GameDriver
+import com.example.co_opapp.Interface.GameDriver
 
 
 // Retrofit API interface for solo game
