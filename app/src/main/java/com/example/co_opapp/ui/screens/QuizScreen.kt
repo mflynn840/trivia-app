@@ -33,7 +33,7 @@ fun QuizScreen(
     val error by quizService.error.collectAsState(initial = null as String?)
 
 
-    //get the current question
+    // Get the current question
     val currentQuestion by produceState<TriviaQuestion?>(initialValue = null, quizService) {
         // Whenever the service updates, fetch the next question if needed
         quizService.currentQuestion.collect { question ->
@@ -49,9 +49,10 @@ fun QuizScreen(
         }
     }
 
-
+    // Track which answer the user has currently selected
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
 
+    // Fetch the first question if not already loaded
     LaunchedEffect(currentQuestion) {
         if (currentQuestion == null) {
             quizService.fetchNextQuestion()
@@ -62,6 +63,7 @@ fun QuizScreen(
         // ... background image and overlay ...
 
         when {
+            // --- ERROR STATE ---
             error != null -> {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -74,6 +76,7 @@ fun QuizScreen(
                 }
             }
 
+            // --- QUESTION DISPLAY ---
             currentQuestion != null -> {
                 val question = currentQuestion!!
                 val options = listOf(
@@ -88,10 +91,13 @@ fun QuizScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    Text("Question ${questionIndex} of $totalQuestions", color = Color.White)
 
+                    // Show question number
+                    Text("Question ${questionIndex} of $totalQuestions", color = Color.White)
+                    // Question card displaying question text
                     QuestionCard(question.questionText)
 
+                    // Display answer options as buttons
                     options.forEach { answer ->
                         AnswerButton(
                             text = answer,
@@ -101,6 +107,7 @@ fun QuizScreen(
                         )
                     }
 
+                    // Submit button
                     Button(
                         onClick = {
                             selectedAnswer?.let { answer ->
@@ -117,14 +124,18 @@ fun QuizScreen(
                 }
             }
 
+            // --- QUIZ COMPLETE STATE ---
             else -> {
-                // End of quiz
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    // Show final score
                     Text("Quiz Complete! Score: $score / $totalQuestions")
+
+                    // Back button
                     Button(onClick = onNavigateBack) { Text("Back") }
                 }
             }
