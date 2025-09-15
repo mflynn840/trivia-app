@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.co_opapp.ui.components.CharacterImageCircle
 import com.example.co_opapp.ui.components.GameModeCard
 
 @Composable
@@ -17,7 +18,7 @@ fun GameModeScreen(
     modifier: Modifier = Modifier,
     onNavigateToSinglePlayer: () -> Unit = {},
     onNavigateToCoOp: () -> Unit = {},
-    onNavigateToCharacterMode: () -> Unit = {}, // Callback for Character Customization
+    onNavigateToCharacterMode: () -> Unit = {},
     onNavigateBack: () -> Unit = {}
 ) {
     Box(
@@ -27,15 +28,20 @@ fun GameModeScreen(
                 Brush.verticalGradient(
                     colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB))
                 )
-            ),
-        contentAlignment = Alignment.Center
+            )
     ) {
+        // Character circle in the top-right
+        CharacterImageCircle(
+            modifier = Modifier.align(Alignment.TopEnd)
+        )
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp),
-            modifier = Modifier.padding(32.dp)
+            modifier = Modifier
+                .padding(32.dp)
+                .align(Alignment.Center)
         ) {
-            // Title
             Text(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
@@ -43,7 +49,6 @@ fun GameModeScreen(
                 color = Color.Black
             )
 
-            // Game mode options
             GameModeCard(
                 icon = "🎮",
                 title = "Single Player",
@@ -62,20 +67,18 @@ fun GameModeScreen(
                 onClick = onNavigateToCoOp
             )
 
-            // NEW Character Customization button
             Button(
                 onClick = onNavigateToCharacterMode,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp), // moderately sized
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800)) // orange
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
             ) {
                 Text("Character Customization")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Back button
             Button(
                 onClick = onNavigateBack,
                 modifier = Modifier.fillMaxWidth(),
