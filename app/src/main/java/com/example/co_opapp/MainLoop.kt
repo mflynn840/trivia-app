@@ -14,8 +14,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.co_opapp.ui.theme.CoopAppTheme
 import com.example.co_opapp.ui.screens.GameModeScreen
-import com.example.co_opapp.ui.screens.LobbyScreen
 import com.example.co_opapp.ui.screens.LoginScreen
+import com.example.co_opapp.ui.screens.QuizScreen
+import com.example.co_opapp.ui.screens.LobbyScreen
+import com.example.co_opapp.Service.CoopGameService
+import com.example.co_opapp.Service.SoloGameService
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,24 +77,65 @@ fun CoopApp() {
             }
         }
 
-        //Single player quiz game
+        //Single player quiz game is a game skeleton supplied with the soloGameService
         composable("singlePlayerQuiz") {
+            val soloService = remember { SoloGameService() } // your implementation
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 QuizScreen(
                     modifier = Modifier.padding(innerPadding),
-                    isSinglePlayer = true,
+                    quizService = soloService, // inject the service
                     onNavigateBack = {
                         navController.navigate("gameMode") {
                             popUpTo("gameMode") { inclusive = true }
                         }
                     },
                     onGameComplete = { score, total ->
-                        // Handle game completion for single player
-                        // Could navigate to a results screen or back to menu
+                        // Handle completion for single player
                     }
                 )
             }
         }
+
+        composable("lobby") {
+            // Keep the CoOpGameService across navigation
+            val coopService = remember { CoopGameService() }
+
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                LobbyScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onNavigateBack = {
+                        navController.navigate("gameMode") {
+                            popUpTo("gameMode") { inclusive = true }
+                        }
+                    },
+                    onNavigateToGame = {
+                        navController.navigate("coopQuiz")
+                    },
+                    gameService = coopService // inject same instance
+                )
+            }
+        }
+
+        composable("coopQuiz") {
+            val coopService = remember { CoopGameService() } // <-- must reuse same instance!
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                QuizScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    quizService = coopService,
+                    onNavigateBack = {
+                        navController.navigate("gameMode") {
+                            popUpTo("gameMode") { inclusive = true }
+                        }
+                    },
+                    onGameComplete = { score, total ->
+                        // show results, maybe navigate back to menu
+                    }
+                )
+            }
+        }
+
+
+
     }
 }
 

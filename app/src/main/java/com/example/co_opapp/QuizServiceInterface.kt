@@ -1,3 +1,7 @@
+//QuizServiceInterface is a common interface that abstracts the functionality both services provide:
+// -Single player quiz service (host a singleplayer game)
+// -multiplayer quiz service (host a coop game)
+
 interface QuizService {
     val currentQuestion: StateFlow<TriviaQuestion?>   // Current question
     val score: StateFlow<Int>                         // Current score

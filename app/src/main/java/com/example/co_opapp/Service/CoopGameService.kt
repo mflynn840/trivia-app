@@ -25,7 +25,7 @@ interface GameApiService {
 }
 
 // --- LAN + Game State Service ---
-class CoOpGameService {
+class CoopGameService {
 
     private var gameApi: GameApiService
 
