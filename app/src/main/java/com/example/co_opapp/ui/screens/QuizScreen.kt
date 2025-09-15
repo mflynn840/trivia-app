@@ -191,7 +191,7 @@ fun QuizScreen(
                             text = answer,
                             isSelected = (answer == selectedAnswer),
                             onClick = { selectedAnswer = answer },
-                            backgroundColor = Color(0xCCD1C4E9)
+                            backgroundColor = Color(0xCCB39DDB)
                         )
                     }
 
