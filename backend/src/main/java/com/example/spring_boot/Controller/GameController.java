@@ -66,16 +66,6 @@ public class GameController {
         }
     }
 
-    @PostMapping("/questions/load")
-    public ResponseEntity<?> loadQuestionsFromJson() {
-        try {
-            int loadedCount = questionService.loadQuestionsFromJson();
-            return ResponseEntity.ok(Map.of("message", "Questions loaded successfully", "count", loadedCount));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to load questions: " + e.getMessage()));
-        }
-    }
-
     @GetMapping("/questions/random")
     public ResponseEntity<?> getRandomQuestion(
             @RequestParam(required = false) String difficulty,

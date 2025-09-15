@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Random;
 
+// Add these imports at the top of QuestionService.java
+import java.util.concurrent.ThreadLocalRandom;
+import org.springframework.data.domain.PageRequest;
+
+
 @Service
 public class QuestionService {
 
@@ -58,6 +63,29 @@ public class QuestionService {
         }
         
         return questions;
+    }
+
+    public Question getRandomQuestion(String category, String difficulty) {
+        // TODO: implement properly with repository queries
+        // For now just return any random question
+        long count = questionRepository.count();
+        if (count == 0) return null;
+
+        int idx = ThreadLocalRandom.current().nextInt((int) count);
+        return questionRepository.findAll(PageRequest.of(idx, 1))
+                                 .stream()
+                                 .findFirst()
+                                 .orElse(null);
+    }
+
+    public Question getRandomQuestion(String category, Object unused) {
+        return getRandomQuestion(category, null);
+    }
+
+    public boolean checkAnswer(Long questionId, String answer) {
+        return questionRepository.findById(questionId)
+                .map(q -> q.getCorrectAnswer().equalsIgnoreCase(answer))
+                .orElse(false);
     }
     
     public long getQuestionCount() {
