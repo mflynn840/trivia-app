@@ -37,7 +37,6 @@ fun QuizScreen(
     LaunchedEffect(Unit) {
         quizService.fetchNextQuestion()
     }
-
     LaunchedEffect(questionIndex, totalQuestions) {
         if (questionIndex >= totalQuestions && totalQuestions > 0) {
             onGameComplete(score, totalQuestions)
