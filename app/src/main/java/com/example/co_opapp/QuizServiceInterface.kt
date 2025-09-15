@@ -1,3 +1,6 @@
+import com.example.co_opapp.data_model.TriviaQuestion
+import kotlinx.coroutines.flow.StateFlow
+
 //QuizServiceInterface is a common interface that abstracts the functionality both services provide:
 // -Single player quiz service (host a singleplayer game)
 // -multiplayer quiz service (host a coop game)

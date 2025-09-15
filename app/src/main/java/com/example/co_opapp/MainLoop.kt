@@ -39,6 +39,11 @@ fun CoopApp() {
     //the main loop contains a controller for switching between pages
     val navController = rememberNavController()
 
+    //Create the services for running a solo or co-op game
+    val soloService = remember { SoloGameService()}
+    val coopService = remember {CoopGameService()}
+
+
     //start on the login page
     NavHost(
         navController = navController,
@@ -110,8 +115,7 @@ fun CoopApp() {
                     },
                     onNavigateToGame = {
                         navController.navigate("coopQuiz")
-                    },
-                    gameService = coopService // inject same instance
+                    }
                 )
             }
         }

@@ -5,75 +5,86 @@ import com.example.co_opapp.data_model.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
-import java.net.Inet4Address
-import java.net.NetworkInterface
 
-// --- Retrofit API for backend question/answer checking ---
-interface GameApiService {
-    @GET("api/game/questions/random")
-    suspend fun getRandomQuestion(
-        @Query("difficulty") difficulty: String? = null,
-        @Query("category") category: String? = null
-    ): Response<TriviaQuestion>
+class CoopGameService : QuizService {
 
-    @POST("api/game/questions/check-answer")
-    suspend fun checkAnswer(@Body answerRequest: AnswerRequest): Response<AnswerResponse>
-}
+    // --- Backend API ---
+    private val retrofit = Retrofit.Builder()
+        .baseUrl("http://192.168.4.21:8080/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+    private val gameApi = retrofit.create(GameApiService::class.java)
 
-// --- LAN + Game State Service ---
-class CoopGameService {
+    // --- QuizService state flows ---
+    private val _currentQuestion = MutableStateFlow<TriviaQuestion?>(null)
+    override val currentQuestion: StateFlow<TriviaQuestion?> = _currentQuestion.asStateFlow()
 
-    private var gameApi: GameApiService
+    private val _score = MutableStateFlow(0)
+    override val score: StateFlow<Int> = _score.asStateFlow()
 
-    // --- Game state flows ---
+    private val _questionIndex = MutableStateFlow(0)
+    override val questionIndex: StateFlow<Int> = _questionIndex.asStateFlow()
+
+    private val _totalQuestions = MutableStateFlow(0)
+    override val totalQuestions: StateFlow<Int> = _totalQuestions.asStateFlow()
+
+    private val _error = MutableStateFlow<String?>(null)
+    override val error: StateFlow<String?> = _error.asStateFlow()
+
+    // --- Multiplayer state ---
     private val _currentRoom = MutableStateFlow<GameRoom?>(null)
     val currentRoomFlow: StateFlow<GameRoom?> = _currentRoom.asStateFlow()
 
     private val _currentPlayer = MutableStateFlow<Player?>(null)
     val currentPlayerFlow: StateFlow<Player?> = _currentPlayer.asStateFlow()
 
-    private val _connectionStatus = MutableStateFlow(false)
-    val connectionStatus: StateFlow<Boolean> = _connectionStatus.asStateFlow()
-
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
-
     var isHost = false
         private set
 
-    init {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.4.21:8080/") // LAN server IP
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        gameApi = retrofit.create(GameApiService::class.java)
-    }
-
-    // --- LAN Helpers ---
-    fun getLocalIpAddress(): String? {
-        return try {
-            NetworkInterface.getNetworkInterfaces().toList()
-                .flatMap { it.inetAddresses.toList() }
-                .firstOrNull { !it.isLoopbackAddress && it is Inet4Address }
-                ?.hostAddress
+    // --- QuizService implementations ---
+    override suspend fun fetchNextQuestion() {
+        try {
+            val question = getRandomQuestion() // call your existing backend fetch
+            if (question != null) {
+                _currentQuestion.value = question
+                _questionIndex.value += 1
+                _totalQuestions.value += 1
+            } else {
+                _error.value = "Failed to fetch question"
+            }
         } catch (e: Exception) {
-            Log.e("CoOpGameService", "Error getting IP address", e)
-            null
+            _error.value = e.message ?: "Unknown error"
         }
     }
 
+    override suspend fun submitAnswer(answer: String): Boolean {
+        val question = _currentQuestion.value ?: return false
+        return try {
+            val correct = submitAnswerToBackend(question.id, answer)
+            if (correct) _score.value += 1
+            _currentQuestion.value = null
+            correct
+        } catch (e: Exception) {
+            _error.value = e.message
+            false
+        }
+    }
+
+    override fun resetGame() {
+        _currentQuestion.value = null
+        _score.value = 0
+        _questionIndex.value = 0
+        _totalQuestions.value = 0
+        _error.value = null
+    }
+
+    // --- Multiplayer functions ---
     fun hostGame(player: Player, onSuccess: () -> Unit, onError: (String) -> Unit) {
         try {
             isHost = true
             _currentPlayer.value = player.copy(isHost = true)
-            val localIp = getLocalIpAddress() ?: run {
-                onError("Unable to determine local IP")
-                return
-            }
             _currentRoom.value = GameRoom(
                 hostId = player.id,
                 players = listOf(_currentPlayer.value!!),
@@ -81,11 +92,9 @@ class CoopGameService {
                 isGameStarted = false,
                 gameState = GameState.WAITING
             )
-            _connectionStatus.value = true
-            Log.d("CoOpGameService", "Hosting game at $localIp")
             onSuccess()
         } catch (e: Exception) {
-            Log.e("CoOpGameService", "Error hosting game", e)
+            Log.e("CoopGameService", "Error hosting game", e)
             onError(e.message ?: "Unknown error")
         }
     }
@@ -94,7 +103,6 @@ class CoopGameService {
         try {
             isHost = false
             _currentPlayer.value = player
-            // Simulate host + self
             _currentRoom.value = GameRoom(
                 hostId = "host_id",
                 players = listOf(Player("host_id", "Host", isHost = true), player),
@@ -102,18 +110,16 @@ class CoopGameService {
                 isGameStarted = false,
                 gameState = GameState.WAITING
             )
-            _connectionStatus.value = true
             onSuccess()
         } catch (e: Exception) {
-            Log.e("CoOpGameService", "Error joining game", e)
+            Log.e("CoopGameService", "Error joining game", e)
             onError(e.message ?: "Unknown error")
         }
     }
 
-    // --- Player utilities ---
     fun setPlayerReady(isReady: Boolean) {
-        _currentPlayer.value?.let { player ->
-            val updated = player.copy(isReady = isReady)
+        _currentPlayer.value?.let {
+            val updated = it.copy(isReady = isReady)
             _currentPlayer.value = updated
             updateRoomPlayer(updated)
         }
@@ -126,27 +132,6 @@ class CoopGameService {
         }
     }
 
-    fun isCurrentPlayerTurn(): Boolean {
-        val room = _currentRoom.value ?: return false
-        val player = _currentPlayer.value ?: return false
-        return room.currentPlayerIndex < room.players.size &&
-                room.players[room.currentPlayerIndex].id == player.id
-    }
-
-    fun getCurrentPlayer(): Player? = _currentRoom.value?.players?.getOrNull(_currentRoom.value!!.currentPlayerIndex)
-
-    fun completeTurn() {
-        _currentRoom.value?.let { room ->
-            if (room.gameState == GameState.IN_PROGRESS) {
-                val nextIndex = (room.currentPlayerIndex + 1) % room.players.size
-                _currentRoom.value = room.copy(currentPlayerIndex = nextIndex)
-            }
-        }
-    }
-
-    fun getMyPlayer(): Player? = _currentPlayer.value
-
-    // --- Game flow ---
     fun startTriviaGame() {
         _currentRoom.value?.let { room ->
             if (room.players.size >= 2) {
@@ -159,29 +144,23 @@ class CoopGameService {
         }
     }
 
-    // --- Backend integration ---
-    suspend fun getRandomQuestion(difficulty: String? = "easy", category: String? = null): TriviaQuestion? {
-        return try { gameApi.getRandomQuestion(difficulty, category).body() }
-        catch (e: Exception) { Log.e("CoOpGameService", "Failed to get question", e); null }
-    }
-
-    suspend fun submitAnswer(questionId: Long, answer: String): Boolean {
+    // --- Backend helpers ---
+    private suspend fun getRandomQuestion(difficulty: String? = "easy", category: String? = null): TriviaQuestion? {
         return try {
-            val response = gameApi.checkAnswer(AnswerRequest(questionId, answer))
-            val correct = response.body()?.correct ?: false
-            if (correct) incrementScore()
-            correct
+            gameApi.getRandomQuestion(difficulty, category).body()
         } catch (e: Exception) {
-            Log.e("CoOpGameService", "Failed to submit answer", e)
-            false
+            Log.e("CoopGameService", "Failed to fetch question", e)
+            null
         }
     }
 
-    private fun incrementScore() {
-        _currentPlayer.value?.let {
-            val updated = it.copy(score = it.score + 1)
-            _currentPlayer.value = updated
-            updateRoomPlayer(updated)
+    private suspend fun submitAnswerToBackend(questionId: Long, answer: String): Boolean {
+        return try {
+            val response = gameApi.checkAnswer(AnswerRequest(questionId, answer))
+            response.body()?.correct ?: false
+        } catch (e: Exception) {
+            Log.e("CoopGameService", "Failed to submit answer", e)
+            false
         }
     }
 }
