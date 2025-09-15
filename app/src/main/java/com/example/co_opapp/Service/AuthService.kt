@@ -57,12 +57,21 @@ class AuthService {
     suspend fun login(username: String, password: String): Boolean {
         return try {
             val response = authApi?.login(UserCredentials(username, password))
+
             if (response?.isSuccessful == true) {
                 val loginResponse = response.body()
-                _currentPlayer.value = Player(username = username, id = loginResponse.id)
-                authToken = loginResponse?.token  // Store auth token
-                true
-            } else false
+                if (loginResponse != null){
+                    _currentPlayer.value = Player(username = username, id = loginResponse.id)
+                    authToken = loginResponse?.token  // Store auth token
+                    true
+                }else{
+                    Log.e("AuthService", "Login response is null")
+                    false
+                }
+            } else {
+                Log.e("AuthService", "Login failed: ${response?.message()}")
+                false
+            }
         } catch (e: Exception) {
             Log.e("AuthService", "Login failed", e)
             false
