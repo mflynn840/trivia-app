@@ -26,7 +26,7 @@ fun AnswerButton(
     onClick: () -> Unit,
     backgroundColor: Color
 ) {
-    val backgroundColor = if (isSelected) Color(0xFF4CAF50) else Color(0xFFF3E5F5)
+    val backgroundColor = if (isSelected) Color(0xFF4CAF50) else Color(0xCCB39DDB)
     val textColor = if (isSelected) Color.White else Color.Black
 
     Surface(
