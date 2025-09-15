@@ -11,7 +11,9 @@ import androidx.compose.ui.unit.dp
 import com.example.co_opapp.ui.components.AnswerButton
 import com.example.co_opapp.ui.components.QuestionCard
 import com.example.co_opapp.data_model.TriviaQuestion
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun QuizScreen(
@@ -29,7 +31,23 @@ fun QuizScreen(
     val questionIndex by quizService.questionIndex.collectAsState(initial = 0)
     val totalQuestions by quizService.totalQuestions.collectAsState(initial = 0)
     val error by quizService.error.collectAsState(initial = null as String?)
-    val currentQuestion by quizService.currentQuestion.collectAsState<TriviaQuestion?>(initial = null)
+
+
+    //get the current question
+    val currentQuestion by produceState<TriviaQuestion?>(initialValue = null, quizService) {
+        // Whenever the service updates, fetch the next question if needed
+        quizService.currentQuestion.collect { question ->
+            if (question == null) {
+                // Fetch next question from backend
+                try {
+                    quizService.fetchNextQuestion()
+                } catch (e: Exception) {
+                    // Optionally handle error
+                }
+            }
+            value = question
+        }
+    }
 
 
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
@@ -58,6 +76,13 @@ fun QuizScreen(
 
             currentQuestion != null -> {
                 val question = currentQuestion!!
+                val options = listOf(
+                    question.option1,
+                    question.option2,
+                    question.option3,
+                    question.option4
+                )
+
                 Column(
                     modifier = Modifier.fillMaxSize().padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,13 +90,14 @@ fun QuizScreen(
                 ) {
                     Text("Question ${questionIndex} of $totalQuestions", color = Color.White)
 
-                    QuestionCard(question.text)
+                    QuestionCard(question.questionText)
 
-                    question.options.forEach { answer ->
+                    options.forEach { answer ->
                         AnswerButton(
                             text = answer,
                             isSelected = (answer == selectedAnswer),
-                            onClick = { selectedAnswer = answer }
+                            onClick = { selectedAnswer = answer },
+                            backgroundColor = Color(0xCCB39DDB)
                         )
                     }
 
