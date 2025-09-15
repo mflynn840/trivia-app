@@ -9,13 +9,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.example.co_opapp.R
 
-/**
- * A Box that draws a full-screen background image and overlays content on top.
- * Usage:
- * BackgroundBox {
- *     // Your content here
- * }
- */
 @Composable
 fun BackgroundBox(
     modifier: Modifier = Modifier,

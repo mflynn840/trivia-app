@@ -23,8 +23,7 @@ fun QuizScreen(
     // Callback for "Back" navigation
     onNavigateBack: () -> Unit = {},
     // Callback when game ends
-    onGameComplete: (score: Int, totalQuestions: Int) -> Unit = { _, _ -> }
-) {
+    onGameComplete: (score: Int, totalQuestions: Int) -> Unit = { _, _ -> }){
 
     // Observe state flows from the QuizService
     val score by quizService.score.collectAsState(initial = 0)
@@ -32,18 +31,19 @@ fun QuizScreen(
     val totalQuestions by quizService.totalQuestions.collectAsState(initial = 0)
     val error by quizService.error.collectAsState(initial = null as String?)
 
-
     // Get the current question
     val currentQuestion by produceState<TriviaQuestion?>(initialValue = null, quizService) {
+
         // Whenever the service updates, fetch the next question if needed
         quizService.currentQuestion.collect { question ->
             if (question == null) {
+
                 // Fetch next question from backend
                 try {
                     quizService.fetchNextQuestion()
-                } catch (e: Exception) {
-                    // Optionally handle error
-                }
+
+                // Optionally handle error
+                } catch (e: Exception) {}
             }
             value = question
         }
