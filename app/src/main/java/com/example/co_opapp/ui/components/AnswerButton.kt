@@ -21,14 +21,21 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun AnswerButton(
+    // The text to display on the button (answer option)
     text: String,
+    // True if this answer is currently selected by the user
     isSelected: Boolean,
+    // Callback invoked when the button is clicked
     onClick: () -> Unit,
     backgroundColor: Color
 ) {
-    val backgroundColor = if (isSelected) Color(0xFF4CAF50) else Color(0xCCB39DDB)
+    // Determine the button's background based on selection state
+    val backgroundColor = if (isSelected) Color(0xFF4CAF50) // Green when selected
+    else Color(0xCCB39DDB)  // Translucent purple when not selected
+    // Determine text color based on selection
     val textColor = if (isSelected) Color.White else Color.Black
 
+    // Surface provides a container with background color, shape, and click handling
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,16 +46,20 @@ fun AnswerButton(
         color = backgroundColor,
         shape = RoundedCornerShape(12.dp)
     ) {
+
+        // Box used to center the text inside the button
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
+
+            // Display the answer text
             Text(
                 text = text,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 fontFamily = FontFamily.SansSerif,
-                color = textColor
+                color = textColor // Text color changes if selected
             )
         }
     }
