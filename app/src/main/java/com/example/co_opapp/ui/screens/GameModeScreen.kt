@@ -140,10 +140,12 @@ fun GameModeScreen(
                 onClick = onNavigateBack,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    containerColor = Color(0xFF2196F3)
                 )
             ) {
+
                 Text("Back to Login")
+
             }
         }
     }
