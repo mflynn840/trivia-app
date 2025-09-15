@@ -82,10 +82,9 @@ fun CoopApp() {
             }
         }
 
-/**
+
         //Single player quiz game is a game skeleton supplied with the soloGameService
         composable("singlePlayerQuiz") {
-            val soloService = remember { SoloGameService() } // your implementation
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 QuizScreen(
                     modifier = Modifier.padding(innerPadding),
@@ -101,7 +100,6 @@ fun CoopApp() {
                 )
             }
         }
- */
 
         composable("lobby") {
             // Keep the CoOpGameService across navigation
@@ -122,9 +120,7 @@ fun CoopApp() {
             }
         }
 
-        /**
         composable("coopQuiz") {
-            val coopService = remember { CoopGameService() } // <-- must reuse same instance!
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 QuizScreen(
                     modifier = Modifier.padding(innerPadding),
@@ -140,7 +136,7 @@ fun CoopApp() {
                 )
             }
         }
-        */
+
     }
 }
 
