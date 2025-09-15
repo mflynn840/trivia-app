@@ -1,15 +1,15 @@
-package com.example.co_opapp
+package com.example.co_opapp.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.co_opapp.Service.AuthService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.google.gson.Gson
 
 // Data class to parse backend error responses
 data class ApiError(

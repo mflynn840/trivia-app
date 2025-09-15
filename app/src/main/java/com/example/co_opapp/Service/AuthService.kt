@@ -1,22 +1,26 @@
-package com.example.co_opapp
+package com.example.co_opapp.Service
 
 import android.util.Log
+import com.example.co_opapp.data_model.LoginResponse
+import com.example.co_opapp.data_model.Player
+import com.example.co_opapp.data_model.UserCredentials
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface AuthApiService {
     @POST("api/auth/register")
-    suspend fun register(@Body credentials: UserCredentials): retrofit2.Response<Map<String, String>>
+    suspend fun register(@Body credentials: UserCredentials): Response<Map<String, String>>
 
     @POST("api/auth/login")
-    suspend fun login(@Body credentials: UserCredentials): retrofit2.Response<LoginResponse>
+    suspend fun login(@Body credentials: UserCredentials): Response<LoginResponse>
 
     @POST("api/auth/validate")
-    suspend fun validateToken(@Header("Authorization") token: String): retrofit2.Response<Map<String, Any>>
+    suspend fun validateToken(@Header("Authorization") token: String): Response<Map<String, Any>>
 }
 
 class AuthService {
