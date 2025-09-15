@@ -1,81 +1,37 @@
 package com.example.co_opapp
 
-import java.util.UUID
+// --- User/Auth ---
+data class UserCredentials(val username: String, val password: String)
+data class LoginResponse(val token: String, val username: String, val role: String)
 
-// Game state models
+// --- Player / Game ---
 data class Player(
-    val id: String = UUID.randomUUID().toString(),
+    val id: String = "",
     val username: String,
+    val score: Int = 0,
     val isHost: Boolean = false,
-    val isReady: Boolean = false,
-    val score: Int = 0
+    val isReady: Boolean = false
 )
+
+enum class GameState { WAITING, IN_PROGRESS, FINISHED }
 
 data class GameRoom(
-    val id: String = UUID.randomUUID().toString(),
     val hostId: String,
-    val players: List<Player> = emptyList(),
-    val maxPlayers: Int = 4,
+    val players: List<Player>,
     val isGameStarted: Boolean = false,
+    val gameState: GameState = GameState.WAITING,
     val currentPlayerIndex: Int = 0,
-    val gameState: GameState = GameState.WAITING_FOR_PLAYERS,
-    val currentQuestion: TriviaQuestion? = null,
-    val currentRound: Int = 1,
-    val maxRounds: Int = 10
+    val currentRound: Int = 0,
+    val currentQuestion: TriviaQuestion? = null
 )
 
-enum class GameState {
-    WAITING_FOR_PLAYERS,
-    READY_TO_START,
-    IN_PROGRESS,
-    FINISHED
-}
-
+// --- Trivia ---
 data class TriviaQuestion(
     val id: Long,
     val question: String,
-    val correctAnswer: String,
-    val incorrectAnswers: List<String>,
-    val category: String,
-    val difficulty: String,
-    val type: String
-) {
-    fun getAllAnswers(): List<String> {
-        val allAnswers = mutableListOf<String>()
-        allAnswers.addAll(incorrectAnswers)
-        allAnswers.add(correctAnswer)
-        return allAnswers.shuffled()
-    }
-}
-
-data class GameAction(
-    val playerId: String,
-    val actionType: ActionType,
-    val timestamp: Long = System.currentTimeMillis()
+    val options: List<String>,
+    val difficulty: String
 )
 
-enum class ActionType {
-    PLAYER_JOINED,
-    PLAYER_LEFT,
-    PLAYER_READY,
-    GAME_STARTED,
-    QUESTION_ASKED,
-    ANSWER_SUBMITTED,
-    ROUND_COMPLETED,
-    GAME_ENDED
-}
-
-// Socket events
-object SocketEvents {
-    const val CONNECT = "connect"
-    const val DISCONNECT = "disconnect"
-    const val JOIN_ROOM = "join_room"
-    const val LEAVE_ROOM = "leave_room"
-    const val PLAYER_JOINED = "player_joined"
-    const val PLAYER_LEFT = "player_left"
-    const val PLAYER_READY = "player_ready"
-    const val START_GAME = "start_game"
-    const val TURN_COMPLETED = "turn_completed"
-    const val GAME_UPDATE = "game_update"
-    const val ERROR = "error"
-}
+data class AnswerRequest(val questionId: Long, val answer: String)
+data class AnswerResponse(val correct: Boolean, val correctAnswer: String)
