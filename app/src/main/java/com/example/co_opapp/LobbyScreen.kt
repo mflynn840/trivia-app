@@ -18,7 +18,16 @@ fun LobbyScreen(
     onNavigateBack: () -> Unit
 ) {
     val gameNetworkService = remember { GameNetworkService() }
-    var username by remember { mutableStateOf("Player${(1..999).random()}") }
+    val currentPlayer by remember { derivedStateOf { gameNetworkService.getMyPlayer() } }
+    var username by remember { mutableStateOf(currentPlayer?.username ?: "") }
+
+    //update user name if it changes
+    LaunchedEffect(currentPlayer) {
+        currentPlayer?.username?.let {
+            username = it
+        }
+    }
+
     var hostIp by remember { mutableStateOf("") }
     var isHosting by remember { mutableStateOf(false) }
     var isJoining by remember { mutableStateOf(false) }
