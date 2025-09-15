@@ -42,11 +42,9 @@ public class QuestionController {
     }
 
     @GetMapping("/random")
-    public ResponseEntity<?> getRandomQuestion(
-            @RequestParam(required = false) String difficulty,
-            @RequestParam(required = false) String category) {
+    public ResponseEntity<?> getRandomQuestion() {
         try {
-            Question question = questionService.getRandomQuestion(difficulty, category);
+            Question question = questionService.getRandomQuestion();
             if (question != null) {
                 return ResponseEntity.ok(question);
             } else {

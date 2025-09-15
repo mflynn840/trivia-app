@@ -9,7 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface BackendQuestionApi {
-    @GET("api/game/questions/random")
+    @GET("api/questions/random")
     suspend fun getRandomQuestion(): Response<TriviaQuestion>
 
     @POST("api/game/questions/check-answer")
