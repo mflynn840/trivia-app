@@ -1,4 +1,4 @@
 @echo off
-echo Opening PostgreSQL CLI...
-psql -h localhost -U postgres -d punchlite
+echo Opening SQLite CLI with trivia.db...
+sqlite3 trivia.db
 pause

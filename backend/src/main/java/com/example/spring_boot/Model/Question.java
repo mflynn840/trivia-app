@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.util.List;
 
 @Entity
 public class Question {
@@ -14,7 +13,12 @@ public class Question {
     private Long id;
     private String question;
     private String correctAnswer;
-    private List<String> incorrectAnswers;
+    
+    private String optionA;
+    private String optionB;
+    private String optionC;
+    private String optionD;
+    
     private String category;
     private String difficulty;
     private String type;
@@ -23,11 +27,14 @@ public class Question {
     public Question() {}
 
     // Constructor with parameters
-    public Question(String question, String correctAnswer, List<String> incorrectAnswers, 
-                   String category, String difficulty, String type) {
+    public Question(String question, String correctAnswer, String optionA, String optionB, 
+                   String optionC, String optionD, String category, String difficulty, String type) {
         this.question = question;
         this.correctAnswer = correctAnswer;
-        this.incorrectAnswers = incorrectAnswers;
+        this.optionA = optionA;
+        this.optionB = optionB;
+        this.optionC = optionC;
+        this.optionD = optionD;
         this.category = category;
         this.difficulty = difficulty;
         this.type = type;
@@ -58,12 +65,36 @@ public class Question {
         this.correctAnswer = correctAnswer;
     }
 
-    public List<String> getIncorrectAnswers() {
-        return this.incorrectAnswers;
+    public String getOptionA() {
+        return this.optionA;
     }
 
-    public void setIncorrectAnswers(List<String> incorrectAnswers) {
-        this.incorrectAnswers = incorrectAnswers;
+    public void setOptionA(String optionA) {
+        this.optionA = optionA;
+    }
+
+    public String getOptionB() {
+        return this.optionB;
+    }
+
+    public void setOptionB(String optionB) {
+        this.optionB = optionB;
+    }
+
+    public String getOptionC() {
+        return this.optionC;
+    }
+
+    public void setOptionC(String optionC) {
+        this.optionC = optionC;
+    }
+
+    public String getOptionD() {
+        return this.optionD;
+    }
+
+    public void setOptionD(String optionD) {
+        this.optionD = optionD;
     }
 
     public String getCategory() {
@@ -97,7 +128,10 @@ public class Question {
                 "id=" + id +
                 ", question='" + question + '\'' +
                 ", correctAnswer='" + correctAnswer + '\'' +
-                ", incorrectAnswers=" + incorrectAnswers +
+                ", optionA='" + optionA + '\'' +
+                ", optionB='" + optionB + '\'' +
+                ", optionC='" + optionC + '\'' +
+                ", optionD='" + optionD + '\'' +
                 ", category='" + category + '\'' +
                 ", difficulty='" + difficulty + '\'' +
                 ", type='" + type + '\'' +

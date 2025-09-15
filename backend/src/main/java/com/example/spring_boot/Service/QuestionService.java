@@ -64,11 +64,13 @@ public class QuestionService {
         return questions;
     }
 
-    public Question getRandomQuestion(String category, String difficulty) {
+    public Question getRandomQuestion() {
         // TODO: implement properly with repository queries
         // For now just return any random question
         long count = questionRepository.count();
-        if (count == 0) return null;
+        if (count == 0){
+            throw new IllegalStateException("No questions in the database");
+        };
 
         int idx = ThreadLocalRandom.current().nextInt((int) count);
         return questionRepository.findAll(PageRequest.of(idx, 1))
