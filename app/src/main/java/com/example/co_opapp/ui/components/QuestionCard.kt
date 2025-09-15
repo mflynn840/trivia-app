@@ -1,4 +1,4 @@
-package com.example.trivia_game
+package com.example.co_opapp.ui.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box

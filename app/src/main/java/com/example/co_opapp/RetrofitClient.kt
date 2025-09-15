@@ -6,11 +6,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
     private const val BASE_URL = "http://172.24.160.1:8080"
 
-    val authApi: AuthApiService by lazy {
+    private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(AuthApiService::class.java)
+    }
+
+    val authApi: AuthApiService by lazy {
+        retrofit.create(AuthApiService::class.java)
+    }
+    
+    val questionApi: QuestionApiService by lazy {
+        retrofit.create(QuestionApiService::class.java)
     }
 }
