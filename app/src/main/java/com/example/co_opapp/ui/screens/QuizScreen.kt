@@ -11,9 +11,11 @@ import com.example.co_opapp.ui.components.AnswerButton
 import com.example.co_opapp.ui.components.QuestionCard
 import kotlinx.coroutines.launch
 
+import com.example.co_opapp.Interface.GameDriver
+
 @Composable
 fun QuizScreen(
-    quizService: GameService,
+    quizService: GameDriver,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     onGameComplete: (score: Int, totalQuestions: Int) -> Unit = { _, _ -> }

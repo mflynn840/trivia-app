@@ -7,8 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.example.co_opapp.GameDriver
-import com.example.co_opapp.Service.AnswerResponse
+import com.example.co_opapp.Interface.GameDriver
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
