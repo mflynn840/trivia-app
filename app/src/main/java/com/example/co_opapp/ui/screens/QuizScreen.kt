@@ -43,7 +43,7 @@ fun QuizScreen(
     var score by remember { mutableStateOf(0) }  // Player's score
 
     var retryKey by remember { mutableStateOf(0) } // Key to trigger retry
-    
+
     // Sample questions for fallback (or initial demo)
     fun getSampleQuestions(): List<Question> {
         return listOf(
