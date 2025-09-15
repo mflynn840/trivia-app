@@ -1,6 +1,5 @@
 package com.example.co_opapp.ui.screens
 
-import QuizService
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,7 +13,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun QuizScreen(
-    quizService: QuizService,
+    quizService: GameService,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {},
     onGameComplete: (score: Int, totalQuestions: Int) -> Unit = { _, _ -> }
