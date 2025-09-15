@@ -17,7 +17,6 @@ import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.LobbyScreen
 import com.example.co_opapp.ui.screens.LoginScreen
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,40 +91,6 @@ fun CoopApp() {
                 )
             }
         }
-
-        //Join a coop game (lobby screen
-        composable("lobby") {
-            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                LobbyScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    onNavigateToGame = {
-                        navController.navigate("coOpQuiz")
-                    },
-                    onNavigateBack = {
-                        navController.navigate("gameMode") {
-                            popUpTo("gameMode") { inclusive = true }
-                        }
-                    }
-                )
-            }
-        }
-
-        //Play a coop quiz game
-        composable("coOpQuiz") {
-            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                CoopGameScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    isSinglePlayer = false,
-                    onNavigateBack = {
-                        navController.navigate("lobby") {
-                            popUpTo("lobby") { inclusive = true }
-                        }
-                    },
-                    onGameComplete = { score, total ->
-                        // Handle game completion for co-op
-                    }
-                )
-            }
-        }
     }
 }
+
