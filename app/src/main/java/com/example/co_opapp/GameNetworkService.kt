@@ -84,7 +84,7 @@ class GameNetworkService {
     
     private fun initializeApiServices() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/") // Backend URL
+            .baseUrl("http://172.24.160.1:8080/") // Backend URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         
