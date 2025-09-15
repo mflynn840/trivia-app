@@ -30,9 +30,14 @@ public class JwtUtil {
     }
 
     /** extract username by decrypting and parsing the token*/
-    String getUsername(String token){
+    public String extractUsername(String token){
         return Jwts.parserBuilder().setSigningKey(this.key).build()
                     .parseClaimsJws(token).getBody().getSubject();
+    }
+    
+    /** extract username by decrypting and parsing the token*/
+    String getUsername(String token){
+        return extractUsername(token);
     }
 
     /** Tokens are valid when they were generated from
@@ -40,6 +45,11 @@ public class JwtUtil {
      */
     public boolean isTokenValid(String token, UserDetails userDetails){
         return getUsername(token).equals(userDetails.getUsername()) && !isExpired(token);
+    }
+    
+    /** Validate token with username */
+    public boolean validateToken(String token, String username){
+        return extractUsername(token).equals(username) && !isExpired(token);
     }
 
     /** extract expiration time (millis since epoch) by decrypting token */

@@ -1,11 +1,10 @@
 package com.example.spring_boot.Model;
 
-
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.util.List;
 
 @Entity
 public class Question {
@@ -14,24 +13,24 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String question;
-    private String optionA;
-    private String optionB;
-    private String optionC;
-    private String optionD;
-
     private String correctAnswer;
+    private List<String> incorrectAnswers;
+    private String category;
+    private String difficulty;
+    private String type;
 
     // Default constructor
     public Question() {}
 
     // Constructor with parameters
-    public Question(String question, String optionA, String optionB, String optionC, String optionD, String correctAnswer) {
+    public Question(String question, String correctAnswer, List<String> incorrectAnswers, 
+                   String category, String difficulty, String type) {
         this.question = question;
-        this.optionA = optionA;
-        this.optionB = optionB;
-        this.optionC = optionC;
-        this.optionD = optionD;
         this.correctAnswer = correctAnswer;
+        this.incorrectAnswers = incorrectAnswers;
+        this.category = category;
+        this.difficulty = difficulty;
+        this.type = type;
     }
 
     // Getters and Setters
@@ -51,38 +50,6 @@ public class Question {
         this.question = question;
     }
 
-    public String getOptionA() {
-        return this.optionA;
-    }
-
-    public void setOptionA(String optionA) {
-        this.optionA = optionA;
-    }
-
-    public String getOptionB() {
-        return this.optionB;
-    }
-
-    public void setOptionB(String optionB) {
-        this.optionB = optionB;
-    }
-
-    public String getOptionC() {
-        return this.optionC;
-    }
-
-    public void setOptionC(String optionC) {
-        this.optionC = optionC;
-    }
-
-    public String getOptionD() {
-        return this.optionD;
-    }
-
-    public void setOptionD(String optionD) {
-        this.optionD = optionD;
-    }
-
     public String getCorrectAnswer() {
         return this.correctAnswer;
     }
@@ -91,17 +58,49 @@ public class Question {
         this.correctAnswer = correctAnswer;
     }
 
+    public List<String> getIncorrectAnswers() {
+        return this.incorrectAnswers;
+    }
+
+    public void setIncorrectAnswers(List<String> incorrectAnswers) {
+        this.incorrectAnswers = incorrectAnswers;
+    }
+
+    public String getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getDifficulty() {
+        return this.difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     // Override toString() for better debugging
     @Override
     public String toString() {
         return "Question{" +
                 "id=" + id +
                 ", question='" + question + '\'' +
-                ", optionA='" + optionA + '\'' +
-                ", optionB='" + optionB + '\'' +
-                ", optionC='" + optionC + '\'' +
-                ", optionD='" + optionD + '\'' +
                 ", correctAnswer='" + correctAnswer + '\'' +
+                ", incorrectAnswers=" + incorrectAnswers +
+                ", category='" + category + '\'' +
+                ", difficulty='" + difficulty + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }

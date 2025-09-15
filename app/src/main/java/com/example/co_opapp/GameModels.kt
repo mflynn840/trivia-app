@@ -7,7 +7,8 @@ data class Player(
     val id: String = UUID.randomUUID().toString(),
     val username: String,
     val isHost: Boolean = false,
-    val isReady: Boolean = false
+    val isReady: Boolean = false,
+    val score: Int = 0
 )
 
 data class GameRoom(
@@ -17,7 +18,10 @@ data class GameRoom(
     val maxPlayers: Int = 4,
     val isGameStarted: Boolean = false,
     val currentPlayerIndex: Int = 0,
-    val gameState: GameState = GameState.WAITING_FOR_PLAYERS
+    val gameState: GameState = GameState.WAITING_FOR_PLAYERS,
+    val currentQuestion: TriviaQuestion? = null,
+    val currentRound: Int = 1,
+    val maxRounds: Int = 10
 )
 
 enum class GameState {
@@ -25,6 +29,23 @@ enum class GameState {
     READY_TO_START,
     IN_PROGRESS,
     FINISHED
+}
+
+data class TriviaQuestion(
+    val id: Long,
+    val question: String,
+    val correctAnswer: String,
+    val incorrectAnswers: List<String>,
+    val category: String,
+    val difficulty: String,
+    val type: String
+) {
+    fun getAllAnswers(): List<String> {
+        val allAnswers = mutableListOf<String>()
+        allAnswers.addAll(incorrectAnswers)
+        allAnswers.add(correctAnswer)
+        return allAnswers.shuffled()
+    }
 }
 
 data class GameAction(
@@ -38,7 +59,9 @@ enum class ActionType {
     PLAYER_LEFT,
     PLAYER_READY,
     GAME_STARTED,
-    TURN_COMPLETED,
+    QUESTION_ASKED,
+    ANSWER_SUBMITTED,
+    ROUND_COMPLETED,
     GAME_ENDED
 }
 

@@ -9,6 +9,7 @@ import java.util.Set;
  * 
  */
 public enum Role {
+    USER(Set.of(Permission.READ_SELF)),
     EMPLOYEE(Set.of(Permission.READ_SELF)),
     ADMIN(Set.of(
         Permission.READ_SELF,

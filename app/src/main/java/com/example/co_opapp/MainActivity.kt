@@ -65,7 +65,7 @@ fun CoopApp() {
         
         composable("game") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                GameScreen(
+                TriviaGameScreen(
                     modifier = Modifier.padding(innerPadding),
                     onNavigateBack = {
                         navController.navigate("lobby") {

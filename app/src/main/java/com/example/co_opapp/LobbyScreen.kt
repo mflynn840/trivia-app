@@ -244,11 +244,11 @@ fun LobbyScreen(
                     if (allPlayersReady && gameNetworkService.isHost) {
                         Button(
                             onClick = {
-                                gameNetworkService.startGame()
+                                gameNetworkService.startTriviaGame()
                             },
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("Start Game")
+                            Text("Start Trivia Game")
                         }
                     }
                 }
