@@ -67,7 +67,7 @@ fun GameModeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Back Button
+            // Navigation back button
             Button(
                 onClick = onNavigateBack,
                 modifier = Modifier.fillMaxWidth(),
