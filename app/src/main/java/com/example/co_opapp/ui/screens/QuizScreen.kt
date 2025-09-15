@@ -26,15 +26,25 @@ fun QuizScreen(
     onNavigateBack: () -> Unit = {},
     onGameComplete: (score: Int, totalQuestions: Int) -> Unit = { _, _ -> }
 ) {
-    var questions by remember { mutableStateOf<List<Question>>(emptyList()) }
-    var currentIndex by remember { mutableStateOf(0) }
-    var selectedAnswer by remember { mutableStateOf<String?>(null) }
-    var submittedAnswers by remember { mutableStateOf(mutableListOf<String>()) }
-    var isLoading by remember { mutableStateOf(true) }
-    var error by remember { mutableStateOf<String?>(null) }
-    var score by remember { mutableStateOf(0) }
-    var retryKey by remember { mutableStateOf(0) }
 
+// Holds current quiz questions
+    var questions by remember { mutableStateOf<List<Question>>(emptyList()) }
+// Current question index
+    var currentIndex by remember { mutableStateOf(0) }
+
+    var selectedAnswer by remember { mutableStateOf<String?>(null) } // Currently selected answer
+
+    var submittedAnswers by remember { mutableStateOf(mutableListOf<String>()) } // All submitted answers
+
+    var isLoading by remember { mutableStateOf(true) } // Loading state
+
+    var error by remember { mutableStateOf<String?>(null) } // Error state
+
+    var score by remember { mutableStateOf(0) }  // Player's score
+
+    var retryKey by remember { mutableStateOf(0) } // Key to trigger retry
+    
+    // Sample questions for fallback (or initial demo)
     fun getSampleQuestions(): List<Question> {
         return listOf(
             Question("What is 2 + 2?", listOf("2", "3", "4", "5"), "4"),
