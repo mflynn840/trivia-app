@@ -18,7 +18,7 @@ enum class GameState {
 }
 
 data class GameRoom(
-    val hostId: String,
+    val hostId: Long,
     val players: List<Player>,
     val isGameStarted: Boolean = false,
     val gameState: GameState = GameState.WAITING,

@@ -105,13 +105,15 @@ class CoopGameService : GameDriver {
         }
     }
 
+
+    //TODO: THIS DOES NOT WORK CORRECTLY
     fun joinGame(player: Player, hostIp: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         try {
             isHost = false
             _currentPlayer.value = player
             _currentRoom.value = GameRoom(
-                hostId = "host_id",
-                players = listOf(Player("host_id", "Host", isHost = true), player),
+                hostId = -1,
+                players = listOf(Player(-1, "Host", isHost = true), player),
                 currentPlayerIndex = 0,
                 isGameStarted = false,
                 gameState = GameState.WAITING
