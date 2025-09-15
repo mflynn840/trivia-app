@@ -24,38 +24,43 @@ interface AuthApiService {
     @POST("api/auth/validate")
     suspend fun validateToken(@Header("Authorization") token: String): Response<Map<String, Any>>
 }
-
+// Service class that wraps AuthApiService for easier use in app
 class AuthService {
-    var authApi: AuthApiService? = null
-    private var authToken: String? = null
+    var authApi: AuthApiService? = null // Retrofit API instance
+    private var authToken: String? = null // Stores current auth token
 
+    // StateFlow to track the currently logged-in player
     private val _currentPlayer = MutableStateFlow<Player?>(null)
     val currentPlayerFlow: StateFlow<Player?> = _currentPlayer.asStateFlow()
 
+    // Initialize the API on service creation
     init { initializeApi() }
 
     private fun initializeApi() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.4.21:8080/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("http://192.168.4.21:8080/") // Base URL of the backend
+            .addConverterFactory(GsonConverterFactory.create()) // JSON converter
             .build()
         authApi = retrofit.create(AuthApiService::class.java)
     }
 
+    // Returns the current Player object
     fun getMyPlayer(): Player? = _currentPlayer.value
 
+    // Register a new user with username/password
     suspend fun register(username: String, password: String): Boolean {
         return try { authApi?.register(UserCredentials(username, password))?.isSuccessful == true }
         catch (e: Exception) { Log.e("AuthService", "Registration failed", e); false }
     }
 
+    // Log in a user with username/password
     suspend fun login(username: String, password: String): Boolean {
         return try {
             val response = authApi?.login(UserCredentials(username, password))
             if (response?.isSuccessful == true) {
                 val loginResponse = response.body()
-                _currentPlayer.value = Player(username = username)
-                authToken = loginResponse?.token
+                //_currentPlayer.value = Player(username = username) // Update current player state
+                authToken = loginResponse?.token  // Store auth token
                 true
             } else false
         } catch (e: Exception) {
@@ -64,6 +69,7 @@ class AuthService {
         }
     }
 
+    // Validate the stored token with backend
     suspend fun validateToken(): Boolean {
         val token = authToken ?: return false
         return try {
