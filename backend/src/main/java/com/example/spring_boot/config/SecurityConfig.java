@@ -17,6 +17,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // usually disabled for APIs
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/questions/**").permitAll()  // <--- public
+                .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated()                      // <--- all else locked down
             )
             .formLogin(AbstractHttpConfigurer::disable)  // no redirect to login page
