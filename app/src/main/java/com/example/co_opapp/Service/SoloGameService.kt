@@ -5,24 +5,10 @@ import com.example.co_opapp.data_model.TriviaQuestion
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-
+import com.example.co_opapp.Interface.BackendQuestionApi
 import com.example.co_opapp.Interface.GameDriver
-
-
-// Retrofit API interface for solo game
-interface BackendApi {
-    @GET("api/game/questions/random")
-    suspend fun getRandomQuestion(): Response<TriviaQuestion>
-
-    @POST("api/game/questions/check-answer")
-    suspend fun checkAnswer(@Body answerRequest: AnswerRequest): Response<AnswerResponse>
-}
 
 // Response from backend for answer check
 data class AnswerResponse(
@@ -39,7 +25,7 @@ class SoloGameService : GameDriver {
         .build()
 
     //use retrofit to create an instance of the backend API
-    private val api = retrofit.create(BackendApi::class.java)
+    private val api = retrofit.create(BackendQuestionApi::class.java)
 
     //create variables to store a solo game state
     private val _currentQuestion = MutableStateFlow<TriviaQuestion?>(null)

@@ -10,10 +10,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.co_opapp.Service.CoOpGameService
+import com.example.co_opapp.Service.CoopGameService
 import com.example.co_opapp.data_model.GameState
 import com.example.co_opapp.data_model.Player
 
+
+
+
+/*
 @Composable
 fun LobbyScreen(
     modifier: Modifier = Modifier,
@@ -196,3 +200,4 @@ fun LobbyScreen(
         }
     }
 }
+*/
