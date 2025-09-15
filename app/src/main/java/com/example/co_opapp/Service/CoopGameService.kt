@@ -1,4 +1,4 @@
-package com.example.co_opapp.Service
+
 
 import android.util.Log
 import com.example.co_opapp.data_model.*
@@ -8,6 +8,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+
+interface coopGameApi {
+
+}
+
+
 class CoopGameService : QuizService {
 
     // --- Backend API ---
@@ -15,7 +21,7 @@ class CoopGameService : QuizService {
         .baseUrl("http://192.168.4.21:8080/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-    private val gameApi = retrofit.create(GameApiService::class.java)
+    private val gameApi: GameApiService = retrofit.create(GameApiService::class.java)
 
     // --- QuizService state flows ---
     private val _currentQuestion = MutableStateFlow<TriviaQuestion?>(null)
