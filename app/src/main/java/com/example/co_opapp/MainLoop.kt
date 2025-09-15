@@ -141,15 +141,20 @@ fun CoopApp() {
             }
         }
 
-        // ---------------- Character Customization Screen ----------------
-        composable("characterCustomization") {
+        composable(
+            "characterCustomization"
+        ) { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username") ?: "Player"
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 CharacterCustomizationScreen(
+                    username = username,
                     modifier = Modifier.padding(innerPadding),
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
         }
+
     }
-}
+    }
+
 
