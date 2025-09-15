@@ -7,28 +7,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.platform.LocalContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import com.google.gson.Gson
 
-// Data class to parse backend error responses
-data class ApiError(
-    val error: String? = null,
-    val message: String? = null
-)
+
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     onNavigateToLobby: () -> Unit = {}
 ) {
-    val context = LocalContext.current
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var message by remember { mutableStateOf("") }
+    val message = remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -57,91 +46,15 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        // LOGIN BUTTON
-        Button(onClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                val gameNetworkService = GameNetworkService()
-                try {
-                    val response = gameNetworkService.authApi?.login(
-                        UserCredentials(username, password)
-                    )
-
-                    withContext(Dispatchers.Main) {
-                        if (response == null) {
-                            message = "Error: Could not reach server"
-                        } else if (response.isSuccessful) {
-                            message = "Login successful"
-                            onNavigateToLobby()
-                        } else {
-                            val errorBody = response.errorBody()?.string()
-                            val errorMessage = try {
-                                val apiError = Gson().fromJson(errorBody, ApiError::class.java)
-                                apiError.error ?: apiError.message ?: "Unknown error"
-                            } catch (e: Exception) {
-                                errorBody ?: "Unknown error"
-                            }
-                            message = "Login failed: $errorMessage"
-                        }
-                    }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        message = "Login failed: ${e.message}"
-                    }
-                }
-            }
-        }) {
-            Text("Login")
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // REGISTER BUTTON
-        Button(onClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                val gameNetworkService = GameNetworkService()
-                try {
-                    val response = gameNetworkService.authApi?.register(
-                        UserCredentials(username, password)
-                    )
-
-                    withContext(Dispatchers.Main) {
-                        if (response == null) {
-                            message = "Error: Could not reach server"
-                        } else if (response.isSuccessful) {
-                            message = "Registration successful"
-                        } else {
-                            val errorBody = response.errorBody()?.string()
-                            val errorMessage = try {
-                                val apiError = Gson().fromJson(errorBody, ApiError::class.java)
-                                apiError.error ?: apiError.message ?: "Unknown error"
-                            } catch (e: Exception) {
-                                errorBody ?: "Unknown error"
-                            }
-                            message = "Registration failed: $errorMessage"
-                        }
-                    }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        message = "Registration failed: ${e.message}"
-                    }
-                }
-            }
-        }) {
-            Text("Register")
-        }
+        // Use the extracted buttons composable
+        LoginButtons(
+            username = username,
+            password = password,
+            onNavigateToLobby = onNavigateToLobby,
+            messageState = message
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        // Skip login for testing
-        Button(
-            onClick = { onNavigateToLobby() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Skip Login (Testing)")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(text = message)
+        Text(text = message.value)
     }
 }
