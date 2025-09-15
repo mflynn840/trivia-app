@@ -57,6 +57,8 @@ class SoloGameService : GameDriver {
                         _totalQuestions.value = _questionIndex.value
                     }
                     _error.value = null
+
+                    //handle errors
                 } else {
                     _error.value = "Received empty question from server"
                 }

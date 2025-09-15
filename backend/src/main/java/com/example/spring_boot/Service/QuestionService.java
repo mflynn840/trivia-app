@@ -2,12 +2,11 @@ package com.example.spring_boot.Service;
 
 import com.example.spring_boot.Model.Question;
 import com.example.spring_boot.Repository.QuestionRepository;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 // Add these imports at the top of QuestionService.java
@@ -90,5 +89,10 @@ public class QuestionService {
     
     public long getQuestionCount() {
         return this.questionRepository.count();
+    }
+
+    public Optional<Question> findById(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
     }
 }
