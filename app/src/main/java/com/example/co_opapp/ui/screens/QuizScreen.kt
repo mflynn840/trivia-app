@@ -15,11 +15,16 @@ import com.example.co_opapp.data_model.TriviaQuestion
 
 @Composable
 fun QuizScreen(
-    quizService: QuizService, // <-- Service-agnostic
+    // Service providing questions, answers, score, etc.
+    quizService: QuizService,
     modifier: Modifier = Modifier,
+    // Callback for "Back" navigation
     onNavigateBack: () -> Unit = {},
+    // Callback when game ends
     onGameComplete: (score: Int, totalQuestions: Int) -> Unit = { _, _ -> }
 ) {
+
+    // Observe state flows from the QuizService
     val score by quizService.score.collectAsState(initial = 0)
     val questionIndex by quizService.questionIndex.collectAsState(initial = 0)
     val totalQuestions by quizService.totalQuestions.collectAsState(initial = 0)
