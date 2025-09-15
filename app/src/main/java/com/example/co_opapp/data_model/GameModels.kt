@@ -35,7 +35,8 @@ data class Player(
     val id: String,
     val username: String,
     val score: Int = 0,
-    val isHost: Boolean = false
+    val isHost: Boolean = false,
+    val isReady: Boolean = false
 )
 
 // Question model for LAN game
