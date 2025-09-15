@@ -19,6 +19,7 @@ import com.example.co_opapp.ui.screens.QuizScreen
 //import com.example.co_opapp.ui.screens.LobbyScreen
 import com.example.co_opapp.Service.CoopGameService
 import com.example.co_opapp.Service.SoloGameService
+import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -40,8 +41,8 @@ fun CoopApp() {
     val navController = rememberNavController()
 
     //Create the services for running a solo or co-op game
-    val soloService = remember { SoloGameService()}
-    val coopService = remember {CoopGameService()}
+    val soloService = remember { SoloGameService() }
+    val coopService = remember { CoopGameService() }
 
 
     //start on the login page
@@ -73,9 +74,12 @@ fun CoopApp() {
                     onNavigateToCoOp = {
                         navController.navigate("lobby")
                     },
+                    // <-- New callback for Character Customization
+                    onNavigateToCharacterMode = { navController.navigate("characterCustomization") },
                     onNavigateBack = {
                         navController.navigate("login") {
                             popUpTo("login") { inclusive = true }
+
                         }
                     }
                 )
@@ -137,6 +141,15 @@ fun CoopApp() {
             }
         }
 
+        // ---------------- Character Customization Screen ----------------
+        composable("characterCustomization") {
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                CharacterCustomizationScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+        }
     }
 }
 
