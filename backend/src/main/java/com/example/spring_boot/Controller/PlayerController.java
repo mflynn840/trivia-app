@@ -15,14 +15,14 @@ public class PlayerController {
     private PlayerService playerService;
 
     // Endpoint for uploading a profile picture
-    @PostMapping("/{playerId}/upload-profile-picture")
+    @PostMapping("/{username}/upload-profile-picture")
     public ResponseEntity<String> uploadProfilePicture(
-            @PathVariable Long playerId, 
+            @PathVariable String username, 
             @RequestParam("file") MultipartFile file) {
 
         try {
             // Save the profile picture and update the player in the database
-            playerService.savePlayerProfilePicture(playerId, file);
+            playerService.savePlayerProfilePicture(username, file);
 
             // Return success message
             return ResponseEntity.status(HttpStatus.OK)
@@ -35,7 +35,7 @@ public class PlayerController {
         } catch (Exception e) {
             // Catch other exceptions (e.g., player not found)
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Player not found with ID: " + playerId);
+                    .body("Player not found with username: " + username);
         }
     }
 

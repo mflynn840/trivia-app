@@ -29,10 +29,12 @@ interface AuthApiService {
     suspend fun validateToken(@Header("Authorization") token: String): Response<Map<String, Any>>
 
     @Multipart
-    @POST("api/user/avatar")
+    @POST("api/players/{username}/upload-avatar")
     suspend fun uploadAvatar(
+        @Path("username") username: String,
         @Part image: MultipartBody.Part
     ): Response<Map<String, String>>
+
 }
 
 // Service class that wraps AuthApiService for easier use in app
@@ -114,7 +116,7 @@ class AuthService(private val context: Context) {
     fun saveJwtToken(context: Context, token: String) {
         val sharedPref = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putString("jwt_token", token)
+            putString("jwt_token", "Bearer $token")
             apply()
         }
     }
@@ -122,7 +124,7 @@ class AuthService(private val context: Context) {
     suspend fun uploadAvatar(imageUri: Uri): Boolean {
         val part = imageUri.toMultipartBody(context, "avatar") ?: return false
         return try {
-            val response = authApi?.uploadAvatar(part)
+            val response = authApi?.uploadAvatar(getUsername()!!, part)
             response?.isSuccessful == true
         } catch (e: Exception) {
             Log.e("AuthService", "Failed to upload avatar", e)
