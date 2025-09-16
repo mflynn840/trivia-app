@@ -7,12 +7,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.AuthService
+import com.example.co_opapp.Service.ProfilePictureService
 import com.example.co_opapp.ui.components.*
 import com.example.co_opapp.ui.components.CharacterCustomizationScreen.BackButton
 import com.example.co_opapp.ui.components.CharacterCustomizationScreen.SendToBackendButton
@@ -20,7 +22,7 @@ import com.example.co_opapp.ui.components.CharacterCustomizationScreen.UploadIma
 
 @Composable
 fun CharacterCustomizationScreen(
-    authService: AuthService,
+    profilePictureService: ProfilePictureService,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {}
 ) {
@@ -43,10 +45,10 @@ fun CharacterCustomizationScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 32.dp, vertical = 24.dp),
-            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            GreetingBox(username = authService.getUsername()!!)
+            GreetingBox(username = profilePictureService.authService.getUsername()!!)
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -64,7 +66,7 @@ fun CharacterCustomizationScreen(
 
             SendToBackendButton(
                 imageUri = imageUri,
-                authService = authService
+                profilePictureService = profilePictureService,
             )
         }
     }

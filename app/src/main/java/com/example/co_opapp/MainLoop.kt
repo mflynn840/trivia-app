@@ -10,11 +10,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.co_opapp.Service.AuthService
+import com.example.co_opapp.Service.ProfilePictureService
 import com.example.co_opapp.ui.theme.CoopAppTheme
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.LoginScreen
@@ -48,6 +48,9 @@ fun CoopApp() {
     val soloService = remember { SoloGameService(authService) }
     val raceModeService = remember { RaceModeGameService() }
 
+    // ProfilePictureService will be created **after login**
+    var profilePictureService by remember { mutableStateOf<ProfilePictureService?>(null) }
+
 
 
     //start on the login page
@@ -62,6 +65,7 @@ fun CoopApp() {
                 LoginScreen(
                     modifier = Modifier.padding(innerPadding),
                     onNavigateToLobby = {
+                        profilePictureService = ProfilePictureService(authService, context)
                         navController.navigate("gameMode")
                     },
                     authService = authService
@@ -89,7 +93,7 @@ fun CoopApp() {
 
                         }
                     },
-                    authService = authService
+                    profilePictureService = profilePictureService!!
                 )
             }
         }
@@ -156,7 +160,7 @@ fun CoopApp() {
                 CharacterCustomizationScreen(
                     modifier = Modifier.padding(innerPadding),
                     onNavigateBack = { navController.popBackStack() },
-                    authService = authService
+                    profilePictureService = profilePictureService!!
                 )
             }
         }
