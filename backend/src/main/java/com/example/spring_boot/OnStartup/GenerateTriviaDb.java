@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.example.spring_boot.Repository.QuestionRepository;
@@ -46,16 +48,17 @@ public class GenerateTriviaDb {
             //parse the JSON to get the question data
             for (JsonNode questionNode : resultsNode) {
                 //collect the data for a single Question object from the json
-                String questionText = questionNode.path("question").asText("");
-                String correctAnswer = questionNode.path("correct_answer").asText("");
-                String category = questionNode.path("category").asText("");
-                String difficulty = questionNode.path("difficulty").asText("");
-                String type = questionNode.path("type").asText("");
-
+                //be  careful to not store escaped html (&quot insttead of ')
+                
+                String questionText = StringEscapeUtils.unescapeHtml4(questionNode.path("question").asText(""));
+                String correctAnswer = StringEscapeUtils.unescapeHtml4(questionNode.path("correct_answer").asText(""));
+                String category = StringEscapeUtils.unescapeHtml4(questionNode.path("category").asText(""));
+                String difficulty = StringEscapeUtils.unescapeHtml4(questionNode.path("difficulty").asText(""));
+                String type = StringEscapeUtils.unescapeHtml4(questionNode.path("type").asText(""));
 
                 List<String> incorrectAnswers = new ArrayList<>();
                 questionNode.path("incorrect_answers").forEach(answer -> {
-                    String ans = answer.asText("");
+                    String ans = StringEscapeUtils.unescapeHtml4(answer.asText(""));
                     incorrectAnswers.add(ans);
                 });
 
