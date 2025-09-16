@@ -60,7 +60,7 @@ fun CharacterCustomizationScreen(
             Text(
                 text = "Character Customization",
                 style = MaterialTheme.typography.headlineLarge,
-                color = Color.White
+                color = Color.Black,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
