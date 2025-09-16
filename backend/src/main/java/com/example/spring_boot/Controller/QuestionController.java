@@ -81,6 +81,13 @@ public class QuestionController {
         }
     }
 
+    @GetMapping("/counts_by_category")
+    public ResponseEntity<Map<String, Map<String, Long>>> getQuestionCountsByCategoryAndDifficulty() {
+        Map<String, Map<String, Long>> counts = questionService.getQuestionCountsByCategoryAndDifficulty();
+        return ResponseEntity.ok(counts);
+    }
+
+
 
 
 }

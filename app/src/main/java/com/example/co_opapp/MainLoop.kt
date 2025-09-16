@@ -45,8 +45,10 @@ fun CoopApp() {
     val navController = rememberNavController()
     val context = LocalContext.current
     val authService = remember { AuthService(context) }
-    //Create the services for running a solo or co-op game
-    val soloService = remember { SoloGameService(authService) }
+
+
+    //Create the services for running a solo or co-op game later
+    var soloService by remember { mutableStateOf<SoloGameService?>(null)}
     val raceModeService = remember { RaceModeGameService() }
 
     // ProfilePictureService will be created **after login**
@@ -99,12 +101,20 @@ fun CoopApp() {
             }
         }
 
+        //ask the player which category and difficulty
         composable("quizSetup") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 QuizSetupScreen(
                     modifier = Modifier.padding(innerPadding),
                     onStartQuiz = { category, difficulty, numQuestions ->
-                        // Pass the selected options to the single player quiz
+                        // Pass the selected options to the quiz driver and create it
+                        soloService = SoloGameService(
+                            authService = authService,
+                            category = category,
+                            difficulty = difficulty,
+                            numQuestions = numQuestions
+                        )
+
                         navController.navigate("singlePlayerQuiz/$category/$difficulty/$numQuestions")
                     },
                     onNavigateBack = {
@@ -124,12 +134,11 @@ fun CoopApp() {
             val numQuestions = backStackEntry.arguments?.getString("numQuestions")?.toIntOrNull() ?: 5
 
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                //make the game driver for this game
+
                 QuizScreen(
                     modifier = Modifier.padding(innerPadding),
-                    quizService = soloService, // inject the service
-                    category = category,
-                    difficulty = difficulty,
-                    numQuestions = numQuestions,
+                    quizService = soloService!!, // inject the service
 
                     onNavigateBack = {
                         navController.navigate("gameMode") {
