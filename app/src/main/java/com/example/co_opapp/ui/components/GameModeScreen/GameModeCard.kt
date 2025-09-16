@@ -1,4 +1,4 @@
-package com.example.co_opapp.ui.components
+package com.example.co_opapp.ui.components.GameModeScreen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
