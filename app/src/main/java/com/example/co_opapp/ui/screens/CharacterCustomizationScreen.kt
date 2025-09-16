@@ -31,8 +31,6 @@ import kotlinx.coroutines.launch
 
 import kotlinx.coroutines.withContext
 import android.widget.Toast
-import androidx.compose.ui.unit.sp
-
 @Composable
 fun CharacterCustomizationScreen(
     authService: AuthService,
@@ -69,14 +67,14 @@ fun CharacterCustomizationScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF4CAF50), shape = RoundedCornerShape(12.dp))
+                    .background(Color(0xCC2196F3), shape = RoundedCornerShape(12.dp))
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Character Customization",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
+                    color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -87,14 +85,14 @@ fun CharacterCustomizationScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF2196F3), shape = RoundedCornerShape(12.dp))
+                    .background(Color(0xCC2196F3), shape = RoundedCornerShape(12.dp))
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
 
             ) {
                 Text(
                     text = "Hello, ${authService.getUsername()}",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
@@ -105,7 +103,7 @@ fun CharacterCustomizationScreen(
             // Image preview
             Box(
                 modifier = Modifier
-                    .size(300.dp)
+                    .size(200.dp)
                     .clip(CircleShape)
                     .background(Color.Gray.copy(alpha = 0.3f)),
                 contentAlignment = Alignment.Center
@@ -116,9 +114,13 @@ fun CharacterCustomizationScreen(
                         try {
                             if (Build.VERSION.SDK_INT < 28) {
                                 @Suppress("DEPRECATION")
-                                MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri!!)
+                                MediaStore.Images.Media.getBitmap(
+                                    context.contentResolver,
+                                    imageUri!!
+                                )
                             } else {
-                                val source = ImageDecoder.createSource(context.contentResolver, imageUri!!)
+                                val source =
+                                    ImageDecoder.createSource(context.contentResolver, imageUri!!)
                                 ImageDecoder.decodeBitmap(source)
                             }
                         } catch (e: Exception) {
@@ -148,10 +150,7 @@ fun CharacterCustomizationScreen(
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
             ) {
-                Text("Upload Image",
-                        fontSize = 22.sp,
-
-                    fontWeight = FontWeight.Bold)
+                Text("Upload Image")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -164,36 +163,41 @@ fun CharacterCustomizationScreen(
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
             ) {
-                Text("Back",
-                    fontSize = 18.sp,
-
-                    fontWeight = FontWeight.Bold,)
+                Text("Back")
             }
 
-            //button to send an image from the ui
+            //send the image to the backend
             Button(onClick = {
                 imageUri?.let { uri ->
-                    // Use a coroutine to upload
                     CoroutineScope(Dispatchers.IO).launch {
-                        val success = authService.uploadAvatar(uri)
-                        withContext(Dispatchers.Main) {
-                            if (success) {
-                                Toast.makeText(context, "Avatar uploaded!", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+                        try {
+                            val success = authService.uploadAvatar(uri)
+                            withContext(Dispatchers.Main) {
+                                if (success) {
+                                    Toast.makeText(context, "Avatar uploaded!", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    context,
+                                    "Error uploading image: ${e.message}",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
                     }
+                } ?: run {
+                    Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
                 }
             }) {
-                Text("Upload Image",
-
-                        fontSize = 18.sp,
-
-                    fontWeight = FontWeight.Bold,
-
-                )
+                Text("Confirm")
             }
         }
     }
 }
+
+

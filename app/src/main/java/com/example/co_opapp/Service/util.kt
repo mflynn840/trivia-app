@@ -13,19 +13,16 @@ import java.io.ByteArrayOutputStream
 
 
 //send images as multipart/form data (compress images to jpeg)
-fun Uri.toMultipartBody(context: Context, fieldName: String): MultipartBody.Part? {
-    val bitmap = if (Build.VERSION.SDK_INT < 28) {
-        @Suppress("DEPRECATION")
-        MediaStore.Images.Media.getBitmap(context.contentResolver, this)
-    } else {
-        val source = ImageDecoder.createSource(context.contentResolver, this)
-        ImageDecoder.decodeBitmap(source)
+fun Uri.toMultipartBody(context: Context, name: String): MultipartBody.Part? {
+    return try {
+        val inputStream = context.contentResolver.openInputStream(this) ?: return null
+        val bytes = inputStream.readBytes()
+        inputStream.close()
+
+        val requestBody = RequestBody.create("image/*".toMediaTypeOrNull(), bytes)
+        MultipartBody.Part.createFormData(name, "avatar.jpg", requestBody)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
     }
-
-    val stream = ByteArrayOutputStream()
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
-    val byteArray = stream.toByteArray()
-
-    val requestFile = RequestBody.create("image/jpeg".toMediaTypeOrNull(), byteArray)
-    return MultipartBody.Part.createFormData(fieldName, "avatar.jpg", requestFile)
 }
