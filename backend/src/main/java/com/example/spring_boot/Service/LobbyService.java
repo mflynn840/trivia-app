@@ -8,8 +8,6 @@ import com.example.spring_boot.Model.Score;
 import com.example.spring_boot.Model.AnswerRequest;
 import com.example.spring_boot.Model.GameRoom;
 import com.example.spring_boot.Model.Player;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

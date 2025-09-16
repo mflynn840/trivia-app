@@ -1,5 +1,6 @@
 package com.example.co_opapp.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,31 +11,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.co_opapp.Service.AuthService
 import com.example.co_opapp.Service.RaceModeGameService
-
 import com.example.co_opapp.data_model.GameState
 import com.example.co_opapp.data_model.Player
 
 @Composable
 fun LobbyScreen(
-    gameService : RaceModeGameService,
+    gameService: RaceModeGameService,
+    authService: AuthService,
     modifier: Modifier = Modifier,
     onNavigateToGame: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
+    // Observe current player
+    val currentPlayer by authService.currentPlayerFlow.collectAsState()
+    var username by remember { mutableStateOf("") }
 
-    val currentPlayer by remember { derivedStateOf { gameService.getMyPlayer() } }
-    var username by remember { mutableStateOf(currentPlayer?.username ?: "") }
-    var hostIp by remember { mutableStateOf("") }
-    var isHosting by remember { mutableStateOf(false) }
+    // Keep username synced with logged-in player
+    LaunchedEffect(currentPlayer) {
+        username = currentPlayer?.username ?: ""
+    }
+
+    var selectedLobbyId by remember { mutableStateOf<Long?>(null) }
     var isJoining by remember { mutableStateOf(false) }
 
     val gameState by gameService.gameState.collectAsState()
     val connectionStatus by gameService.connectionStatus.collectAsState()
     val errorMessage by gameService.errorMessage.collectAsState()
+    val lobbies by gameService.lobbies.collectAsState()
 
+    // Navigate to game automatically when in progress
     LaunchedEffect(gameState) {
-        if (gameState?.gameState == GameState.IN_PROGRESS){
+        if (gameState?.gameState == GameState.IN_PROGRESS) {
             onNavigateToGame()
         }
     }
@@ -49,7 +58,11 @@ fun LobbyScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Co-op Game Lobby", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+            Text(
+                "Select a Lobby",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
             Button(onClick = onNavigateBack) { Text("Logout") }
         }
 
@@ -62,115 +75,74 @@ fun LobbyScreen(
             enabled = !connectionStatus
         )
 
-        // Local IP
-        gameService.getLocalIpAddress()?.let { localIp ->
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Your Local IP:", style = MaterialTheme.typography.labelMedium)
-                    Text(localIp, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
-                }
-            }
-        }
-
-        if (!connectionStatus) {
-            // Host/Join buttons
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Button(
-                    onClick = {
-                        if (username.isNotBlank()) {
-                            isHosting = true
-                            gameService.startHosting(
-                                player = Player(id = currentPlayer?.id?:0L, username = username),
-                                onSuccess = { isHosting = false },
-                                onError = { isHosting = false }
-                            )
-                        }
-                    },
-                    modifier = Modifier.weight(1f),
-                    enabled = !isHosting && !isJoining && username.isNotBlank()
+        // Lobby cards
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            items(lobbies) { lobby ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { selectedLobbyId = lobby.id },
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (selectedLobbyId == lobby.id)
+                            MaterialTheme.colorScheme.primaryContainer
+                        else
+                            MaterialTheme.colorScheme.surface
+                    )
                 ) {
-                    if (isHosting) CircularProgressIndicator(modifier = Modifier.size(16.dp)) else Text("Host Game")
-                }
-
-                Button(
-                    onClick = {
-                        if (username.isNotBlank() && hostIp.isNotBlank()) {
-                            isJoining = true
-                            gameService.joinGame(
-                                player = Player(id = currentPlayer?.id ?: 0L,username = username),
-                                hostIp = hostIp,
-                                onSuccess = { isJoining = false },
-                                onError = { isJoining = false }
-                            )
-                        }
-                    },
-                    modifier = Modifier.weight(1f),
-                    enabled = !isHosting && !isJoining && username.isNotBlank() && hostIp.isNotBlank()
-                ) {
-                    if (isJoining) CircularProgressIndicator(modifier = Modifier.size(16.dp)) else Text("Join Game")
-                }
-            }
-
-            OutlinedTextField(
-                value = hostIp,
-                onValueChange = { hostIp = it },
-                label = { Text("Host IP Address") },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !connectionStatus
-            )
-        }
-
-        // Game room info
-        gameState?.let { room ->
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Game Room", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Players: ${room.players.size}/${room.maxPlayers}", style = MaterialTheme.typography.bodyMedium)
-                    Text("Status: ${room.gameState.name}", style = MaterialTheme.typography.bodyMedium)
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    LazyColumn(modifier = Modifier.height(120.dp)) {
-                        items(room.players) { player ->
-                            Row(
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text("${player.username}${if (player.isHost) " (Host)" else ""}", fontSize = 16.sp)
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            "Lobby #${lobby.id}",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Players: ${lobby.players.size}/${lobby.maxPlayers}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            "Status: ${lobby.gameState.name}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        if (lobby.players.isNotEmpty()) {
+                            Text("Players:", fontWeight = FontWeight.SemiBold)
+                            lobby.players.forEach { player ->
                                 Text(
-                                    if (player.isReady) "✓ Ready" else "Not Ready",
-                                    color = if (player.isReady) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontWeight = if (player.isReady) FontWeight.Bold else FontWeight.Normal
+                                    "${player.username}${if (player.isHost) " (Host)" else ""} ${if (player.isReady) "✓ Ready" else ""}"
                                 )
                             }
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // Ready button
-                    if (room.gameState == GameState.WAITING_FOR_PLAYERS) {
-                        val isReady = currentPlayer?.isReady ?: false
-                        Button(
-                            onClick = { gameService.setPlayerReady(!isReady) },
-                            modifier = Modifier.fillMaxWidth()
-                        ) { Text(if (isReady) "Not Ready" else "Ready") }
-                    }
-
-                    // Start game button (host only)
-                    val allPlayersReady = room.players.size >= 2 && room.players.all { it.isReady }
-                    if (allPlayersReady && gameService.isHost) {
-                        Button(
-                            onClick = { gameService.startTriviaGame() },
-                            modifier = Modifier.fillMaxWidth()
-                        ) { Text("Start Trivia Game") }
-                    }
                 }
             }
         }
 
-        // Error
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Join button
+        Button(
+            onClick = {
+                // Only join if currentPlayer exists
+                currentPlayer?.let { player ->
+                    selectedLobbyId?.let { lobbyId ->
+                        isJoining = true
+                        gameService.joinLobby(
+                            player = player,
+                            lobbyId = lobbyId,
+                            onSuccess = { isJoining = false },
+                            onError = { isJoining = false }
+                        )
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = selectedLobbyId != null && !isJoining && username.isNotBlank() && currentPlayer != null
+        ) {
+            if (isJoining) CircularProgressIndicator(modifier = Modifier.size(16.dp))
+            else Text("Join Selected Lobby")
+        }
+
+        // Error message
         errorMessage?.let { error ->
             Card(
                 modifier = Modifier.fillMaxWidth(),

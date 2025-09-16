@@ -2,20 +2,18 @@ package com.example.co_opapp.Service
 
 import com.example.co_opapp.data_model.GameState
 import com.example.co_opapp.data_model.GameRoom
-
 import com.example.co_opapp.data_model.Player
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import java.net.InetAddress
-import java.net.NetworkInterface
 
 class RaceModeGameService {
 
+    // Currently connected player
+    private var myPlayer: Player? = null
+
+    // Connection and game state
     private val _gameState = MutableStateFlow<GameRoom?>(null)
     val gameState: StateFlow<GameRoom?> = _gameState.asStateFlow()
 
@@ -25,66 +23,68 @@ class RaceModeGameService {
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
-    var isHost = false
-        private set
+    // List of all lobbies
+    private val _lobbies = MutableStateFlow<List<GameRoom>>(emptyList())
+    val lobbies: StateFlow<List<GameRoom>> = _lobbies.asStateFlow()
 
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(Dispatchers.Main + job)
-
-    private var myPlayer: Player? = null
+    init {
+        // Create 4 empty lobbies at startup
+        _lobbies.value = (1..4).map { id ->
+            GameRoom(
+                id = id.toLong(),
+                players = mutableListOf(),
+                maxPlayers = 4,
+                gameState = GameState.WAITING_FOR_PLAYERS
+            )
+        }
+    }
 
     fun getMyPlayer(): Player? = myPlayer
 
-
-    /**
-     * Resolve the local IP address of the device this is being run on
-     */
-
-    fun getLocalIpAddress(): String? {
-        try {
-            val interfaces = NetworkInterface.getNetworkInterfaces()
-            for (intf in interfaces) {
-                val addrs = intf.inetAddresses
-                for (addr in addrs) {
-                    if (!addr.isLoopbackAddress && addr is InetAddress && addr.address.size == 4) {
-                        // Only IPv4
-                        return addr.hostAddress
-                    }
-                }
-            }
-        } catch (e: Exception) { }
-        return null
-    }
+    fun getLocalIpAddress(): String? = try {
+        InetAddress.getLocalHost().hostAddress
+    } catch (e: Exception) { null }
 
     fun startHosting(player: Player, onSuccess: () -> Unit, onError: () -> Unit) {
-        myPlayer = player.copy(isHost = true)
-        isHost = true
-        _gameState.value = GameRoom(players = mutableListOf(myPlayer!!))
-        _connectionStatus.value = true
-        scope.launch { onSuccess() }
+        myPlayer = player
+        // Pick the first empty lobby to host
+        val lobby = _lobbies.value.firstOrNull { it.players.isEmpty() }
+        if (lobby != null) {
+            player.isHost = true
+            lobby.players.add(player)
+            _gameState.value = lobby
+            onSuccess()
+        } else {
+            _errorMessage.value = "No empty lobby available"
+            onError()
+        }
     }
 
-    fun joinGame(player: Player, hostIp: String, onSuccess: () -> Unit, onError: () -> Unit) {
-        myPlayer = player.copy(isHost = false)
-        isHost = false
-        _gameState.value?.players?.add(myPlayer!!)
-            ?: run { _gameState.value = GameRoom(players = mutableListOf(myPlayer!!)) }
-        _connectionStatus.value = true
-        scope.launch { onSuccess() }
+    fun joinLobby(player: Player, lobbyId: Long, onSuccess: () -> Unit, onError: () -> Unit) {
+        val lobby = _lobbies.value.find { it.id == lobbyId }
+        if (lobby != null && lobby.players.size < lobby.maxPlayers) {
+            player.isHost = false
+            lobby.players.add(player)
+            myPlayer = player
+            _gameState.value = lobby
+            onSuccess()
+        } else {
+            _errorMessage.value = "Lobby full or not found"
+            onError()
+        }
     }
 
-    fun setPlayerReady(ready: Boolean) {
-        myPlayer?.isReady = ready
-        _gameState.value?.players?.find { it.id == myPlayer?.id }?.isReady = ready
-        // Trigger state update
-        _gameState.value = _gameState.value
+    fun setPlayerReady(isReady: Boolean) {
+        val player = myPlayer ?: return
+        player.isReady = isReady
+        _gameState.value = _gameState.value // trigger update
     }
+
+    val isHost: Boolean
+        get() = myPlayer?.isHost == true
 
     fun startTriviaGame() {
         _gameState.value?.gameState = GameState.IN_PROGRESS
-        // Trigger state update
         _gameState.value = _gameState.value
     }
 }
-
-
