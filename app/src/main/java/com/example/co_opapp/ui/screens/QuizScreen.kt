@@ -1,5 +1,6 @@
 package com.example.co_opapp.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -63,7 +64,8 @@ fun QuizScreen(
                 ) {
                     Text("Question ${questionIndex + 1} of $totalQuestions", color = Color.White)
 
-                    QuestionCard(question = question.questionText)
+                    Log.d("QuizScreen", "Current question: $currentQuestion")
+                    QuestionCard(question = currentQuestion!!.questionText)
 
                     val options = listOf(
                         question.option1,
