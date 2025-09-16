@@ -29,6 +29,9 @@ public class Player implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
+    private boolean isHost;
+    private boolean isReady;
+
     // Constructors
     public Player() {}
 
@@ -79,5 +82,16 @@ public class Player implements UserDetails {
         return true;
     }
 
+    public void setIsHost(boolean b) {
+        this.isHost = b;
+    }
+
+    public boolean getIsHost(){return this.isHost;}
+
+    public void setIsReady(boolean b) {
+        this.isReady = b;
+    }
+
+    public boolean getIsReady(){return this.isReady;}
 
 }
