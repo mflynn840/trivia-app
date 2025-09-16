@@ -1,6 +1,5 @@
 package com.example.co_opapp.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -11,8 +10,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.co_opapp.ui.components.AnswerButton
-import com.example.co_opapp.ui.components.QuestionCard
+import com.example.co_opapp.ui.components.QuizScreen.AnswerButton
+import com.example.co_opapp.ui.components.QuizScreen.QuestionCard
 import kotlinx.coroutines.launch
 import com.example.co_opapp.Interface.GameDriver
 import com.example.co_opapp.R

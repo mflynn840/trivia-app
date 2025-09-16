@@ -1,6 +1,5 @@
-package com.example.co_opapp.ui.components
+package com.example.co_opapp.ui.components.LoginScreen
 
-import android.R
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*

@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.ui.components.CharacterImageCircle
-import com.example.co_opapp.ui.components.GameModeCard
+import com.example.co_opapp.ui.components.GameModeScreen.GameModeCard
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

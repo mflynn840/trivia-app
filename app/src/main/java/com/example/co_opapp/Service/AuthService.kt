@@ -32,7 +32,8 @@ interface AuthApiService {
     @POST("api/players/{username}/upload-avatar")
     suspend fun uploadAvatar(
         @Path("username") username: String,
-        @Part image: MultipartBody.Part
+        @Part image: MultipartBody.Part,
+        @Header("Authorization") token: String
     ): Response<Map<String, String>>
 
 }
@@ -124,7 +125,7 @@ class AuthService(private val context: Context) {
     suspend fun uploadAvatar(imageUri: Uri): Boolean {
         val part = imageUri.toMultipartBody(context, "avatar") ?: return false
         return try {
-            val response = authApi?.uploadAvatar(getUsername()!!, part)
+            val response = authApi?.uploadAvatar(getUsername()!!, part, this.getJwtToken()!!)
             response?.isSuccessful == true
         } catch (e: Exception) {
             Log.e("AuthService", "Failed to upload avatar", e)

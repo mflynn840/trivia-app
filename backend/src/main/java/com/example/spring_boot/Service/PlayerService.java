@@ -17,12 +17,15 @@ public class PlayerService {
 
     // Method to save player's profile picture
     public Player savePlayerProfilePicture(String username, MultipartFile profilePictureFile) throws IOException {
+        System.out.println("finding player");
         Player player = playerRepository.findByUsername(username);
 
+        System.out.println("Unpacking profile picture");
         // Convert image to byte array
         byte[] profilePictureBytes = profilePictureFile.getBytes();
         player.setProfilePicture(profilePictureBytes);
 
+        System.out.println("Profile picture upload succesful");
         // Save the player object with the profile picture
         return playerRepository.save(player);
     }

@@ -63,24 +63,6 @@ fun CharacterCustomizationScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Transparent box for title
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color(0xCC2196F3), shape = RoundedCornerShape(12.dp))
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Character Customization",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
             // Transparent box for greeting
             Box(
                 modifier = Modifier
@@ -91,7 +73,7 @@ fun CharacterCustomizationScreen(
 
             ) {
                 Text(
-                    text = "Hello, ${authService.getUsername()}",
+                    text = "Upload profile picture for ${authService.getUsername()}",
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
