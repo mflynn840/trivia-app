@@ -22,7 +22,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.co_opapp.R
 
 
-
 @Composable
 fun GameModeScreen(
     modifier: Modifier = Modifier,
