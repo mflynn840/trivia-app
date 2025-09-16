@@ -13,6 +13,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.co_opapp.Service.AuthService
 import com.example.co_opapp.ui.theme.CoopAppTheme
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.LoginScreen
@@ -44,7 +45,7 @@ fun CoopApp() {
     //Create the services for running a solo or co-op game
     val soloService = remember { SoloGameService() }
     val raceModeService = remember { RaceModeGameService() }
-
+    val authService = remember { AuthService() }
 
     //start on the login page
     NavHost(
@@ -59,7 +60,8 @@ fun CoopApp() {
                     modifier = Modifier.padding(innerPadding),
                     onNavigateToLobby = {
                         navController.navigate("gameMode")
-                    }
+                    },
+                    authService = authService
                 )
             }
         }
@@ -119,7 +121,8 @@ fun CoopApp() {
                     onNavigateToGame = {
                         navController.navigate("coopQuiz")
                     },
-                    gameService = raceModeService
+                    gameService = raceModeService,
+                    authService = authService
                 )
             }
         }

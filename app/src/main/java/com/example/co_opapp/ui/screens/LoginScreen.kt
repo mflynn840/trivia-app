@@ -20,6 +20,7 @@ import com.example.co_opapp.R
 
 @Composable
 fun LoginScreen(
+    authService : AuthService,
     modifier: Modifier = Modifier,
     onNavigateToLobby: () -> Unit = {} // Callback when login succeeds
 ) {
@@ -28,8 +29,6 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     val message = remember { mutableStateOf("") }
 
-    // Create a single instance of AuthService
-    val authService = remember { AuthService() }
 
     Box(
         modifier = modifier.fillMaxSize()

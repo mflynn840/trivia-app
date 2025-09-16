@@ -3,7 +3,7 @@ package com.example.spring_boot.Controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +17,7 @@ import com.example.spring_boot.Model.GameRoom;
 import com.example.spring_boot.Model.Player;
 import com.example.spring_boot.Model.Question;
 import com.example.spring_boot.Service.LobbyService;
+
 
 @RestController
 @RequestMapping("/api/game")
@@ -56,10 +57,4 @@ public class LobbyController {
         return lobbyService.getQuestions(roomId);
     }
 
-    @PostMapping("/submit/{roomId}/{playerId}")
-    public Score submitAnswer(@PathVariable Long roomId,
-                              @PathVariable Long playerId,
-                              @RequestBody AnswerRequest answer) {
-        return lobbyService.submitAnswer(roomId, playerId, answer);
-    }
 }

@@ -1,4 +1,4 @@
-package com.example.spring_boot.Data_loader;
+package com.example.spring_boot.OnStartup;
 
 import java.io.File;
 import java.util.ArrayList;

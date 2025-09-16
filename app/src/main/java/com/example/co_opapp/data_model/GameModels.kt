@@ -21,7 +21,8 @@ enum class GameState {
 data class GameRoom(
     val players: MutableList<Player>,
     val maxPlayers: Int = 4,
-    var gameState: GameState = GameState.WAITING_FOR_PLAYERS
+    var gameState: GameState = GameState.WAITING_FOR_PLAYERS,
+    var id: Long
 )
 
 
@@ -44,7 +45,7 @@ data class Player(
     val id: Long,
     val username: String,
     val score: Int = 0,
-    val isHost: Boolean = false,
+    var isHost: Boolean = false,
     var isReady: Boolean = false
 )
 
