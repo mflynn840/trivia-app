@@ -21,28 +21,17 @@ fun QuizScreen(
     onGameComplete: (score: Int, totalQuestions: Int) -> Unit = { _, _ -> }
 ) {
 
-    // Observe QuizService state flows
     val score by quizService.score.collectAsState(initial = 0)
     val questionIndex by quizService.questionIndex.collectAsState(initial = 0)
     val totalQuestions by quizService.totalQuestions.collectAsState(initial = 0)
     val error by quizService.error.collectAsState(initial = null as String?)
 
-    //state variable for selected answer
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
-
-    //handle asynchronous operations
     val coroutineScope = rememberCoroutineScope()
-
-    //get the current question state
     val currentQuestion by quizService.currentQuestion.collectAsState(initial = null)
 
+    LaunchedEffect(Unit) { quizService.fetchNextQuestions() }
 
-    // Ensure the first set of questions is fetched when I display
-    LaunchedEffect(Unit) {
-        quizService.fetchNextQuestions()
-    }
-
-    //once the question is loaded render the UI
     Box(modifier = modifier.fillMaxSize()) {
 
         when {
@@ -54,12 +43,9 @@ fun QuizScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Text("Error: $error", color = MaterialTheme.colorScheme.error)
-                    //get next questions when the game resets
                     Button(onClick = {
-                        quizService.resetGame();
-                        coroutineScope.launch {
-                            quizService.fetchNextQuestions()
-                        }
+                        quizService.resetGame()
+                        coroutineScope.launch { quizService.fetchNextQuestions() }
                     }) { Text("Retry") }
                     Button(onClick = onNavigateBack) { Text("Go Back") }
                 }
@@ -68,21 +54,23 @@ fun QuizScreen(
             // --- QUESTION DISPLAY ---
             currentQuestion != null -> {
                 val question = currentQuestion!!
-                val options = listOf(
-                    question.option1,
-                    question.option2,
-                    question.option3,
-                    question.option4
-                )
 
+                // Make sure to pass the full question object to QuestionCard
                 Column(
                     modifier = Modifier.fillMaxSize().padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    Text("Question ${questionIndex+1} of $totalQuestions", color = Color.White)
+                    Text("Question ${questionIndex + 1} of $totalQuestions", color = Color.White)
 
-                    QuestionCard(question.questionText)
+                    QuestionCard(question = question.questionText)
+
+                    val options = listOf(
+                        question.option1,
+                        question.option2,
+                        question.option3,
+                        question.option4
+                    )
 
                     options.forEach { answer ->
                         AnswerButton(
@@ -93,13 +81,10 @@ fun QuizScreen(
                         )
                     }
 
-                    //submit answer button should update the game state using game service
                     Button(
                         onClick = {
                             selectedAnswer?.let { answer ->
-                                coroutineScope.launch {
-                                    quizService.submitAnswer(answer)
-                                }
+                                coroutineScope.launch { quizService.submitAnswer(answer) }
                                 selectedAnswer = null
                             }
                         },
