@@ -1,5 +1,6 @@
 package com.example.co_opapp.Service
 
+import android.util.Log
 import com.example.co_opapp.data_model.AnswerRequest
 import com.example.co_opapp.data_model.TriviaQuestion
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +49,7 @@ class SoloGameService : GameDriver {
     private val api = retrofit.create(BackendQuestionApi::class.java)
 
     // State variables
-    private val _questions = MutableStateFlow<List<TriviaQuestion>>(emptyList())
+    val _allQuestions = MutableStateFlow<List<TriviaQuestion>>(emptyList())
     private val _selectedAnswers = MutableStateFlow<List<String>>(emptyList())
     private val _score = MutableStateFlow(0)
     private val _curQuestionIndex = MutableStateFlow(0)
@@ -61,9 +62,9 @@ class SoloGameService : GameDriver {
 
 
     // The current question is based on the current question index
-    override val currentQuestion: StateFlow<TriviaQuestion?> = _questions
-        .combine(_curQuestionIndex) { questions, index ->
-            questions.getOrNull(index)  // Get the question at the current index
+    override val currentQuestion: StateFlow<TriviaQuestion?> = _allQuestions
+        .combine(_curQuestionIndex) { allQuestions, index ->
+            allQuestions.getOrNull(index)  // Get the question at the current index
         }.stateIn(scope, started = SharingStarted.Eagerly, initialValue = null)
 
 
@@ -79,7 +80,9 @@ class SoloGameService : GameDriver {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null && body.isNotEmpty()) {
-                    _questions.value = body
+
+                    _allQuestions.value = body
+                    Log.d("QuizScreen", "All questions in current game: ${_allQuestions.value}")
                     _numQuestions.value = body.size
                     _error.value = null
                 } else {
@@ -95,7 +98,7 @@ class SoloGameService : GameDriver {
 
     // Submit the selected answer and move to the next question
     override suspend fun submitAnswer(answer: String) {
-        val question = _questions.value.getOrNull(_curQuestionIndex.value)
+        val question = _allQuestions.value.getOrNull(_curQuestionIndex.value)
 
         // If the question exists, store the answer
         if (question != null) {
@@ -106,7 +109,7 @@ class SoloGameService : GameDriver {
             _curQuestionIndex.value += 1
 
             // If all questions have been answered, submit them to the backend
-            if (_selectedAnswers.value.size == _questions.value.size) {
+            if (_selectedAnswers.value.size == _allQuestions.value.size) {
                 submitAnswers(_selectedAnswers.value)
             }
         }
@@ -115,7 +118,7 @@ class SoloGameService : GameDriver {
     // Submit answers to the backend
     override suspend fun submitAnswers(answers: List<String>) : List<Boolean> {
         try {
-            val questionIds = _questions.value.map { it.id }
+            val questionIds = _allQuestions.value.map { it.id }
 
             val answersRequest = AnswersRequest(
                 questionIds = questionIds,
@@ -142,7 +145,7 @@ class SoloGameService : GameDriver {
 
     // Reset the game state
     override fun resetGame() {
-        _questions.value = emptyList()
+        _allQuestions.value = emptyList()
         _selectedAnswers.value = emptyList()
         _score.value = 0
         _curQuestionIndex.value = 0

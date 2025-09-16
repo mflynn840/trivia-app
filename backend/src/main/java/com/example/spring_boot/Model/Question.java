@@ -11,7 +11,7 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String question;
+    private String questionText;
     private String correctAnswer;
     
     private String optionA;
@@ -29,7 +29,7 @@ public class Question {
     // Constructor with parameters
     public Question(String question, String correctAnswer, String optionA, String optionB, 
                    String optionC, String optionD, String category, String difficulty, String type) {
-        this.question = question;
+        this.questionText = question;
         this.correctAnswer = correctAnswer;
         this.optionA = optionA;
         this.optionB = optionB;
@@ -50,11 +50,11 @@ public class Question {
     }
 
     public String getQuestion() {
-        return this.question;
+        return this.questionText;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setQuestionText(String question) {
+        this.questionText = question;
     }
 
     public String getCorrectAnswer() {
@@ -126,7 +126,7 @@ public class Question {
     public String toString() {
         return "Question{" +
                 "id=" + id +
-                ", question='" + question + '\'' +
+                ", question='" + questionText + '\'' +
                 ", correctAnswer='" + correctAnswer + '\'' +
                 ", optionA='" + optionA + '\'' +
                 ", optionB='" + optionB + '\'' +
