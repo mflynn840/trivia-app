@@ -24,13 +24,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.R
+import com.example.co_opapp.Service.AuthService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+import kotlinx.coroutines.withContext
+import android.widget.Toast
 @Composable
 fun CharacterCustomizationScreen(
-    username: String,
+    authService: AuthService,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     val launcher = rememberLauncherForActivityResult(
@@ -83,7 +90,7 @@ fun CharacterCustomizationScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Hello, $username",
+                    text = "Hello, ${authService.getUsername()}",
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
@@ -152,6 +159,25 @@ fun CharacterCustomizationScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
             ) {
                 Text("Back")
+            }
+
+            //button to send an image from the ui
+            Button(onClick = {
+                imageUri?.let { uri ->
+                    // Use a coroutine to upload
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val success = authService.uploadAvatar(uri)
+                        withContext(Dispatchers.Main) {
+                            if (success) {
+                                Toast.makeText(context, "Avatar uploaded!", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }) {
+                Text("Upload Image")
             }
         }
     }
