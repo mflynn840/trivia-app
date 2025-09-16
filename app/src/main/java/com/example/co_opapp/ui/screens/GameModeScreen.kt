@@ -45,9 +45,12 @@ fun GameModeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier
-                .padding(32.dp)
+                .padding(48.dp)
                 .align(Alignment.Center)
         ) {
+
+            Spacer(modifier = Modifier.height(38.dp))
+
             Text(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
@@ -77,7 +80,7 @@ fun GameModeScreen(
                 onClick = onNavigateToCharacterMode,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp),
+                    .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006400))
             ) {
                 Text("Character Customization",
@@ -87,7 +90,7 @@ fun GameModeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             Button(
                 onClick = onNavigateBack,
