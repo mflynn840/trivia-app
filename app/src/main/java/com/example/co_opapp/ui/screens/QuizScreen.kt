@@ -51,81 +51,92 @@ fun QuizScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        when {
-            currentQuestion != null -> {
-                val question = currentQuestion!!
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    Text(
-                        "Question ${questionIndex + 1} of $totalQuestions",
-                        color = Color.White
-                    )
-                    QuestionCard(question = question.body)
+        // --- BACK BUTTON AT TOP LEFT ---
+        Button(
+            onClick = onNavigateBack,
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.TopStart),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xCCB39DDB))
+        ) {
+            Text("Back", color = Color.Black)
+        }
 
-                    val options = listOf(
-                        question.optionA,
-                        question.optionB,
-                        question.optionC,
-                        question.optionD
-                    )
-                    options.forEach { answer ->
-                        AnswerButton(
-                            text = answer,
-                            isSelected = (answer == selectedAnswer),
-                            onClick = { selectedAnswer = answer },
-                            backgroundColor = Color(0xCCB39DDB)
+        // --- MAIN CONTENT CENTERED ---
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                currentQuestion != null -> {
+                    val question = currentQuestion!!
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            "Question ${questionIndex + 1} of $totalQuestions",
+                            color = Color.White
                         )
-                    }
+                        QuestionCard(question = question.body)
 
-                    Button(
-                        onClick = {
-                            selectedAnswer?.let { answer ->
-                                coroutineScope.launch { quizService.submitAnswer(answer) }
-                                selectedAnswer = null
-                            }
-                        },
-                        enabled = selectedAnswer != null
-                    ) { Text("Submit") }
-                }
-            }
-
-            error != null -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Text("Error: $error", color = MaterialTheme.colorScheme.error)
-                    Button(onClick = {
-                        quizService.resetGame()
-                        coroutineScope.launch { quizService.fetchNextQuestions() }
-                    }) { Text("Retry") }
-                    Button(onClick = onNavigateBack) { Text("Go Back") }
-                }
-            }
-
-            else -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Text("Quiz Complete! Score: $score / $totalQuestions")
-                    Button(onClick = onNavigateBack) { Text("Back") }
-                    Button(onClick = {
-                        coroutineScope.launch {
-                            quizService.resetGame()
-                            quizService.fetchNextQuestions()
+                        val options = listOf(
+                            question.optionA,
+                            question.optionB,
+                            question.optionC,
+                            question.optionD
+                        )
+                        options.forEach { answer ->
+                            AnswerButton(
+                                text = answer,
+                                isSelected = (answer == selectedAnswer),
+                                onClick = { selectedAnswer = answer },
+                                backgroundColor = Color(0xCCB39DDB)
+                            )
                         }
-                    }) { Text("Retry") }
+
+                        Button(
+                            onClick = {
+                                selectedAnswer?.let { answer ->
+                                    coroutineScope.launch { quizService.submitAnswer(answer) }
+                                    selectedAnswer = null
+                                }
+                            },
+                            enabled = selectedAnswer != null
+                        ) { Text("Submit") }
+                    }
+                }
+
+                error != null -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text("Error: $error", color = MaterialTheme.colorScheme.error)
+                        Button(onClick = {
+                            quizService.resetGame()
+                            coroutineScope.launch { quizService.fetchNextQuestions() }
+                        }) { Text("Retry") }
+                    }
+                }
+
+                else -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text("Quiz Complete! Score: $score / $totalQuestions")
+                        Button(onClick = {
+                            coroutineScope.launch {
+                                quizService.resetGame()
+                                quizService.fetchNextQuestions()
+                            }
+                        }) { Text("Retry") }
+                    }
                 }
             }
         }
     }
 }
-

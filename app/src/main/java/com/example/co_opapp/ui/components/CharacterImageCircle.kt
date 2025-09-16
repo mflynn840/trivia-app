@@ -19,7 +19,8 @@ fun CharacterImageCircle(
 ) {
     Box(
         modifier = modifier
-            .size(60.dp) // small circle for upper-right corner
+
+            .size(100.dp) // small circle for upper-right corner
             .border(2.dp, Color.Gray, CircleShape)
             .background(Color.LightGray.copy(alpha = 0.3f), CircleShape),
         contentAlignment = Alignment.Center
