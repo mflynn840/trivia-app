@@ -58,10 +58,9 @@ fun QuestionCard(
             // Question body
             Text(
                 text = question,
-                fontSize = 20.sp,
+                fontSize = 22.sp,
                 color = Color.Black,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f, fill = true)
             )
         }

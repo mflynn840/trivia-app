@@ -2,6 +2,7 @@ package com.example.co_opapp.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -62,17 +63,17 @@ fun QuizScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.TopStart),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB39DDB)
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03A9F4)
             )
         ) {
-            Text("Back", color = Color.Black)
+            Text("Back", color = Color.White)
         }
 
         // --- MAIN CONTENT CENTERED ---
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(12.dp),
             contentAlignment = Alignment.Center
         ) {
             when {
@@ -104,6 +105,8 @@ fun QuizScreen(
                             )
                         }
 
+                        Spacer(modifier = Modifier.height(40.dp))
+
                         Button(
                             onClick = {
                                 selectedAnswer?.let { answer ->
@@ -111,10 +114,23 @@ fun QuizScreen(
                                     selectedAnswer = null
                                 }
                             },
-                            enabled = selectedAnswer != null
+                            enabled = selectedAnswer != null,
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f) // make button wider (70% of screen width)
+                                .height(56.dp),     // taller button
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF03A9F4),
+                                contentColor = Color.White          // text color
+                            ),
+                            shape = RoundedCornerShape(16.dp)       // rounded corners to match card
                         ) {
-                            Text("Submit")
+                            Text(
+                                "Submit",
+                                fontSize = 18.sp,       // larger text
+                            )
                         }
+
+
                     }
                 }
 
