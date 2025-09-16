@@ -34,10 +34,13 @@ data class GameRoom(
 data class TriviaQuestion(
     val id: Long,
     val questionText: String,
-    val option1: String,
-    val option2: String,
-    val option3: String,
-    val option4: String
+    val optionA: String,
+    val optionB: String,
+    val optionC: String,
+    val optionD: String,
+    val category: String,
+    val difficulty: String,
+    val type: String,
 )
 
 // LAN-friendly player model
