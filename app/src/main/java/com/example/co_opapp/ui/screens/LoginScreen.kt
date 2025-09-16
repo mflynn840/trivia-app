@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.Service.AuthService
@@ -52,7 +53,8 @@ fun LoginScreen(
             Text(
                 text = "Trivia Game",
                 style = MaterialTheme.typography.headlineMedium,
-                color = Color.Black
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(24.dp))
 
