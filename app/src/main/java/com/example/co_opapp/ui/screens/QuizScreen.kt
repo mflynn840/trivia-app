@@ -27,23 +27,22 @@ fun QuizScreen(
     val totalQuestions by quizService.totalQuestions.collectAsState(initial = 0)
     val error by quizService.error.collectAsState(initial = null as String?)
 
+    //state variable for selected answer
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
+
+    //handle asynchronous operations
     val coroutineScope = rememberCoroutineScope()
+
+    //get the current question state
     val currentQuestion by quizService.currentQuestion.collectAsState(initial = null)
 
 
-
-    // Fetch the first question once when the composable enters composition
+    // Ensure the first question is fetched when I display
     LaunchedEffect(Unit) {
         quizService.fetchNextQuestion()
     }
-    LaunchedEffect(questionIndex, totalQuestions) {
-        if (questionIndex >= totalQuestions && totalQuestions > 0) {
-            onGameComplete(score, totalQuestions)
-        }
-    }
 
-
+    //once the question is loaded render the UI
     Box(modifier = modifier.fillMaxSize()) {
 
         when {

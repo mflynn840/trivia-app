@@ -15,6 +15,8 @@ interface GameDriver {
     val error: StateFlow<String?>                    // Error state
 
     suspend fun fetchNextQuestion()
-    suspend fun submitAnswer(answer: String): Boolean
+    suspend fun submitAnswer(answer: String)
+
+    suspend fun submitAnswers(answers: List<String>): List<Boolean>
     fun resetGame()
 }
