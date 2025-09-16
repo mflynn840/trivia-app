@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.co_opapp.Interface.GameDriver
+import com.example.co_opapp.data_model.TriviaQuestion
 import kotlinx.coroutines.launch
 
 
@@ -15,7 +16,7 @@ class QuizViewService(private val quizService: GameDriver) : ViewModel() {
     val questionIndex = mutableStateOf(0)
     val totalQuestions = mutableStateOf(0)
     val error = mutableStateOf<String?>(null)
-    val currentQuestion = mutableStateOf<Question?>(null)
+    val currentQuestion = mutableStateOf<TriviaQuestion?>(null)
     val selectedAnswer = mutableStateOf<String?>(null)
 
     init {
@@ -26,7 +27,6 @@ class QuizViewService(private val quizService: GameDriver) : ViewModel() {
     fun fetchNextQuestion() {
         viewModelScope.launch {
             try {
-                quizService.fetchNextQuestion()
                 val question = quizService.currentQuestion.value
                 currentQuestion.value = question
                 totalQuestions.value = quizService.totalQuestions.value
