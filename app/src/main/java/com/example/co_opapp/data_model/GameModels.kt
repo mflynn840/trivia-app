@@ -51,3 +51,7 @@ data class Player(
 
 data class AnswerRequest(val questionId: Long, val answer: String)
 data class AnswerResponse(val correct: Boolean, val correctAnswer: String)
+
+data class AnswersRequest(val questionIds: List<Long>, val answers: List<String>)
+data class AnswersResponse(val corrects: List<Boolean>, val correctAnswers: List<String>)
+
