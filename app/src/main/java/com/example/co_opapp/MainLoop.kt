@@ -43,7 +43,7 @@ fun CoopApp() {
 
     //Create the services for running a solo or co-op game
     val soloService = remember { SoloGameService() }
-    val coopService = remember { CoopGameService() }
+    //val coopService = remember { CoopGameService() }
 
 
     //start on the login page
@@ -126,7 +126,7 @@ fun CoopApp() {
             }
         }*/
 
-        composable("coopQuiz") {
+        /*composable("coopQuiz") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 QuizScreen(
                     modifier = Modifier.padding(innerPadding),
@@ -141,7 +141,7 @@ fun CoopApp() {
                     }
                 )
             }
-        }
+        } */
 
         composable(
             "characterCustomization"
