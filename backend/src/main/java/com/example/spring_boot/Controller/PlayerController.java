@@ -1,9 +1,5 @@
 package com.example.spring_boot.Controller;
-
-import com.example.spring_boot.Model.Player;
 import com.example.spring_boot.Service.PlayerService;
-
-import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
