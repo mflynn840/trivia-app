@@ -2,7 +2,6 @@ package com.example.spring_boot.Controller;
 
 import com.example.spring_boot.Model.Question;
 import com.example.spring_boot.Repository.QuestionRepository;
-import com.example.spring_boot.Service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,38 +19,6 @@ public class GameController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @Autowired
-    private QuestionService questionService;
-
-    @GetMapping("/questions")
-    public ResponseEntity<?> getQuestions(
-            @RequestParam(defaultValue = "10") int count,
-            @RequestParam(required = false) String difficulty,
-            @RequestParam(required = false) String category) {
-        try {
-            List<Question> questions;
-            
-            
-            if (difficulty != null && category != null) {
-                questions = questionRepository.findByDifficultyAndCategory(difficulty, category);
-            } else if (difficulty != null) {
-                questions = questionRepository.findByDifficulty(difficulty);
-            } else if (category != null) {
-                questions = questionRepository.findByCategory(category);
-            } else {
-                questions = questionRepository.findAll();
-            }
-
-            // Limit results and shuffle
-            if (questions.size() > count) {
-                questions = questions.subList(0, count);
-            }
-
-            return ResponseEntity.ok(Map.of("questions", questions));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to fetch questions: " + e.getMessage()));
-        }
-    }
 
 
     @PostMapping("/check-answer")
@@ -77,4 +44,57 @@ public class GameController {
             return ResponseEntity.internalServerError().body(Map.of("error", "Failed to check answer: " + e.getMessage()));
         }
     }
+
+    @PostMapping("/check-answers")
+    public ResponseEntity<?> checkAnswers(@RequestBody Map<String, Object> request) {
+        try {
+            List<Integer> questionIds = (List<Integer>)request.get("questionIds");
+            List<String> answers = (List<String>) request.get("answers");
+
+            if (questionIds.size() != answers.size()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Mismatched questionIds and answers length"));
+            }
+
+            List<Boolean> corrects = new java.util.ArrayList<>();
+
+            for (int i = 0; i < questionIds.size(); i++) {
+                Long qId = Long.valueOf(questionIds.get(i));
+                String ans = answers.get(i);
+
+                Map<String, Object> result = evaluateAnswer(qId, ans);
+                corrects.add((Boolean) result.getOrDefault("correct", false));
+            }
+
+            // Response structure matches your Kotlin expectation
+            Map<String, Object> response = Map.of("corrects", corrects);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "Failed to check answers: " + e.getMessage()));
+        }
+    }
+
+    private Map<String, Object> evaluateAnswer(Long qId, String ans) {
+        Optional<Question> questionOpt = questionRepository.findById(qId);
+        if (questionOpt.isEmpty()) {
+            return Map.of(
+                    "questionId", qId,
+                    "error", "Question not found"
+            );
+        }
+
+        Question question = questionOpt.get();
+        boolean isCorrect = question.getCorrectAnswer().equals(ans);
+
+        return Map.of(
+                "questionId", qId,
+                "correct", isCorrect,
+                "correctAnswer", question.getCorrectAnswer()
+        );
+    }
+
+
+
 }
