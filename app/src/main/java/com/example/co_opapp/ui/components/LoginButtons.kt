@@ -1,5 +1,6 @@
 package com.example.co_opapp.ui.components
 
+import android.R
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -49,12 +50,15 @@ fun LoginButtons(
                 }
             },
             modifier = Modifier.fillMaxWidth(),
+
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF006400), // Dark green background
                 contentColor = Color.White
             ),
         ) {
-            Text("Login")
+            Text("Login",
+            style = MaterialTheme.typography.titleMedium, // bigger text
+            )
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -85,7 +89,9 @@ fun LoginButtons(
             contentColor = Color.White
         ),
         ) {
-            Text("Register")
+            Text("Register",
+            style = MaterialTheme.typography.titleMedium, // bigger text
+            )
         }
     }
 }
