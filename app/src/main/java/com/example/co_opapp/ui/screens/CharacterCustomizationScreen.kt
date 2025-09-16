@@ -1,5 +1,11 @@
 package com.example.co_opapp.ui.screens
 
+import android.graphics.ImageDecoder
+import android.os.Build
+import android.provider.MediaStore
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,24 +14,34 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.co_opapp.R
 
 @Composable
 fun CharacterCustomizationScreen(
     username: String,
     modifier: Modifier = Modifier,
-    onNavigateBack: () -> Unit = {},
-    onUploadImage: () -> Unit = {} // Placeholder for hooking up image upload later
+    viewModel: CharacterViewModel = viewModel(),
+    onNavigateBack: () -> Unit = {}
 ) {
+    val imageUri by viewModel.characterImageUri.collectAsState()
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        viewModel.setCharacterImage(uri) // Update ViewModel
+    }
+
     Box(
         modifier = modifier.fillMaxSize()
     ) {
@@ -43,17 +59,16 @@ fun CharacterCustomizationScreen(
                 .padding(horizontal = 32.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Title at top
+            // Title
             Text(
                 text = "Character Customization",
                 style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
                 color = Color.White
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Greeting with username
+            // Greeting
             Text(
                 text = "Hello, $username",
                 style = MaterialTheme.typography.headlineMedium,
@@ -62,7 +77,7 @@ fun CharacterCustomizationScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Image preview box (can later display selected image)
+            // Image preview
             Box(
                 modifier = Modifier
                     .size(200.dp)
@@ -70,17 +85,38 @@ fun CharacterCustomizationScreen(
                     .background(Color.Gray.copy(alpha = 0.3f)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Preview",
-                    color = Color.White
-                )
+                imageUri?.let { uri ->
+                    val context = LocalContext.current
+                    val bitmap = remember(uri) {
+                        try {
+                            if (Build.VERSION.SDK_INT < 28) {
+                                @Suppress("DEPRECATION")
+                                MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+                            } else {
+                                val source = ImageDecoder.createSource(context.contentResolver, uri)
+                                ImageDecoder.decodeBitmap(source)
+                            }
+                        } catch (e: Exception) {
+                            null
+                        }
+                    }
+
+                    bitmap?.let {
+                        Image(
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = "Character Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } ?: Text("Failed to load image", color = Color.Red)
+                }
             }
 
-            Spacer(modifier = Modifier.weight(1f)) // Pushes buttons to bottom
+            Spacer(modifier = Modifier.weight(1f)) // Push buttons to bottom
 
             // Upload Image button
             Button(
-                onClick = onUploadImage,
+                onClick = { launcher.launch("image/*") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
