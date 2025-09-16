@@ -78,7 +78,7 @@ fun GameModeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E8B57))
             ) {
                 Text("Character Customization",
                     fontSize = 20.sp,
@@ -86,11 +86,12 @@ fun GameModeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = onNavigateBack,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
             ) {
                 Text("Back to Login",
