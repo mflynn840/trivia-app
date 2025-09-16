@@ -1,6 +1,7 @@
 package com.example.co_opapp.Interface
 
 import com.example.co_opapp.data_model.TriviaQuestion
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 //QuizServiceInterface is a common interface that abstracts the functionality both services provide:
@@ -13,6 +14,7 @@ interface GameDriver {
     val questionIndex: StateFlow<Int>                 // Current question number
     val totalQuestions: StateFlow<Int>               // Total questions attempted
     val error: StateFlow<String?>                    // Error state
+
 
     suspend fun fetchNextQuestions()
     suspend fun submitAnswer(answer: String)

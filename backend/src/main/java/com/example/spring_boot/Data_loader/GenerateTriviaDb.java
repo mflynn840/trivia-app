@@ -45,27 +45,35 @@ public class GenerateTriviaDb {
 
             //parse the JSON to get the question data
             for (JsonNode questionNode : resultsNode) {
-                String questionText = questionNode.path("question").asText();
-                String correctAnswer = questionNode.path("correct_answer").asText();
+                //collect the data for a single Question object from the json
+                String questionText = questionNode.path("question").asText("");
+                String correctAnswer = questionNode.path("correct_answer").asText("");
+                String category = questionNode.path("category").asText("");
+                String difficulty = questionNode.path("difficulty").asText("");
+                String type = questionNode.path("type").asText("");
+
+
                 List<String> incorrectAnswers = new ArrayList<>();
-                questionNode.path("incorrect_answers").forEach(answer -> incorrectAnswers.add(answer.asText()));
+                questionNode.path("incorrect_answers").forEach(answer -> {
+                    String ans = answer.asText("");
+                    incorrectAnswers.add(ans);
+                });
 
-                String category = questionNode.path("category").asText();
-                String difficulty = questionNode.path("difficulty").asText();
-                String type = questionNode.path("type").asText();
-
-                // Create a list of all answers (correct + incorrect)
                 List<String> allAnswers = new ArrayList<>(incorrectAnswers);
-                allAnswers.add(correctAnswer); // Add the correct answer to the list
+                allAnswers.add(correctAnswer);
 
-                // Shuffle the answers to randomize which one will be A/B/C/D
+                // Ensure at least 4 options
+                while (allAnswers.size() < 4) allAnswers.add("");
+
+                //randomize which option is correct
                 Collections.shuffle(allAnswers);
 
-                // Assign the shuffled answers to A/B/C/D
                 String optionA = allAnswers.get(0);
                 String optionB = allAnswers.get(1);
                 String optionC = allAnswers.get(2);
                 String optionD = allAnswers.get(3);
+
+
 
 
                 Question question = new Question(
