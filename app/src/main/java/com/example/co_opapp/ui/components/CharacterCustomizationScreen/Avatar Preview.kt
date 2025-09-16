@@ -24,7 +24,7 @@ fun AvatarPreview(imageUri: Uri?) {
 
     Box(
         modifier = Modifier
-            .size(200.dp)
+            .size(300.dp)
             .clip(CircleShape)
             .background(Color.Gray.copy(alpha = 0.3f)),
         contentAlignment = Alignment.Center
