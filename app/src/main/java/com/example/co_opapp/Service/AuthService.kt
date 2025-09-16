@@ -1,5 +1,7 @@
 package com.example.co_opapp.Service
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import com.example.co_opapp.data_model.LoginResponse
 import com.example.co_opapp.data_model.Player
@@ -7,10 +9,12 @@ import com.example.co_opapp.data_model.UserCredentials
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+
 
 // Retrofit interface defining API endpoints for authentication
 interface AuthApiService {
@@ -23,9 +27,16 @@ interface AuthApiService {
     // Endpoint to validate an existing token
     @POST("api/auth/validate")
     suspend fun validateToken(@Header("Authorization") token: String): Response<Map<String, Any>>
+
+    @Multipart
+    @POST("api/user/avatar")
+    suspend fun uploadAvatar(
+        @Part image: MultipartBody.Part
+    ): Response<Map<String, String>>
 }
+
 // Service class that wraps AuthApiService for easier use in app
-class AuthService {
+class AuthService(private val context: Context) {
     var authApi: AuthApiService? = null // Retrofit API instance
     private var authToken: String? = null // Stores current auth token
 
@@ -63,6 +74,7 @@ class AuthService {
                 if (loginResponse != null){
                     _currentPlayer.value = Player(username = username, id = loginResponse.id)
                     authToken = loginResponse?.token  // Store auth token
+                    saveJwtToken(context, authToken!!)
 
                     true
                 }else{
@@ -89,4 +101,31 @@ class AuthService {
             false
         }
     }
+
+    fun getJwtToken(): String? {
+        val sharedPref = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+        return sharedPref.getString("jwt_token", null)
+    }
+
+    fun saveJwtToken(context: Context, token: String) {
+        val sharedPref = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("jwt_token", token)
+            apply()
+        }
+    }
+
+    suspend fun uploadAvatar(imageUri: Uri): Boolean {
+        val part = imageUri.toMultipartBody(context, "avatar") ?: return false
+        return try {
+            val response = authApi?.uploadAvatar(part)
+            response?.isSuccessful == true
+        } catch (e: Exception) {
+            Log.e("AuthService", "Failed to upload avatar", e)
+            false
+        }
+    }
+
+
 }
+
