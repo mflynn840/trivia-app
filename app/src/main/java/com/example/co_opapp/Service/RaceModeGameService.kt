@@ -35,13 +35,19 @@ class RaceModeGameService {
 
     fun getMyPlayer(): Player? = myPlayer
 
+
+    /**
+     * Resolve the local IP address of the device this is being run on
+     */
+
     fun getLocalIpAddress(): String? {
         try {
             val interfaces = NetworkInterface.getNetworkInterfaces()
             for (intf in interfaces) {
                 val addrs = intf.inetAddresses
                 for (addr in addrs) {
-                    if (!addr.isLoopbackAddress && addr is InetAddress) {
+                    if (!addr.isLoopbackAddress && addr is InetAddress && addr.address.size == 4) {
+                        // Only IPv4
                         return addr.hostAddress
                     }
                 }
