@@ -1,6 +1,8 @@
 package com.example.co_opapp.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -63,7 +65,10 @@ fun QuizScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.TopStart),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB39DDB)
+            shape = RoundedCornerShape(16.dp),                // same rounded corners
+            border = BorderStroke(2.dp, Color.Black),         // border that follows the shape
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFB39DDB)            // solid light purple
             )
         ) {
             Text("Back", color = Color.Black)
@@ -101,7 +106,7 @@ fun QuizScreen(
                                 text = answer,
                                 isSelected = (answer == selectedAnswer),
                                 onClick = { selectedAnswer = answer },
-                                backgroundColor = Color(0xCCB39DDB)
+
                             )
                         }
 
