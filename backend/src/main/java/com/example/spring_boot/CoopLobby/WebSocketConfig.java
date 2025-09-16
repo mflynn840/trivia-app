@@ -1,4 +1,4 @@
-package com.example.spring_boot.WebSocket;
+package com.example.spring_boot.CoopLobby;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
