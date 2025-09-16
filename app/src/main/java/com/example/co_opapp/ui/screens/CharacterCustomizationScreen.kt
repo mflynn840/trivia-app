@@ -171,32 +171,12 @@ fun CharacterCustomizationScreen(
                 imageUri?.let { uri ->
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            val inputStream = context.contentResolver.openInputStream(uri)
-                            if (inputStream == null) {
-                                withContext(Dispatchers.Main) {
-                                    Toast.makeText(
-                                        context,
-                                        "Failed to open image",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                return@launch
-                            }
-
-                            val bytes = inputStream.readBytes()
-                            inputStream.close()
-
-                            // Call your upload method, pass bytes
-                            val success =
-                                authService.uploadAvatar(uri) // Make sure uploadAvatar can accept ByteArray
-
+                            val success = authService.uploadAvatar(uri)
                             withContext(Dispatchers.Main) {
                                 if (success) {
-                                    Toast.makeText(context, "Avatar uploaded!", Toast.LENGTH_SHORT)
-                                        .show()
+                                    Toast.makeText(context, "Avatar uploaded!", Toast.LENGTH_SHORT).show()
                                 } else {
-                                    Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT)
-                                        .show()
+                                    Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         } catch (e: Exception) {
