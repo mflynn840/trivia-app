@@ -37,9 +37,9 @@ fun QuizScreen(
     val currentQuestion by quizService.currentQuestion.collectAsState(initial = null)
 
 
-    // Ensure the first question is fetched when I display
+    // Ensure the first set of questions is fetched when I display
     LaunchedEffect(Unit) {
-        quizService.fetchNextQuestion()
+        quizService.fetchNextQuestions()
     }
 
     //once the question is loaded render the UI
@@ -54,7 +54,13 @@ fun QuizScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Text("Error: $error", color = MaterialTheme.colorScheme.error)
-                    Button(onClick = { quizService.resetGame(); coroutineScope.launch { quizService.fetchNextQuestion() } }) { Text("Retry") }
+                    //get next questions when the game resets
+                    Button(onClick = {
+                        quizService.resetGame();
+                        coroutineScope.launch {
+                            quizService.fetchNextQuestions()
+                        }
+                    }) { Text("Retry") }
                     Button(onClick = onNavigateBack) { Text("Go Back") }
                 }
             }
@@ -74,7 +80,7 @@ fun QuizScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    Text("Question ${questionIndex} of $totalQuestions", color = Color.White)
+                    Text("Question ${questionIndex+1} of $totalQuestions", color = Color.White)
 
                     QuestionCard(question.questionText)
 
@@ -87,12 +93,12 @@ fun QuizScreen(
                         )
                     }
 
+                    //submit answer button should update the game state using game service
                     Button(
                         onClick = {
                             selectedAnswer?.let { answer ->
                                 coroutineScope.launch {
                                     quizService.submitAnswer(answer)
-                                    quizService.fetchNextQuestion()
                                 }
                                 selectedAnswer = null
                             }

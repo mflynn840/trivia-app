@@ -86,7 +86,7 @@ fun CoopApp() {
                             popUpTo("login") { inclusive = true }
 
                         }
-                    }
+                    },
                 )
             }
         }
