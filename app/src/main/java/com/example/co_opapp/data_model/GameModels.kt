@@ -17,17 +17,13 @@ enum class GameState {
     WAITING_FOR_PLAYERS
 }
 
+// Simple GameRoom model
 data class GameRoom(
-    val hostId: Long,
-    val players: List<Player>,
-    val isGameStarted: Boolean = false,
-    val gameState: GameState = GameState.WAITING,
-    val currentPlayerIndex: Int = 0,
-    val currentRound: Int = 0,
-    val currentQuestion: TriviaQuestion? = null,
+    val players: MutableList<Player>,
     val maxPlayers: Int = 4,
-    val maxRounds: Int=5
+    var gameState: GameState = GameState.WAITING_FOR_PLAYERS
 )
+
 
 // --- Trivia ---
 // LAN-friendly question model
@@ -49,7 +45,7 @@ data class Player(
     val username: String,
     val score: Int = 0,
     val isHost: Boolean = false,
-    val isReady: Boolean = false
+    var isReady: Boolean = false
 )
 
 data class AnswerRequest(val questionId: Long, val answer: String)
