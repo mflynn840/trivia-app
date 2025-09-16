@@ -10,6 +10,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import com.example.co_opapp.Interface.BackendQuestionApi
 import com.example.co_opapp.Interface.GameDriver
 import com.example.co_opapp.data_model.AnswersRequest
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 
 // Response from backend for answer check
 data class AnswerResponse(
@@ -24,7 +28,6 @@ data class AnswerResponse(
     4. when all 5 questions have been answered, send the responses to the backend to see how many were correct
     5. get the response and use it to update the game to show the ending screen
  */
-
 class SoloGameService : GameDriver {
 
     private val retrofit = Retrofit.Builder()
@@ -32,40 +35,40 @@ class SoloGameService : GameDriver {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    //use retrofit to create an instance of the backend API
     private val api = retrofit.create(BackendQuestionApi::class.java)
 
-
-    //Create variables for questions for this run
+    // State variables
     private val _questions = MutableStateFlow<List<TriviaQuestion>>(emptyList())
-    override val currentQuestion: StateFlow<TriviaQuestion?> = _questions.asStateFlow()
-
-    //Create variables for user selected answers for this run
     private val _selectedAnswers = MutableStateFlow<List<String>>(emptyList())
     private val _score = MutableStateFlow(0)
-    override val score: StateFlow<Int> = _score.asStateFlow()
-
-    private val _questionIndex = MutableStateFlow(0)
-    override val questionIndex: StateFlow<Int> = _questionIndex.asStateFlow()
-
-    private val _totalQuestions = MutableStateFlow(0)
-    override val totalQuestions: StateFlow<Int> = _totalQuestions.asStateFlow()
-
+    private val _curQuestionIndex = MutableStateFlow(0)
+    private val _numQuestions = MutableStateFlow(0)
     private val _error = MutableStateFlow<String?>(null)
+
+
+    // The current question is based on the current question index
+    override val currentQuestion: StateFlow<TriviaQuestion?> = _questions
+        .combine(_curQuestionIndex) { questions, index ->
+            questions.getOrNull(index)  // Get the question at the current index
+        }.stateIn(scope = coroutineScope, started = SharingStarted.Eagerly, initialValue = null)
+
+
+    override val score: StateFlow<Int> = _score.asStateFlow()
+    override val questionIndex: StateFlow<Int> = _curQuestionIndex.asStateFlow()
+    override val totalQuestions: StateFlow<Int> = _numQuestions.asStateFlow()
     override val error: StateFlow<String?> = _error.asStateFlow()
 
-
-    // Fetch 5 questions from the backend
-    override suspend fun fetchNextQuestion() {
+    // Fetch n questions from the backend
+    override suspend fun fetchNextQuestions() {
         try {
             val response = api.getRandomQuestions(5)
-            if(response.isSuccessful){
+            if (response.isSuccessful) {
                 val body = response.body()
-                if(body != null && body.isNotEmpty()) {
+                if (body != null && body.isNotEmpty()) {
                     _questions.value = body
-                    _totalQuestions.value = body.size
+                    _numQuestions.value = body.size
                     _error.value = null
-                }else {
+                } else {
                     _error.value = "Received empty question from server"
                 }
             } else {
@@ -76,43 +79,39 @@ class SoloGameService : GameDriver {
         }
     }
 
-    //submit an answer and store it in the list of selected answers
+    // Submit the selected answer and move to the next question
     override suspend fun submitAnswer(answer: String) {
-        val question = _questions.value.getOrNull(_questionIndex.value - 1)
+        val question = _questions.value.getOrNull(_curQuestionIndex.value)
 
-        // Store the answer
-        val updatedAnswers = _selectedAnswers.value + answer
-        _selectedAnswers.value = updatedAnswers
+        // If the question exists, store the answer
+        if (question != null) {
+            val updatedAnswers = _selectedAnswers.value + answer
+            _selectedAnswers.value = updatedAnswers
 
-        // if all questions have been answered submit it to the backend
-        if (_selectedAnswers.value.size == 5) {
-            submitAnswers(_selectedAnswers.value)
+            // Increment the question index to go to the next question
+            _curQuestionIndex.value += 1
+
+            // If all questions have been answered, submit them to the backend
+            if (_selectedAnswers.value.size == _questions.value.size) {
+                submitAnswers(_selectedAnswers.value)
+            }
         }
-
     }
 
-    // Send the selected answers to the backend to tally the score
+    // Submit answers to the backend
     override suspend fun submitAnswers(answers: List<String>) : List<Boolean> {
         try {
+            val questionIds = _questions.value.map { it.id }
 
-            //collect data fro the backend api call
-            val questionIds = _questions.value.map {it.id}
-            val answers = _selectedAnswers.value
-
-            //construct a backend call DTO
             val answersRequest = AnswersRequest(
                 questionIds = questionIds,
                 answers = answers
             )
 
-
             val response = api.checkAnswers(answersRequest)
 
-            // Handle backend response to update the score based on correct answers
             if (response.isSuccessful) {
-                val answerResults = response.body()!! //await response
-
-                //process the response
+                val answerResults = response.body()!!
                 _score.value = answerResults.corrects.count { it }
                 _error.value = null
             } else {
@@ -123,12 +122,13 @@ class SoloGameService : GameDriver {
         }
     }
 
+    // Reset the game state
     override fun resetGame() {
         _questions.value = emptyList()
         _selectedAnswers.value = emptyList()
         _score.value = 0
-        _questionIndex.value = 0
-        _totalQuestions.value = 0
+        _curQuestionIndex.value = 0
+        _numQuestions.value = 0
         _error.value = null
     }
 }
