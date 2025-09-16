@@ -17,10 +17,12 @@ interface BackendQuestionApi {
 
     @GET("api/questions/randoms/count")
     suspend fun getRandomQuestions(@Query("count") count: Int): Response<List<TriviaQuestion>>
-    @POST("api/game/questions/check-answer")
+
+
+    @POST("api/game/check-answer")
     suspend fun checkAnswer(@Body answerRequest: AnswerRequest): Response<AnswerResponse>
 
-    @POST("api/game/questions/check-answer")
+    @POST("api/game/check-answers")
     suspend fun checkAnswers(@Body answersRequest: AnswersRequest): Response<AnswersResponse>
 
 }

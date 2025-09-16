@@ -82,7 +82,6 @@ class SoloGameService : GameDriver {
                 if (body != null && body.isNotEmpty()) {
 
                     _allQuestions.value = body
-                    Log.d("QuizScreen", "All questions in current game: ${_allQuestions.value}")
                     _numQuestions.value = body.size
                     _error.value = null
                 } else {
