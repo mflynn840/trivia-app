@@ -62,7 +62,8 @@ fun QuizScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.TopStart),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xCCB39DDB))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB39DDB)
+            )
         ) {
             Text("Back", color = Color.Black)
         }

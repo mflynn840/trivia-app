@@ -31,7 +31,7 @@ fun AnswerButton(
 ) {
     // Determine the button's background based on selection state
     val backgroundColor = if (isSelected) Color(0xFF4CAF50) // Green when selected
-    else Color(0xCCB39DDB)  // Translucent purple when not selected
+    else Color(0xFFB39DDB) // Translucent purple when not selected
     // Determine text color based on selection
     val textColor = if (isSelected) Color.White else Color.Black
 
@@ -56,8 +56,7 @@ fun AnswerButton(
             // Display the answer text
             Text(
                 text = text,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
                 fontFamily = FontFamily.SansSerif,
                 color = textColor // Text color changes if selected
             )
