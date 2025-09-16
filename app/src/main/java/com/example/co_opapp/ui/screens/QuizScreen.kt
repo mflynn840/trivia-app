@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.ui.components.QuizScreen.AnswerButton
 import com.example.co_opapp.ui.components.QuizScreen.QuestionCard
@@ -77,7 +78,12 @@ fun QuizScreen(
                     ) {
                         Text(
                             "Question ${questionIndex + 1} of $totalQuestions",
-                            color = Color.White
+                            color = Color.White,
+                            fontSize = 24.sp,
+
+                            fontWeight = FontWeight.Bold,
+
+
                         )
                         QuestionCard(question = question.body)
 
