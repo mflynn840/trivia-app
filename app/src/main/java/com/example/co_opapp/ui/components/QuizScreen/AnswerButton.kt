@@ -56,7 +56,7 @@ fun AnswerButton(
             // Display the answer text
             Text(
                 text = text,
-                fontSize = 18.sp,
+                fontSize = 20.sp,
                 fontFamily = FontFamily.SansSerif,
                 color = textColor // Text color changes if selected
             )

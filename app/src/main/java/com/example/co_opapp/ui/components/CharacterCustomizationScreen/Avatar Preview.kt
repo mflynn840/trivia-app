@@ -24,12 +24,12 @@ fun AvatarPreview(imageUri: Uri?) {
 
     Box(
         modifier = Modifier
-            .size(200.dp)
+            .size(300.dp)
             .clip(CircleShape)
             .background(Color.Gray.copy(alpha = 0.3f)),
         contentAlignment = Alignment.Center
     ) {
-        if (imageUri != null) {
+        if (imageUri != null) {6272
             val bitmap = remember(imageUri) {
                 try {
                     if (Build.VERSION.SDK_INT < 28) {
