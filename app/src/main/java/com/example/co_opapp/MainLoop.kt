@@ -17,8 +17,8 @@ import com.example.co_opapp.ui.theme.CoopAppTheme
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.LoginScreen
 import com.example.co_opapp.ui.screens.QuizScreen
-//import com.example.co_opapp.ui.screens.LobbyScreen
-import com.example.co_opapp.Service.CoopGameService
+import com.example.co_opapp.ui.screens.LobbyScreen
+import com.example.co_opapp.Service.RaceModeGameService
 import com.example.co_opapp.Service.SoloGameService
 import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
 
@@ -43,7 +43,7 @@ fun CoopApp() {
 
     //Create the services for running a solo or co-op game
     val soloService = remember { SoloGameService() }
-    //val coopService = remember { CoopGameService() }
+    val raceModeService = remember { RaceModeGameService() }
 
 
     //start on the login page
@@ -107,10 +107,7 @@ fun CoopApp() {
             }
         }
 
-        /*composable("lobby") {
-            // Keep the CoOpGameService across navigation
-            val coopService = remember { CoopGameService() }
-
+        composable("lobby") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 LobbyScreen(
                     modifier = Modifier.padding(innerPadding),
@@ -121,10 +118,11 @@ fun CoopApp() {
                     },
                     onNavigateToGame = {
                         navController.navigate("coopQuiz")
-                    }
+                    },
+                    gameService = raceModeService
                 )
             }
-        }*/
+        }
 
         /*composable("coopQuiz") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
