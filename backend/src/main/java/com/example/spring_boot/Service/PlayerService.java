@@ -23,8 +23,6 @@ public class PlayerService {
         // Convert image to byte array
         byte[] profilePictureBytes = profilePictureFile.getBytes();
 
-        // Set profile picture
-        player.setProfilePicture(profilePictureBytes);
 
         // Save the player object with the profile picture
         return playerRepository.save(player);
