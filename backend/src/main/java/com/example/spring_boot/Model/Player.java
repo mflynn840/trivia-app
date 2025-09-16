@@ -29,12 +29,6 @@ public class Player implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
-    // Profile picture (store as byte array)
-    @Lob  // This annotation ensures that the field is treated as a large object in the database
-    @Column(name = "profile_picture", columnDefinition = "BLOB")
-    private byte[] profilePicture;  // Profile picture stored as a byte array
-
-
     // Constructors
     public Player() {}
 
@@ -56,14 +50,7 @@ public class Player implements UserDetails {
     public String getPassword() { return this.password; }
     public void setPassword(String password) { this.password = password; }
 
-    // Profile picture getter and setter
-    public byte[] getProfilePicture() {
-        return profilePicture;
-    }
 
-    public void setProfilePicture(byte[] profilePicture) {
-        this.profilePicture = profilePicture;
-    }
 
     // Return a list of the user's privileges
     @Override
