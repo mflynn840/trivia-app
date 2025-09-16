@@ -3,10 +3,13 @@ package com.example.spring_boot.Service;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.example.spring_boot.Controller.Question;
+import com.example.spring_boot.Model.Question;
+import com.example.spring_boot.Model.Score;
+import com.example.spring_boot.Model.AnswerRequest;
 import com.example.spring_boot.Model.GameRoom;
 import com.example.spring_boot.Model.Player;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,12 +17,17 @@ public class LobbyService {
 
     private final Map<Long, GameRoom> rooms = new HashMap<>();
     private final AtomicLong roomIdCounter = new AtomicLong(1);
+    private final QuestionService questionService;
+
+
+    public LobbyService(QuestionService questionService){
+        this.questionService = questionService;
+    }
 
     public GameRoom createRoom(Player player) {
         long roomId = roomIdCounter.getAndIncrement();
-        player.setId(System.currentTimeMillis()); // simple unique player id
-        player.setHost(true);
-        player.setReady(false);
+        player.setIsHost(true);
+        player.setIsReady(false);
 
         GameRoom room = new GameRoom();
         room.setId(roomId);
@@ -35,9 +43,8 @@ public class LobbyService {
         GameRoom room = rooms.get(roomId);
         if (room == null) throw new RuntimeException("Room not found");
 
-        player.setId(System.currentTimeMillis()); // simple unique id
-        player.setHost(false);
-        player.setReady(false);
+        player.setIsHost(false);
+        player.setIsReady(false);
         room.getPlayers().add(player);
 
         return room;
@@ -49,7 +56,7 @@ public class LobbyService {
 
         for (Player p : room.getPlayers()) {
             if (p.getId().equals(playerId)) {
-                p.setReady(ready);
+                p.setIsReady(ready);
                 break;
             }
         }
@@ -60,7 +67,7 @@ public class LobbyService {
         GameRoom room = rooms.get(roomId);
         if (room == null) throw new RuntimeException("Room not found");
 
-        boolean allReady = room.getPlayers().stream().allMatch(Player::isReady);
+        boolean allReady = room.getPlayers().stream().allMatch(Player::getIsReady);
         if (!allReady) throw new RuntimeException("Not all players are ready");
 
         room.setGameState(GameRoom.GameState.IN_PROGRESS);
@@ -68,10 +75,15 @@ public class LobbyService {
     }
 
     public List<Question> getQuestions(Long roomId) {
-        // For simplicity, return a fixed list of questions.
-        return Arrays.asList(
-            new Question(1L, "What is 2+2?", Arrays.asList("3","4","5"), 1),
-            new Question(2L, "Capital of France?", Arrays.asList("Paris","Rome","Berlin"), 0)
-        );
+        GameRoom room = rooms.get(roomId);
+        if (room == null) throw new RuntimeException("Room not found");
+
+        // Example: fetch 5 random questions per game
+        return questionService.getRandomQuestions(5);
+    }
+
+    public Score submitAnswer(Long roomId, Long playerId, AnswerRequest answer) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'submitAnswer'");
     }
 }
