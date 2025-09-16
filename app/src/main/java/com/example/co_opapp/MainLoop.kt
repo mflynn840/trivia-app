@@ -42,12 +42,13 @@ fun CoopApp() {
 
     //the main loop contains a controller for switching between pages
     val navController = rememberNavController()
-
-    //Create the services for running a solo or co-op game
-    val soloService = remember { SoloGameService() }
-    val raceModeService = remember { RaceModeGameService() }
     val context = LocalContext.current
     val authService = remember { AuthService(context) }
+    //Create the services for running a solo or co-op game
+    val soloService = remember { SoloGameService(authService) }
+    val raceModeService = remember { RaceModeGameService() }
+
+
 
     //start on the login page
     NavHost(

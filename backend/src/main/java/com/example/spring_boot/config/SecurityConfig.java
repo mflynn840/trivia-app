@@ -22,9 +22,6 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/questions/randoms/**").permitAll()  // <--- public
-                .requestMatchers("/api/game/check-answers").permitAll()
-                .requestMatchers("/api/players/*/upload-avatar").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated()                      // <--- all else locked down
             )
