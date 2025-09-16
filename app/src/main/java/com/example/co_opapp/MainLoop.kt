@@ -89,6 +89,7 @@ fun CoopApp() {
 
                         }
                     },
+                    authService = authService
                 )
             }
         }

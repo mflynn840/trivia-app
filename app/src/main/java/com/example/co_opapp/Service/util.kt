@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 
 
@@ -19,7 +20,7 @@ fun Uri.toMultipartBody(context: Context, name: String): MultipartBody.Part? {
         val bytes = inputStream.readBytes()
         inputStream.close()
 
-        val requestBody = RequestBody.create("image/*".toMediaTypeOrNull(), bytes)
+        val requestBody = bytes.toRequestBody("image/*".toMediaTypeOrNull())
         MultipartBody.Part.createFormData(name, "avatar.jpg", requestBody)
     } catch (e: Exception) {
         e.printStackTrace()

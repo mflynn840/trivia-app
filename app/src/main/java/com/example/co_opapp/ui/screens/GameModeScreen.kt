@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.sp
 import com.example.co_opapp.R
+import com.example.co_opapp.Service.AuthService
 
 
 @Composable
@@ -25,7 +26,8 @@ fun GameModeScreen(
     onNavigateToSinglePlayer: () -> Unit = {},
     onNavigateToCoOp: () -> Unit = {},
     onNavigateToCharacterMode: () -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onNavigateBack: () -> Unit = {},
+    authService : AuthService
 ) {
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -38,7 +40,10 @@ fun GameModeScreen(
         )
 
         // Character circle in top-right
-        CharacterImageCircle(modifier = Modifier.align(Alignment.TopEnd))
+        CharacterImageCircle(
+            modifier = Modifier.align(Alignment.TopEnd),
+            authService = authService
+        )
 
         // Main column with game mode cards
         Column(
