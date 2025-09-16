@@ -1,5 +1,6 @@
 package com.example.spring_boot.Model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,9 +12,10 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String questionText;
+
+    @Column(name = "questionText")  // <-- map exact DB colum
+    private String question;
     private String correctAnswer;
-    
     private String optionA;
     private String optionB;
     private String optionC;
@@ -27,9 +29,11 @@ public class Question {
     public Question() {}
 
     // Constructor with parameters
-    public Question(String question, String correctAnswer, String optionA, String optionB, 
+    public Question(String questionText, String correctAnswer, String optionA, String optionB, 
                    String optionC, String optionD, String category, String difficulty, String type) {
-        this.questionText = question;
+        
+        
+        this.question = questionText;
         this.correctAnswer = correctAnswer;
         this.optionA = optionA;
         this.optionB = optionB;
@@ -50,11 +54,11 @@ public class Question {
     }
 
     public String getQuestion() {
-        return this.questionText;
+        return this.question;
     }
 
     public void setQuestionText(String question) {
-        this.questionText = question;
+        this.question = question;
     }
 
     public String getCorrectAnswer() {
@@ -126,7 +130,7 @@ public class Question {
     public String toString() {
         return "Question{" +
                 "id=" + id +
-                ", question='" + questionText + '\'' +
+                ", question='" + question + '\'' +
                 ", correctAnswer='" + correctAnswer + '\'' +
                 ", optionA='" + optionA + '\'' +
                 ", optionB='" + optionB + '\'' +
