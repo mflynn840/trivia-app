@@ -32,6 +32,8 @@ public class Player implements UserDetails {
     private boolean isHost;
     private boolean isReady;
 
+    byte[] profilePicture;
+
     // Constructors
     public Player() {}
 
@@ -93,5 +95,9 @@ public class Player implements UserDetails {
     }
 
     public boolean getIsReady(){return this.isReady;}
+
+
+    public byte[] getProfilePicture(){return this.profilePicture;}
+    public void setProfilePicture(byte[] profilePicture){this.profilePicture = profilePicture;}
 
 }
