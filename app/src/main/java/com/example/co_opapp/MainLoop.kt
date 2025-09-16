@@ -23,6 +23,7 @@ import com.example.co_opapp.ui.screens.LobbyScreen
 import com.example.co_opapp.Service.RaceModeGameService
 import com.example.co_opapp.Service.SoloGameService
 import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
+import com.example.co_opapp.ui.screens.QuizSetupScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -98,13 +99,38 @@ fun CoopApp() {
             }
         }
 
+        composable("quizSetup") {
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                QuizSetupScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onStartQuiz = { category, difficulty, numQuestions ->
+                        // Pass the selected options to the single player quiz
+                        navController.navigate("singlePlayerQuiz/$category/$difficulty/$numQuestions")
+                    },
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+        }
+
 
         //Single player quiz game is a game skeleton supplied with the soloGameService
-        composable("singlePlayerQuiz") {
+        composable(
+            route = "singlePlayerQuiz/{category}/{difficulty}/{numQuestions}"
+        ) {backStackEntry ->
+            val category = backStackEntry.arguments?.getString("category") ?: "General"
+            val difficulty = backStackEntry.arguments?.getString("difficulty") ?: "Easy"
+            val numQuestions = backStackEntry.arguments?.getString("numQuestions")?.toIntOrNull() ?: 5
+
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 QuizScreen(
                     modifier = Modifier.padding(innerPadding),
                     quizService = soloService, // inject the service
+                    category = category,
+                    difficulty = difficulty,
+                    numQuestions = numQuestions,
+
                     onNavigateBack = {
                         navController.navigate("gameMode") {
                             popUpTo("gameMode") { inclusive = true }

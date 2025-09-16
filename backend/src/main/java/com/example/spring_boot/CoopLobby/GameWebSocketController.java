@@ -66,7 +66,7 @@ public class GameWebSocketController {
         GameSession game = activeGames.get(gameId);
         if (game != null && game.canStart()) {
             game.startGame();
-            Question question = questionService.getRandomQuestion("easy", null);
+            Question question = questionService.getRandomQuestions(6, "easy", null).get(0);
             
             Map<String, Object> response = new HashMap<>();
             response.put("type", "game_started");
@@ -99,7 +99,7 @@ public class GameWebSocketController {
             // Move to next player or end round
             if (game.isRoundComplete()) {
                 game.nextRound();
-                Question nextQuestion = questionService.getRandomQuestion("easy", null);
+                Question nextQuestion = questionService.getRandomQuestions(6, null, null).get(0);
                 response.put("nextQuestion", nextQuestion);
                 response.put("currentPlayer", game.getCurrentPlayer());
             }

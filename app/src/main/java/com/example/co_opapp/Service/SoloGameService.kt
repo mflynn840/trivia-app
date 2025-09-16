@@ -1,35 +1,26 @@
 package com.example.co_opapp.Service
 
-import android.util.Log
-import com.example.co_opapp.data_model.AnswerRequest
 import com.example.co_opapp.data_model.TriviaQuestion
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.example.co_opapp.Interface.BackendQuestionApi
 import com.example.co_opapp.Interface.GameDriver
 import com.example.co_opapp.data_model.AnswersRequest
+import com.example.co_opapp.data_model.AnswersResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-
-
 import kotlinx.coroutines.Dispatchers
-
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.Job
-
-
-// Response from backend for answer check
-data class AnswerResponse(
-    val correct: List<Boolean> //change this to a list
-)
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 
 /* Handle the logic of running a solo trivia game
@@ -39,7 +30,28 @@ data class AnswerResponse(
     4. when all 5 questions have been answered, send the responses to the backend to see how many were correct
     5. get the response and use it to update the game to show the ending screen
  */
-class SoloGameService(private val authService: AuthService) : GameDriver {
+interface BackendQuestionApi {
+
+    @GET("api/questions/randoms/count")
+    suspend fun getRandomQuestions(
+        @Query("count") count: Int,
+        @Header("Authorization") token: String
+    ): Response<List<TriviaQuestion>>
+
+    @POST("api/game/check-answers")
+    suspend fun checkAnswers(
+        @Body answersRequest: AnswersRequest,
+        @Header("Authorization") token: String
+    ): Response<AnswersResponse>
+
+}
+
+class SoloGameService(
+    private val authService: AuthService,
+    category: String,
+    difficulty: String,
+    numQuestions: Int,
+) : GameDriver {
 
     private val retrofit = Retrofit.Builder()
         .baseUrl("http://192.168.4.21:8080/") // replace with your backend URL
