@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.co_opapp.R
 
 @Composable
@@ -48,44 +49,41 @@ fun CharacterCustomizationScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Main content column
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 32.dp, vertical = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Transparent box for title
+            // Title at the top
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xCC2196F3), shape = RoundedCornerShape(12.dp))
-                    .padding(8.dp),
+                    .background(Color(0xFF4CAF50), shape = RoundedCornerShape(12.dp))
+                    .padding(12.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Character Customization",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.Black,
+                    color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(150.dp)) // Space between title and greeting
 
-            // Transparent box for greeting
+            // Greeting box
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xCC2196F3), shape = RoundedCornerShape(12.dp))
-                    .padding(8.dp),
+                    .background(Color(0xFF2196F3), shape = RoundedCornerShape(12.dp))
+                    .padding(12.dp),
                 contentAlignment = Alignment.Center
-
             ) {
                 Text(
                     text = "Hello, $username",
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineSmall,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
@@ -96,7 +94,7 @@ fun CharacterCustomizationScreen(
             // Image preview
             Box(
                 modifier = Modifier
-                    .size(200.dp)
+                    .size(300.dp)
                     .clip(CircleShape)
                     .background(Color.Gray.copy(alpha = 0.3f)),
                 contentAlignment = Alignment.Center
@@ -129,7 +127,7 @@ fun CharacterCustomizationScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp)) // space before buttons
+            Spacer(modifier = Modifier.weight(1f)) // Push buttons to bottom
 
             // Upload Image button
             Button(
@@ -139,7 +137,11 @@ fun CharacterCustomizationScreen(
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
             ) {
-                Text("Upload Image")
+                Text(
+                    "Upload Image",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -152,7 +154,11 @@ fun CharacterCustomizationScreen(
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
             ) {
-                Text("Back")
+                Text(
+                    "Back",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
