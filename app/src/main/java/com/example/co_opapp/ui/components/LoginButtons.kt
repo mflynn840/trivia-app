@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.Service.AuthService
 import kotlinx.coroutines.CoroutineScope
@@ -47,7 +48,11 @@ fun LoginButtons(
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF006400), // Dark green background
+                contentColor = Color.White
+            ),
         ) {
             Text("Login")
         }
@@ -74,7 +79,11 @@ fun LoginButtons(
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF006400), // Dark green background
+            contentColor = Color.White
+        ),
         ) {
             Text("Register")
         }

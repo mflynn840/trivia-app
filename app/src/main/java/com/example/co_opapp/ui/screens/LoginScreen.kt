@@ -50,7 +50,7 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Login",
+                text = "Trivia Game",
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.Black
             )
@@ -93,6 +93,7 @@ fun LoginScreen(
             Text(
                 text = message.value,
                 color = Color.White
+
             )
         }
     }
