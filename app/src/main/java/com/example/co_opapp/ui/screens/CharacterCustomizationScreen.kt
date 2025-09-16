@@ -114,9 +114,13 @@ fun CharacterCustomizationScreen(
                         try {
                             if (Build.VERSION.SDK_INT < 28) {
                                 @Suppress("DEPRECATION")
-                                MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri!!)
+                                MediaStore.Images.Media.getBitmap(
+                                    context.contentResolver,
+                                    imageUri!!
+                                )
                             } else {
-                                val source = ImageDecoder.createSource(context.contentResolver, imageUri!!)
+                                val source =
+                                    ImageDecoder.createSource(context.contentResolver, imageUri!!)
                                 ImageDecoder.decodeBitmap(source)
                             }
                         } catch (e: Exception) {
@@ -162,24 +166,58 @@ fun CharacterCustomizationScreen(
                 Text("Back")
             }
 
-            //button to send an image from the ui
+            //send the image to the backend
             Button(onClick = {
                 imageUri?.let { uri ->
-                    // Use a coroutine to upload
                     CoroutineScope(Dispatchers.IO).launch {
-                        val success = authService.uploadAvatar(uri)
-                        withContext(Dispatchers.Main) {
-                            if (success) {
-                                Toast.makeText(context, "Avatar uploaded!", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+                        try {
+                            val inputStream = context.contentResolver.openInputStream(uri)
+                            if (inputStream == null) {
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(
+                                        context,
+                                        "Failed to open image",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                return@launch
+                            }
+
+                            val bytes = inputStream.readBytes()
+                            inputStream.close()
+
+                            // Call your upload method, pass bytes
+                            val success =
+                                authService.uploadAvatar(uri) // Make sure uploadAvatar can accept ByteArray
+
+                            withContext(Dispatchers.Main) {
+                                if (success) {
+                                    Toast.makeText(context, "Avatar uploaded!", Toast.LENGTH_SHORT)
+                                        .show()
+                                } else {
+                                    Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    context,
+                                    "Error uploading image: ${e.message}",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
                     }
+                } ?: run {
+                    Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
                 }
             }) {
-                Text("Upload Image")
+                Text("Confirm")
             }
         }
     }
 }
+
+
