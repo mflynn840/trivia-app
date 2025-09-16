@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,12 +30,12 @@ fun QuestionCard(
     totalQuestions: Int,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
-    backgroundColor: Color = Color(0xFFB39DDB) // light purple
+    backgroundColor: Color = Color(0xFF87CEEB) // light blue
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth(0.85f) // narrower width, centered
-            .height(150.dp)
+            .height(200.dp)
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
@@ -55,6 +56,8 @@ fun QuestionCard(
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Question body
             Text(

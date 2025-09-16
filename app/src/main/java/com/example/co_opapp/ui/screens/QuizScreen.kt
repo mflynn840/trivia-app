@@ -69,7 +69,7 @@ fun QuizScreen(
             shape = RoundedCornerShape(16.dp),                // same rounded corners
             border = BorderStroke(2.dp, Color.Black),         // border that follows the shape
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFB39DDB)            // solid light purple
+                containerColor = Color(0xFF87CEEB)            // solid light purple
             )
         ) {
             Text("Back", color = Color.Black)
@@ -125,7 +125,6 @@ fun QuizScreen(
                                 .fillMaxWidth(0.7f)
                                 .height(56.dp),
                             shape = RoundedCornerShape(16.dp),
-                            border = BorderStroke(2.dp, Color.Black),  // <-- border added here
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF4CAF50),
                                 contentColor = Color.White
@@ -137,6 +136,16 @@ fun QuizScreen(
                                 fontWeight = FontWeight.Bold
                             )
                         }
+
+
+
+
+
+
+
+
+
+
 
 
 
