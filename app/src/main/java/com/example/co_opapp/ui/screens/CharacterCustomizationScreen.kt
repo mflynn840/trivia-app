@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.R
 
@@ -29,15 +31,11 @@ fun CharacterCustomizationScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {}
 ) {
-    // Holds the selected image URI
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // Launcher for picking images
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        imageUri = uri
-    }
+    ) { uri: Uri? -> imageUri = uri }
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -50,27 +48,47 @@ fun CharacterCustomizationScreen(
             modifier = Modifier.fillMaxSize()
         )
 
+        // Main content column
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 32.dp, vertical = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            // Title
-            Text(
-                text = "Character Customization",
-                style = MaterialTheme.typography.headlineLarge,
-                color = Color.White
-            )
+            // Transparent box for title
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(12.dp))
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Character Customization",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Greeting
-            Text(
-                text = "Hello, $username",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White
-            )
+            // Transparent box for greeting
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(12.dp))
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Hello, $username",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -97,7 +115,6 @@ fun CharacterCustomizationScreen(
                             null
                         }
                     }
-
                     bitmap?.let {
                         Image(
                             bitmap = it.asImageBitmap(),
@@ -106,10 +123,12 @@ fun CharacterCustomizationScreen(
                             modifier = Modifier.fillMaxSize()
                         )
                     } ?: Text("Failed to load image", color = Color.Red)
+                } else {
+                    Text("Preview", color = Color.Black)
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f)) // Push buttons to bottom
+            Spacer(modifier = Modifier.height(32.dp)) // space before buttons
 
             // Upload Image button
             Button(
