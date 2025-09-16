@@ -33,8 +33,8 @@ fun QuestionCard(
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .height(150.dp) // slightly taller to fit progress + question
+            .fillMaxWidth(0.85f) // narrower width, centered
+            .height(150.dp)
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
@@ -47,6 +47,7 @@ fun QuestionCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+
             // Question progress
             Text(
                 text = "Question ${questionIndex + 1} of $totalQuestions",
