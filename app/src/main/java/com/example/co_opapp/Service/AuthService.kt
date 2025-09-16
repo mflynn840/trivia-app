@@ -107,6 +107,10 @@ class AuthService(private val context: Context) {
         return sharedPref.getString("jwt_token", null)
     }
 
+    fun getUsername() : String? {
+        return _currentPlayer.value?.username
+    }
+
     fun saveJwtToken(context: Context, token: String) {
         val sharedPref = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
