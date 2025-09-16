@@ -15,46 +15,60 @@ import com.example.co_opapp.ui.components.GameModeCard
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.co_opapp.R
+import com.example.co_opapp.ui.components.CharacterBubble
 
 @Composable
 fun GameModeScreen(
+    username: String,
+    viewModel: CharacterViewModel = viewModel(),
     modifier: Modifier = Modifier,
     onNavigateToSinglePlayer: () -> Unit = {},
     onNavigateToCoOp: () -> Unit = {},
     onNavigateToCharacterMode: () -> Unit = {},
     onNavigateBack: () -> Unit = {}
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    val imageUri by viewModel.characterImageUri.collectAsState()
 
-        // Background image (Game Mode Screen)
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        // Background image (or gradient)
         Image(
             painter = painterResource(id = R.drawable.forest_lobby),
-            contentDescription = "Lobby Background",
-            contentScale = ContentScale.Crop, // Fill the entire screen
+            contentDescription = "Game Mode Background",
+            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
 
-        // Character circle in top-right
-        CharacterImageCircle(modifier = Modifier.align(Alignment.TopEnd))
-
-        // Main column with game mode cards
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+        // Top-right character bubble
+        CharacterBubble(
+            imageUri = imageUri,
             modifier = Modifier
-                .padding(32.dp)
-                .align(Alignment.Center)
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            // Title
             Text(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color.White // use white if image is dark
+                color = Color.White
             )
 
+            // Game Mode Cards...
             GameModeCard(
                 icon = "🎮",
                 title = "Single Player",
@@ -73,6 +87,7 @@ fun GameModeScreen(
                 onClick = onNavigateToCoOp
             )
 
+            // Character customization button
             Button(
                 onClick = onNavigateToCharacterMode,
                 modifier = Modifier
@@ -85,6 +100,7 @@ fun GameModeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Back button
             Button(
                 onClick = onNavigateBack,
                 modifier = Modifier.fillMaxWidth(),
