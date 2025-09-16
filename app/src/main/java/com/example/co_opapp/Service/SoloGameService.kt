@@ -10,10 +10,20 @@ import retrofit2.converter.gson.GsonConverterFactory
 import com.example.co_opapp.Interface.BackendQuestionApi
 import com.example.co_opapp.Interface.GameDriver
 import com.example.co_opapp.data_model.AnswersRequest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+
+
+import kotlinx.coroutines.Dispatchers
+
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+
 
 // Response from backend for answer check
 data class AnswerResponse(
@@ -45,12 +55,16 @@ class SoloGameService : GameDriver {
     private val _numQuestions = MutableStateFlow(0)
     private val _error = MutableStateFlow<String?>(null)
 
+    // Create a CoroutineScope for the service
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
+
 
     // The current question is based on the current question index
     override val currentQuestion: StateFlow<TriviaQuestion?> = _questions
         .combine(_curQuestionIndex) { questions, index ->
             questions.getOrNull(index)  // Get the question at the current index
-        }.stateIn(scope = coroutineScope, started = SharingStarted.Eagerly, initialValue = null)
+        }.stateIn(scope, started = SharingStarted.Eagerly, initialValue = null)
 
 
     override val score: StateFlow<Int> = _score.asStateFlow()
@@ -114,11 +128,15 @@ class SoloGameService : GameDriver {
                 val answerResults = response.body()!!
                 _score.value = answerResults.corrects.count { it }
                 _error.value = null
+                return answerResults.corrects
             } else {
                 _error.value = "Failed to submit answers: ${response.code()} ${response.message()}"
+                return List(answers.size) { false }
             }
         } catch (e: Exception) {
             _error.value = "Exception: ${e.localizedMessage}"
+            return List(answers.size) { false }
+
         }
     }
 
