@@ -62,9 +62,6 @@ fun QuizScreen(
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     Text("Question ${questionIndex + 1} of $totalQuestions", color = Color.White)
-                    //HERE write a line to print out the entire questions set
-                    Log.d("QuizScreen", "Current question: $currentQuestion")
-
                     QuestionCard(question = currentQuestion!!.body)
 
                     val options = listOf(
