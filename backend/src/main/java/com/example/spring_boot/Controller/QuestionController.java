@@ -31,10 +31,12 @@ public class QuestionController {
         }
     }
     
-    @GetMapping("/randoms/{count}")
-    public ResponseEntity<List<Question>> getRandomQuestions(@RequestParam int count){
+    @GetMapping("/randoms/{count}/{category}/{difficulty}")
+    public ResponseEntity<List<Question>> getRandomQuestions(@RequestParam int count,
+                                            @RequestParam String category,
+                                            @RequestParam String difficulty){
         try{
-            List<Question> questions = this.questionService.getRandomQuestions(count);
+            List<Question> questions = this.questionService.getRandomQuestions(count, category,null);
             return ResponseEntity.ok(questions);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
