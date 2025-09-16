@@ -33,7 +33,7 @@ data class GameRoom(
 // LAN-friendly question model
 data class TriviaQuestion(
     val id: Long,
-    val question: String,
+    val body: String,
     val optionA: String,
     val optionB: String,
     val optionC: String,
