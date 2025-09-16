@@ -39,7 +39,7 @@ data class AnswerResponse(
     4. when all 5 questions have been answered, send the responses to the backend to see how many were correct
     5. get the response and use it to update the game to show the ending screen
  */
-class SoloGameService : GameDriver {
+class SoloGameService(private val authService: AuthService) : GameDriver {
 
     private val retrofit = Retrofit.Builder()
         .baseUrl("http://192.168.4.21:8080/") // replace with your backend URL
@@ -76,7 +76,7 @@ class SoloGameService : GameDriver {
     // Fetch n questions from the backend
     override suspend fun fetchNextQuestions() {
         try {
-            val response = api.getRandomQuestions(5)
+            val response = api.getRandomQuestions(5, authService.getJwtToken()!!)
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null && body.isNotEmpty()) {
@@ -124,7 +124,7 @@ class SoloGameService : GameDriver {
                 answers = answers
             )
 
-            val response = api.checkAnswers(answersRequest)
+            val response = api.checkAnswers(answersRequest,authService.getJwtToken()!!)
 
             if (response.isSuccessful) {
                 val answerResults = response.body()!!
