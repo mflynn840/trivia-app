@@ -1,9 +1,11 @@
 package com.example.co_opapp.ui.screens
 
+import android.R.attr.bitmap
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.provider.MediaStore
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -26,26 +28,31 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.co_opapp.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 
 @Composable
 fun CharacterCustomizationScreen(
     username: String,
-    modifier: Modifier = Modifier,
     viewModel: CharacterViewModel = viewModel(),
+    modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {}
 ) {
-    val imageUri by viewModel.characterImageUri.collectAsState()
+    val context = LocalContext.current
+    val imageUri by viewModel.characterImageUri
 
+    // Launcher to pick image
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        viewModel.setCharacterImage(uri) // Update ViewModel
+        uri?.let { viewModel.setCharacterImage(it) }
     }
 
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
-        // Background image
+    Box(modifier = modifier.fillMaxSize()) {
+        // Background
         Image(
             painter = painterResource(id = R.drawable.character_forest),
             contentDescription = "Character Customization Background",
@@ -85,8 +92,9 @@ fun CharacterCustomizationScreen(
                     .background(Color.Gray.copy(alpha = 0.3f)),
                 contentAlignment = Alignment.Center
             ) {
+
+                /*
                 imageUri?.let { uri ->
-                    val context = LocalContext.current
                     val bitmap = remember(uri) {
                         try {
                             if (Build.VERSION.SDK_INT < 28) {
@@ -101,6 +109,8 @@ fun CharacterCustomizationScreen(
                         }
                     }
 
+                 */
+
                     bitmap?.let {
                         Image(
                             bitmap = it.asImageBitmap(),
@@ -112,14 +122,12 @@ fun CharacterCustomizationScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f)) // Push buttons to bottom
+            Spacer(modifier = Modifier.weight(1f))
 
-            // Upload Image button
+            // Pick image
             Button(
                 onClick = { launcher.launch("image/*") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
+                modifier = Modifier.fillMaxWidth().height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
             ) {
                 Text("Upload Image")
@@ -127,12 +135,31 @@ fun CharacterCustomizationScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Save image
+            Button(
+                onClick = {
+                    imageUri?.let { uri ->
+                        viewModel.uploadCharacterImage(context, uri) { success ->
+                            Toast.makeText(
+                                context,
+                                if (success) "Profile picture updated!" else "Upload failed",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+            ) {
+                Text("Save")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Back button
             Button(
                 onClick = onNavigateBack,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
+                modifier = Modifier.fillMaxWidth().height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
             ) {
                 Text("Back")
