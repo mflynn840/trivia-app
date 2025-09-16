@@ -32,7 +32,7 @@ public class QuestionController {
     }
     
     @GetMapping("/randoms/{count}")
-    public ResponseEntity<List<Question>> getRandomQuestions(@PathVariable int count){
+    public ResponseEntity<List<Question>> getRandomQuestions(@RequestParam int count){
         try{
             List<Question> questions = this.questionService.getRandomQuestions(count);
             return ResponseEntity.ok(questions);

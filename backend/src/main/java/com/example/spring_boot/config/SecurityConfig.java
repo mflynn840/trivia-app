@@ -22,7 +22,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/questions/random").permitAll()  // <--- public
+                .requestMatchers("/api/questions/randoms/**").permitAll()  // <--- public
                 .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated()                      // <--- all else locked down
             )
