@@ -25,8 +25,6 @@ import com.example.co_opapp.ui.components.CharacterBubble
 
 @Composable
 fun GameModeScreen(
-    username: String,
-    viewModel: CharacterViewModel = viewModel(),
     modifier: Modifier = Modifier,
     onNavigateToSinglePlayer: () -> Unit = {},
     onNavigateToCoOp: () -> Unit = {},
