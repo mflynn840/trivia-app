@@ -65,7 +65,7 @@ fun QuizScreen(
                     //HERE write a line to print out the entire questions set
                     Log.d("QuizScreen", "Current question: $currentQuestion")
 
-                    QuestionCard(question = currentQuestion!!.questionText)
+                    QuestionCard(question = currentQuestion!!.body)
 
                     val options = listOf(
                         question.optionA,
@@ -74,7 +74,7 @@ fun QuizScreen(
                         question.optionD
                     )
 
-                    options.forEach { answer ->
+                    options.forEach {answer ->
                         AnswerButton(
                             text = answer,
                             isSelected = (answer == selectedAnswer),
