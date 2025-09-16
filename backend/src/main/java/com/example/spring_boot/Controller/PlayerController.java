@@ -6,6 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/players")
@@ -18,7 +22,8 @@ public class PlayerController {
     @PostMapping("/{username}/upload-profile-picture")
     public ResponseEntity<String> uploadProfilePicture(
             @PathVariable String username, 
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile file,
+            @RequestHeader Map<String, String> headers) {
 
         try {
             // Save the profile picture and update the player in the database
