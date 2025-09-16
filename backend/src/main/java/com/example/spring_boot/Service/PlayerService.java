@@ -20,12 +20,17 @@ public class PlayerService {
         System.out.println("finding player");
         Player player = playerRepository.findByUsername(username);
 
+        if(player == null){
+            throw new IllegalArgumentException("Player not found");
+        }
         System.out.println("Unpacking profile picture");
         // Convert image to byte array
         byte[] profilePictureBytes = profilePictureFile.getBytes();
+        if(profilePictureBytes.length == 0){
+            throw new IllegalStateException("No image recieved");
+        }
         player.setProfilePicture(profilePictureBytes);
 
-        System.out.println("Profile picture upload succesful");
         // Save the player object with the profile picture
         return playerRepository.save(player);
     }
@@ -40,6 +45,21 @@ public class PlayerService {
         }
         return null; // Return null if no user is authenticated
     }
+
+    public byte[] getAvatarBytes(String username) {
+        Player p = this.playerRepository.findByUsername(username);
+        if (p == null) {
+            throw new IllegalArgumentException("Player not found: " + username);
+        }
+
+        byte[] profilePicture = p.getProfilePicture();
+        if (profilePicture == null || profilePicture.length == 0) {
+            throw new IllegalStateException("Player has no profile picture: " + username);
+        }
+
+        return profilePicture;
+    }
+
 
     
 }
