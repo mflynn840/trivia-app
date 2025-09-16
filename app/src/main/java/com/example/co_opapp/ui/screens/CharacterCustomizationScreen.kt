@@ -69,7 +69,7 @@ fun CharacterCustomizationScreen(
             Text(
                 text = "Hello, $username",
                 style = MaterialTheme.typography.headlineMedium,
-                color = Color.White
+                color = Color.Black
             )
 
             Spacer(modifier = Modifier.height(24.dp))
