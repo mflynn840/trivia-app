@@ -23,15 +23,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.co_opapp.R
+import com.example.co_opapp.Service.AuthService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+import kotlinx.coroutines.withContext
+import android.widget.Toast
 @Composable
 fun CharacterCustomizationScreen(
-    username: String,
+    authService: AuthService,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     val launcher = rememberLauncherForActivityResult(
@@ -49,41 +55,44 @@ fun CharacterCustomizationScreen(
             modifier = Modifier.fillMaxSize()
         )
 
+        // Main content column
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 32.dp, vertical = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            // Title at the top
+            // Transparent box for title
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF4CAF50), shape = RoundedCornerShape(12.dp))
-                    .padding(12.dp),
+                    .background(Color(0xCC2196F3), shape = RoundedCornerShape(12.dp))
+                    .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Character Customization",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
+                    color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
             }
 
-            Spacer(modifier = Modifier.height(150.dp)) // Space between title and greeting
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // Greeting box
+            // Transparent box for greeting
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF2196F3), shape = RoundedCornerShape(12.dp))
-                    .padding(12.dp),
+                    .background(Color(0xCC2196F3), shape = RoundedCornerShape(12.dp))
+                    .padding(8.dp),
                 contentAlignment = Alignment.Center
+
             ) {
                 Text(
-                    text = "Hello, $username",
-                    style = MaterialTheme.typography.headlineSmall,
+                    text = "Hello, ${authService.getUsername()}",
+                    style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
@@ -94,7 +103,7 @@ fun CharacterCustomizationScreen(
             // Image preview
             Box(
                 modifier = Modifier
-                    .size(300.dp)
+                    .size(200.dp)
                     .clip(CircleShape)
                     .background(Color.Gray.copy(alpha = 0.3f)),
                 contentAlignment = Alignment.Center
@@ -127,7 +136,7 @@ fun CharacterCustomizationScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f)) // Push buttons to bottom
+            Spacer(modifier = Modifier.height(32.dp)) // space before buttons
 
             // Upload Image button
             Button(
@@ -137,11 +146,7 @@ fun CharacterCustomizationScreen(
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
             ) {
-                Text(
-                    "Upload Image",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Text("Upload Image")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -154,11 +159,26 @@ fun CharacterCustomizationScreen(
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
             ) {
-                Text(
-                    "Back",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Text("Back")
+            }
+
+            //button to send an image from the ui
+            Button(onClick = {
+                imageUri?.let { uri ->
+                    // Use a coroutine to upload
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val success = authService.uploadAvatar(uri)
+                        withContext(Dispatchers.Main) {
+                            if (success) {
+                                Toast.makeText(context, "Avatar uploaded!", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }) {
+                Text("Upload Image")
             }
         }
     }

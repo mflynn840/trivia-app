@@ -152,9 +152,9 @@ fun CoopApp() {
             val username = backStackEntry.arguments?.getString("username") ?: "Player"
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 CharacterCustomizationScreen(
-                    username = username,
                     modifier = Modifier.padding(innerPadding),
-                    onNavigateBack = { navController.popBackStack() }
+                    onNavigateBack = { navController.popBackStack() },
+                    authService = authService
                 )
             }
         }
