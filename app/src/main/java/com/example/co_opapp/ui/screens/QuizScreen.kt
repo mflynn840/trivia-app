@@ -26,7 +26,6 @@ fun QuizScreen(
     val questionIndex by quizService.questionIndex.collectAsState(initial = 0)
     val totalQuestions by quizService.totalQuestions.collectAsState(initial = 0)
     val error by quizService.error.collectAsState(initial = null as String?)
-
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
     val currentQuestion by quizService.currentQuestion.collectAsState(initial = null)
@@ -63,15 +62,16 @@ fun QuizScreen(
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     Text("Question ${questionIndex + 1} of $totalQuestions", color = Color.White)
-
+                    //HERE write a line to print out the entire questions set
                     Log.d("QuizScreen", "Current question: $currentQuestion")
+
                     QuestionCard(question = currentQuestion!!.questionText)
 
                     val options = listOf(
-                        question.option1,
-                        question.option2,
-                        question.option3,
-                        question.option4
+                        question.optionA,
+                        question.optionB,
+                        question.optionC,
+                        question.optionD
                     )
 
                     options.forEach { answer ->
