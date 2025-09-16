@@ -1,18 +1,22 @@
 package com.example.co_opapp.ui.screens
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.ui.components.AnswerButton
 import com.example.co_opapp.ui.components.QuestionCard
 import kotlinx.coroutines.launch
-
 import com.example.co_opapp.Interface.GameDriver
+import com.example.co_opapp.R
+
 
 
 
@@ -27,39 +31,42 @@ fun QuizScreen(
     onNavigateBack: () -> Unit = {},
     onGameComplete: (score: Int, totalQuestions: Int) -> Unit = { _, _ -> }
 ) {
-
-    // use the quiz service to initilize and manage these game state variables
     val score by quizService.score.collectAsState(initial = 0)
     val questionIndex by quizService.questionIndex.collectAsState(initial = 0)
     val totalQuestions by quizService.totalQuestions.collectAsState(initial = 0)
     val error by quizService.error.collectAsState(initial = null as String?)
     val currentQuestion by quizService.currentQuestion.collectAsState(initial = null)
 
-
-    //manage this widgets state using these variables in house
     var selectedAnswer by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
-    //start after first set of questions is fetched
     LaunchedEffect(Unit) { quizService.fetchNextQuestions() }
 
     Box(modifier = modifier.fillMaxSize()) {
-        when {
-            // --- QUESTION DISPLAY ---
-            currentQuestion != null -> {
-                //find a non null current question
-                val question = currentQuestion!!
+        // --- BACKGROUND IMAGE ---
+        Image(
+            painter = painterResource(id = R.drawable.forest_background),
+            contentDescription = "Quiz Background",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
 
-                // Make sure to pass the full question object to QuestionCard
+        when {
+            currentQuestion != null -> {
+                val question = currentQuestion!!
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    Text("Question ${questionIndex + 1} of $totalQuestions", color = Color.White)
-                    QuestionCard(question = currentQuestion!!.body)
+                    Text(
+                        "Question ${questionIndex + 1} of $totalQuestions",
+                        color = Color.White
+                    )
+                    QuestionCard(question = question.body)
 
-                    //create an answer button for each question option
                     val options = listOf(
                         question.optionA,
                         question.optionB,
@@ -75,7 +82,6 @@ fun QuizScreen(
                         )
                     }
 
-                    //create a submit button
                     Button(
                         onClick = {
                             selectedAnswer?.let { answer ->
@@ -88,7 +94,6 @@ fun QuizScreen(
                 }
             }
 
-            // --- ERROR STATE ---
             error != null -> {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -104,7 +109,6 @@ fun QuizScreen(
                 }
             }
 
-            // --- QUIZ COMPLETE STATE ---
             else -> {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -112,11 +116,7 @@ fun QuizScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Text("Quiz Complete! Score: $score / $totalQuestions")
-
-                    //main menu button
                     Button(onClick = onNavigateBack) { Text("Back") }
-
-                    //reset game button
                     Button(onClick = {
                         coroutineScope.launch {
                             quizService.resetGame()
@@ -125,8 +125,7 @@ fun QuizScreen(
                     }) { Text("Retry") }
                 }
             }
-
-
         }
     }
 }
+

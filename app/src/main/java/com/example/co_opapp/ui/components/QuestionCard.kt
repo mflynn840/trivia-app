@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,7 +24,7 @@ fun QuestionCard(
     question: String,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
-    backgroundColor: Color = Color(0xFFE1BEE7) // light purple
+    backgroundColor: Color = Color(0xCCB39DDB) // light purple
 ) {
     Card(
         modifier = modifier
@@ -42,7 +43,8 @@ fun QuestionCard(
                 text = question,
                 fontSize = fontSize,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                textAlign = TextAlign.Center
             )
         }
     }
