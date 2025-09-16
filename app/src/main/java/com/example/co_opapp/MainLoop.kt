@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,6 +22,9 @@ import com.example.co_opapp.Service.CoopGameService
 import com.example.co_opapp.Service.SoloGameService
 import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
 
+
+private val Any.value: Any
+private val VM.characterImageUri: Any
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +78,7 @@ fun CoopApp() {
                     onNavigateToCoOp = {
                         navController.navigate("lobby")
                     },
+
                     // <-- New callback for Character Customization
                     onNavigateToCharacterMode = { navController.navigate("characterCustomization") },
                     onNavigateBack = {

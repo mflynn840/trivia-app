@@ -23,52 +23,43 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.co_opapp.R
 import com.example.co_opapp.ui.components.CharacterBubble
 
+
 @Composable
 fun GameModeScreen(
-    username: String,
-    viewModel: CharacterViewModel = viewModel(),
     modifier: Modifier = Modifier,
     onNavigateToSinglePlayer: () -> Unit = {},
     onNavigateToCoOp: () -> Unit = {},
     onNavigateToCharacterMode: () -> Unit = {},
     onNavigateBack: () -> Unit = {}
 ) {
-    val imageUri by viewModel.characterImageUri.collectAsState()
-
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB))
+                )
+            )
     ) {
-        // Background image (or gradient)
-        Image(
-            painter = painterResource(id = R.drawable.forest_lobby),
-            contentDescription = "Game Mode Background",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-
-        // Top-right character bubble
-        CharacterBubble(
-            imageUri = imageUri,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(16.dp)
+        // Character circle in the top-right
+        CharacterImageCircle(
+            modifier = Modifier.align(Alignment.TopEnd)
         )
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier
+                .padding(32.dp)
+                .align(Alignment.Center)
         ) {
-            // Title
             Text(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
-                color = Color.White
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
 
-            // Game Mode Cards...
             GameModeCard(
                 icon = "🎮",
                 title = "Single Player",
@@ -87,7 +78,6 @@ fun GameModeScreen(
                 onClick = onNavigateToCoOp
             )
 
-            // Character customization button
             Button(
                 onClick = onNavigateToCharacterMode,
                 modifier = Modifier
@@ -100,7 +90,6 @@ fun GameModeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Back button
             Button(
                 onClick = onNavigateBack,
                 modifier = Modifier.fillMaxWidth(),
