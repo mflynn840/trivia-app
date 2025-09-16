@@ -52,7 +52,7 @@ fun GameModeScreen(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                color = Color.White // use white if image is dark
+                color = Color.Black // use white if image is dark
             )
 
             GameModeCard(
@@ -78,24 +78,24 @@ fun GameModeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E8B57))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF228B22))
             ) {
                 Text("Character Customization",
-                    fontSize = 20.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(60.dp))
 
             Button(
                 onClick = onNavigateBack,
                 modifier = Modifier.fillMaxWidth()
-                .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+                .height(48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006400))
             ) {
                 Text("Back to Login",
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
 
                 )
