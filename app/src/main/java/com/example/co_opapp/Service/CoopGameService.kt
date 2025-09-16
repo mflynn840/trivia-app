@@ -50,7 +50,7 @@ class CoopGameService : GameDriver {
         private set
 
     // --- QuizService implementations ---
-    override suspend fun fetchNextQuestion() {
+    override suspend fun fetchNextQuestions() {
         try {
             val question = getRandomQuestion() // call your existing backend fetch
             if (question != null) {
@@ -65,17 +65,12 @@ class CoopGameService : GameDriver {
         }
     }
 
-    override suspend fun submitAnswer(answer: String): Boolean {
-        val question = _currentQuestion.value ?: return false
-        return try {
-            val correct = submitAnswerToBackend(question.id, answer)
-            if (correct) _score.value += 1
-            _currentQuestion.value = null
-            correct
-        } catch (e: Exception) {
-            _error.value = e.message
-            false
-        }
+    override suspend fun submitAnswer(answer: String) {
+
+    }
+
+    override suspend fun submitAnswers(answers: List<String>): List<Boolean> {
+        TODO("Not yet implemented")
     }
 
     override fun resetGame() {
@@ -162,13 +157,5 @@ class CoopGameService : GameDriver {
         }
     }
 
-    private suspend fun submitAnswerToBackend(questionId: Long, answer: String): Boolean {
-        return try {
-            val response = gameApi.checkAnswer(AnswerRequest(questionId, answer))
-            response.body()?.correct ?: false
-        } catch (e: Exception) {
-            Log.e("CoopGameService", "Failed to submit answer", e)
-            false
-        }
-    }
+
 }
