@@ -63,10 +63,10 @@ fun QuizScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.TopStart),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03A9F4)
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB39DDB)
             )
         ) {
-            Text("Back", color = Color.White)
+            Text("Back", color = Color.Black)
         }
 
         // --- MAIN CONTENT CENTERED ---
@@ -105,7 +105,7 @@ fun QuizScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(40.dp))
+                        Spacer(modifier = Modifier.height(30.dp))
 
                         Button(
                             onClick = {
@@ -119,7 +119,7 @@ fun QuizScreen(
                                 .fillMaxWidth(0.7f) // make button wider (70% of screen width)
                                 .height(56.dp),     // taller button
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF03A9F4),
+                                containerColor = Color(0xFF4CAF50),
                                 contentColor = Color.White          // text color
                             ),
                             shape = RoundedCornerShape(16.dp)       // rounded corners to match card
