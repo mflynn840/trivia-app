@@ -26,6 +26,10 @@ import com.example.co_opapp.R
  Draw the main gameplay loops UI screen
  Update the game state using the passed in GameDriver
  */
+/*
+ Draw the main gameplay loop UI screen
+ Update the game state using the passed in GameDriver
+*/
 @Composable
 fun QuizScreen(
     quizService: GameDriver,
@@ -74,27 +78,23 @@ fun QuizScreen(
             when {
                 currentQuestion != null -> {
                     val question = currentQuestion!!
+                    val options = listOf(
+                        question.optionA,
+                        question.optionB,
+                        question.optionC,
+                        question.optionD
+                    )
+
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text(
-                            "Question ${questionIndex + 1} of $totalQuestions",
-                            color = Color.White,
-                            fontSize = 24.sp,
-
-                            fontWeight = FontWeight.Bold,
-
-
+                        QuestionCard(
+                            question = question.body,
+                            questionIndex = questionIndex,
+                            totalQuestions = totalQuestions
                         )
-                        QuestionCard(question = question.body)
 
-                        val options = listOf(
-                            question.optionA,
-                            question.optionB,
-                            question.optionC,
-                            question.optionD
-                        )
                         options.forEach { answer ->
                             AnswerButton(
                                 text = answer,
@@ -112,7 +112,9 @@ fun QuizScreen(
                                 }
                             },
                             enabled = selectedAnswer != null
-                        ) { Text("Submit") }
+                        ) {
+                            Text("Submit")
+                        }
                     }
                 }
 
