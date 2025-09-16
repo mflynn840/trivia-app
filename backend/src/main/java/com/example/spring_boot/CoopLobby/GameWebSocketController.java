@@ -1,4 +1,4 @@
-package com.example.spring_boot.WebSocket;
+package com.example.spring_boot.CoopLobby;
 
 import com.example.spring_boot.Model.Question;
 import com.example.spring_boot.Service.QuestionService;
