@@ -182,7 +182,7 @@ fun QuizScreen(
                                 ),
                             shape = RoundedCornerShape(16.dp),
                             elevation = CardDefaults.cardElevation(8.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFB39DDB))
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF87CEEB))
                         ) {
                             Box(
                                 modifier = Modifier
