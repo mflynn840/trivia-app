@@ -60,7 +60,7 @@ fun CharacterCustomizationScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(12.dp))
+                    .background(Color(0xCC2196F3), shape = RoundedCornerShape(12.dp))
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -72,20 +72,21 @@ fun CharacterCustomizationScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Transparent box for greeting
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(12.dp))
+                    .background(Color(0xCC2196F3), shape = RoundedCornerShape(12.dp))
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
+
             ) {
                 Text(
                     text = "Hello, $username",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.Black,
+                    color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
             }
