@@ -3,7 +3,6 @@ package com.example.spring_boot.OnStartup;
 import com.example.spring_boot.Model.GameRoom;
 import com.example.spring_boot.Model.Player;
 import com.example.spring_boot.Service.LobbyService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
