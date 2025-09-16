@@ -7,16 +7,13 @@ import org.springframework.stereotype.Component;
 public class DummyDataGenerator implements CommandLineRunner {
     
     private final GenerateTriviaDb gen;
-    private final CreateLobbies lobbies;
 
-    public DummyDataGenerator(GenerateTriviaDb gen, CreateLobbies lobbies){
+    public DummyDataGenerator(GenerateTriviaDb gen){
         this.gen = gen;
-        this.lobbies = lobbies;
 
     }
     public void run(String... args) throws Exception {
         gen.populate();
-        lobbies.initLobbies();
         System.out.println("lobbies initilized succesfully");
         
     }
