@@ -14,7 +14,7 @@ interface GameDriver {
     val totalQuestions: StateFlow<Int>               // Total questions attempted
     val error: StateFlow<String?>                    // Error state
 
-    suspend fun fetchNextQuestion()
+    suspend fun fetchNextQuestions()
     suspend fun submitAnswer(answer: String)
 
     suspend fun submitAnswers(answers: List<String>): List<Boolean>
