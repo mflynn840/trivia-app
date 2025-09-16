@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.R
 
@@ -29,10 +30,8 @@ fun CharacterCustomizationScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {}
 ) {
-    // Holds the selected image URI
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // Launcher for picking images
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -53,24 +52,41 @@ fun CharacterCustomizationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 32.dp, vertical = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 32.dp, vertical = 24.dp)
         ) {
-            // Title
-            Text(
-                text = "Character Customization",
-                style = MaterialTheme.typography.headlineLarge,
-                color = Color.Black,
-            )
+            // Transparent box for title
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White.copy(alpha = 0.5f))
+                    .padding(8.dp),
+                    contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Character Customization",
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Greeting
-            Text(
-                text = "Hello, $username",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.Black
-            )
+            // Transparent box for greeting
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White.copy(alpha = 0.5f))
+                    .padding(8.dp),
+                    contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Hello, $username",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -109,7 +125,7 @@ fun CharacterCustomizationScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f)) // Push buttons to bottom
+            Spacer(modifier = Modifier.weight(1f))
 
             // Upload Image button
             Button(
