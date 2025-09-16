@@ -123,7 +123,7 @@ class AuthService(private val context: Context) {
     }
 
     suspend fun uploadAvatar(imageUri: Uri): Boolean {
-        val part = imageUri.toMultipartBody(context, "avatar") ?: return false
+        val part = imageUri.toMultipartBody(context, "file") ?: return false
         return try {
             val response = authApi?.uploadAvatar(getUsername()!!, part, this.getJwtToken()!!)
             response?.isSuccessful == true
