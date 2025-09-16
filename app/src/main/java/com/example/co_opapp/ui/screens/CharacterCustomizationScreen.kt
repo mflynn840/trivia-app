@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,9 +35,7 @@ fun CharacterCustomizationScreen(
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        imageUri = uri
-    }
+    ) { uri: Uri? -> imageUri = uri }
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -49,22 +48,25 @@ fun CharacterCustomizationScreen(
             modifier = Modifier.fillMaxSize()
         )
 
+        // Main content column
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 32.dp, vertical = 24.dp)
+                .padding(horizontal = 32.dp, vertical = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             // Transparent box for title
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White.copy(alpha = 0.5f))
+                    .background(Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(12.dp))
                     .padding(8.dp),
-                    contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Character Customization",
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.headlineMedium,
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
@@ -76,9 +78,9 @@ fun CharacterCustomizationScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White.copy(alpha = 0.5f))
+                    .background(Color.White.copy(alpha = 0.5f), shape = RoundedCornerShape(12.dp))
                     .padding(8.dp),
-                    contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Hello, $username",
@@ -113,7 +115,6 @@ fun CharacterCustomizationScreen(
                             null
                         }
                     }
-
                     bitmap?.let {
                         Image(
                             bitmap = it.asImageBitmap(),
@@ -122,10 +123,12 @@ fun CharacterCustomizationScreen(
                             modifier = Modifier.fillMaxSize()
                         )
                     } ?: Text("Failed to load image", color = Color.Red)
+                } else {
+                    Text("Preview", color = Color.Black)
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(32.dp)) // space before buttons
 
             // Upload Image button
             Button(
