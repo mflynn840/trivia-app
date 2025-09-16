@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.co_opapp.ui.components.QuizScreen.AnswerButton
@@ -68,7 +69,7 @@ fun QuizScreen(
             shape = RoundedCornerShape(16.dp),                // same rounded corners
             border = BorderStroke(2.dp, Color.Black),         // border that follows the shape
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFB39DDB)            // solid light purple
+                containerColor = Color(0xFF87CEEB)            // solid light purple
             )
         ) {
             Text("Back", color = Color.Black)
@@ -107,10 +108,10 @@ fun QuizScreen(
                                 isSelected = (answer == selectedAnswer),
                                 onClick = { selectedAnswer = answer },
 
-                            )
+                                )
                         }
 
-                        Spacer(modifier = Modifier.height(30.dp))
+                        Spacer(modifier = Modifier.height(25.dp))
 
                         Button(
                             onClick = {
@@ -121,19 +122,31 @@ fun QuizScreen(
                             },
                             enabled = selectedAnswer != null,
                             modifier = Modifier
-                                .fillMaxWidth(0.7f) // make button wider (70% of screen width)
-                                .height(56.dp),     // taller button
+                                .fillMaxWidth(0.7f)
+                                .height(56.dp),
+                            shape = RoundedCornerShape(16.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF4CAF50),
-                                contentColor = Color.White          // text color
-                            ),
-                            shape = RoundedCornerShape(16.dp)       // rounded corners to match card
+                                contentColor = Color.White
+                            )
                         ) {
                             Text(
                                 "Submit",
-                                fontSize = 18.sp,       // larger text
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
                             )
                         }
+
+
+
+
+
+
+
+
+
+
+
 
 
                     }
@@ -152,18 +165,63 @@ fun QuizScreen(
                     }
                 }
 
-                else -> {
+                else -> { // Quiz complete
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text("Quiz Complete! Score: $score / $totalQuestions")
-                        Button(onClick = {
-                            coroutineScope.launch {
-                                quizService.resetGame()
-                                quizService.fetchNextQuestions()
+                        // Score card
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth(0.85f)
+                                .padding(vertical = 16.dp)
+                                .border(
+                                    width = 2.dp,
+                                    color = Color.Black,
+                                    shape = RoundedCornerShape(16.dp)
+                                ),
+                            shape = RoundedCornerShape(16.dp),
+                            elevation = CardDefaults.cardElevation(8.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF87CEEB))
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(24.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Quiz Complete!\nScore: $score / $totalQuestions",
+                                    fontSize = 28.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black,
+                                    textAlign = TextAlign.Center
+                                )
                             }
-                        }) { Text("Retry") }
+                        }
+
+                        Button(
+                            onClick = {
+                                coroutineScope.launch {
+                                    quizService.resetGame()
+                                    quizService.fetchNextQuestions()
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF4CAF50),
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Text(
+                                "Retry",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }
