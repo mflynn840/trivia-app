@@ -51,7 +51,7 @@ fun SendToBackendButton(imageUri: Uri?, authService: AuthService) {
             imageUri?.let { uri ->
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        val success = authService.uploadAvatar(uri)
+                        val success = authService.uploadProfilePicture(uri)
                         withContext(Dispatchers.Main) {
                             Toast.makeText(
                                 context,
