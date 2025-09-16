@@ -11,6 +11,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.co_opapp.ui.components.QuizScreen.AnswerButton
 import com.example.co_opapp.ui.components.QuizScreen.QuestionCard
 import kotlinx.coroutines.launch
