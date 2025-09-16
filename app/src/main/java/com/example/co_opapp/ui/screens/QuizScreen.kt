@@ -117,7 +117,12 @@ fun QuizScreen(
                     Button(onClick = onNavigateBack) { Text("Back") }
 
                     //reset game button
-                    Button(onClick = { quizService.resetGame() }) {Text("Retry")}
+                    Button(onClick = {
+                        coroutineScope.launch {
+                            quizService.resetGame()
+                            quizService.fetchNextQuestions()
+                        }
+                    }) { Text("Retry") }
                 }
             }
 
