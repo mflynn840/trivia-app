@@ -63,6 +63,7 @@ class AuthService {
                 if (loginResponse != null){
                     _currentPlayer.value = Player(username = username, id = loginResponse.id)
                     authToken = loginResponse?.token  // Store auth token
+
                     true
                 }else{
                     Log.e("AuthService", "Login response is null")

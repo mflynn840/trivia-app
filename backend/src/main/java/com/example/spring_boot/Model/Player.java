@@ -42,7 +42,7 @@ public class Player implements UserDetails {
 
     // Getters and setters
     public Long getId() { return this.id; }
-    protected void setId(Long id) { this.id = id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getUsername() { return this.username; }
     public void setUsername(String username) { this.username = username; }
