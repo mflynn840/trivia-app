@@ -29,12 +29,12 @@ fun QuestionCard(
     totalQuestions: Int,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
-    backgroundColor: Color = Color(0xCCB39DDB) // light purple
+    backgroundColor: Color = Color(0xFFB39DDB) // light purple
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(180.dp) // slightly taller to fit progress + question
+            .height(150.dp) // slightly taller to fit progress + question
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
@@ -58,9 +58,10 @@ fun QuestionCard(
             // Question body
             Text(
                 text = question,
-                fontSize = fontSize,
+                fontSize = 20.sp,
                 color = Color.Black,
                 textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f, fill = true)
             )
         }
