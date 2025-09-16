@@ -12,9 +12,7 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "questionText")  // <-- map exact DB colum
-    private String question;
+    private String body;
     private String correctAnswer;
     private String optionA;
     private String optionB;
@@ -29,11 +27,9 @@ public class Question {
     public Question() {}
 
     // Constructor with parameters
-    public Question(String questionText, String correctAnswer, String optionA, String optionB, 
+    public Question(String body, String correctAnswer, String optionA, String optionB, 
                    String optionC, String optionD, String category, String difficulty, String type) {
-        
-        
-        this.question = questionText;
+        this.body = body;
         this.correctAnswer = correctAnswer;
         this.optionA = optionA;
         this.optionB = optionB;
@@ -53,12 +49,12 @@ public class Question {
         this.id = id;
     }
 
-    public String getQuestion() {
-        return this.question;
+    public String getBody() {
+        return this.body;
     }
 
-    public void setQuestionText(String question) {
-        this.question = question;
+    public void setBody(String question) {
+        this.body = question;
     }
 
     public String getCorrectAnswer() {
@@ -130,7 +126,7 @@ public class Question {
     public String toString() {
         return "Question{" +
                 "id=" + id +
-                ", question='" + question + '\'' +
+                ", question='" + body + '\'' +
                 ", correctAnswer='" + correctAnswer + '\'' +
                 ", optionA='" + optionA + '\'' +
                 ", optionB='" + optionB + '\'' +
