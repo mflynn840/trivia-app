@@ -22,14 +22,14 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 interface ProfileApiService {
     @Multipart
-    @POST("api/players/{username}/upload-profile-picture")
+    @POST("/api/players/{username}/upload-profile-picture")
     suspend fun uploadProfilePicture(
         @Path("username") username: String,
         @Part image: MultipartBody.Part,
         @Header("Authorization") token: String
     ): Response<ResponseBody>
 
-    @GET("api/players/{username}/get-profile-picture")
+    @GET("/api/players/{username}/get-profile-picture")
     suspend fun getAvatar(
         @Path("username") username: String,
         @Header("Authorization") token: String
@@ -43,12 +43,23 @@ class ProfilePictureService(
 
     var profileApi: ProfileApiService? = null // Retrofit API instance
 
-    private fun initializeApi() {
+
+    init {
         // Create logging interceptor
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY  // Logs request and response lines and their respective headers and bodies (if present)
         }
+
+        // Custom interceptor to log the endpoint
+        val endpointLoggingInterceptor = okhttp3.Interceptor { chain ->
+            val request = chain.request()
+            Log.d("ProfilePictureService", "Request endpoint: ${request.url}")
+            chain.proceed(request)
+        }
+
+
         val client = OkHttpClient.Builder()
+            .addInterceptor(endpointLoggingInterceptor)  // Log endpoint
             .addInterceptor(logging)
             .build()
 
@@ -71,11 +82,11 @@ class ProfilePictureService(
             )
 
             if (response == null) {
-                Log.e("AuthService", "No response from backend")
+                Log.e("ProfilePictureService", "No response from backend")
                 return false
             }
 
-            Log.d("AuthService", "HTTP status: ${response.code()}")
+            Log.d("ProfilePictureService", "HTTP status: ${response.code()}")
 
             if (response.isSuccessful) {
                 // Safe parsing of body
