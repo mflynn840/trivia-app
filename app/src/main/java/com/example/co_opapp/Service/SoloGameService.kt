@@ -32,9 +32,11 @@ import retrofit2.http.Query
  */
 interface BackendQuestionApi {
 
-    @GET("api/questions/randoms/count")
+    @GET("api/questions/randoms/count/category/difficulty")
     suspend fun getRandomQuestions(
         @Query("count") count: Int,
+        @Query("category") category : String,
+        @Query("difficulty") difficulty: String,
         @Header("Authorization") token: String
     ): Response<List<TriviaQuestion>>
 
@@ -49,9 +51,8 @@ interface BackendQuestionApi {
 
 class SoloGameService(
     private val authService: AuthService,
-    category: String,
-    difficulty: String,
-    numQuestions: Int,
+    private val category: String,
+    private val difficulty: String,
 ) : GameDriver {
 
     private val retrofit = Retrofit.Builder()
@@ -89,7 +90,10 @@ class SoloGameService(
     // Fetch n questions from the backend
     override suspend fun fetchNextQuestions() {
         try {
-            val response = api.getRandomQuestions(5, authService.getJwtToken()!!)
+            val response = api.getRandomQuestions(5,
+                category,
+                difficulty,
+                "Bearer ${authService.getJwtToken()!!}")
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null && body.isNotEmpty()) {
@@ -137,7 +141,7 @@ class SoloGameService(
                 answers = answers
             )
 
-            val response = api.checkAnswers(answersRequest,authService.getJwtToken()!!)
+            val response = api.checkAnswers(answersRequest,"Bearer ${authService.getJwtToken()!!}")
 
             if (response.isSuccessful) {
                 val answerResults = response.body()!!

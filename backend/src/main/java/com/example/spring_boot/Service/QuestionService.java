@@ -9,19 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
-
-// Add these imports at the top of QuestionService.java
-import java.util.concurrent.ThreadLocalRandom;
-import org.springframework.data.domain.PageRequest;
-
 
 @Service
 public class QuestionService {
 
     @Autowired
     private QuestionRepository questionRepository;
-    private Random random = new Random();
 
     public QuestionService(QuestionRepository questionRepository){
         this.questionRepository = questionRepository;
@@ -61,14 +54,18 @@ public class QuestionService {
         for (Object[] row : results) {
             String category = (String) row[0];
             String difficulty = (String) row[1];
-            Long count = (Long) row[2];
+            Number countNum = (Number) row[2];
+            Long count = countNum.longValue();
 
             counts.computeIfAbsent(category, k -> new HashMap<>())
                   .put(difficulty, count);
         }
-
-        
         return counts;
+    }
+    
+
+    public Optional<Question> findById(Long id) {
+        return questionRepository.findById(id);
     }
 
 

@@ -7,9 +7,11 @@ import org.springframework.stereotype.Component;
 public class DummyDataGenerator implements CommandLineRunner {
     
     private final GenerateTriviaDb gen;
+    private final ComputeJson test;
 
-    public DummyDataGenerator(GenerateTriviaDb gen){
+    public DummyDataGenerator(GenerateTriviaDb gen, ComputeJson t){
         this.gen = gen;
+        this.test = t;
 
     }
     public void run(String... args) throws Exception {
