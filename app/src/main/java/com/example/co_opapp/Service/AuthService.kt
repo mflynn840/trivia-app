@@ -88,7 +88,13 @@ class AuthService(private val context: Context) {
             if (response?.isSuccessful == true) {
                 val loginResponse = response.body()
                 if (loginResponse != null) {
-                    _currentPlayer.value = Player(username = username, id = loginResponse.id)
+                    _currentPlayer.value = Player(
+                        username = username, id = loginResponse.id,
+                        score = 0,
+                        isHost = false,
+                        isReady = false,
+                        sessionId = "",
+                    )
                     authToken = loginResponse?.token  // Store auth token
                     saveJwtToken(context, authToken!!, username)
 

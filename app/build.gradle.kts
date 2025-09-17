@@ -71,8 +71,9 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
 
     // RxJava
-    implementation("io.reactivex.rxjava3:rxjava:3.1.6")
-    implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
+    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
+    implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
+
     // Stomp client
     implementation("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
 }
