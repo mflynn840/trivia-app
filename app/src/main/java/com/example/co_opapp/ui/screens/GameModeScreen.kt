@@ -70,9 +70,8 @@ fun GameModeScreen(
                 title = "Story Mode",
                 description = "Play alone and test your knowledge",
                 buttonText = "Start Single Player",
-                buttonColor = Color(0xFF006400),
-                onClick = onNavigateToSinglePlayer,
-                cardColor = Color(0xFF0D0D0D) // darker green for the card background
+                buttonColor = Color(0xFF39FF14), // neon green button
+                onClick = onNavigateToSinglePlayer
             )
 
             GameModeCard(
@@ -80,9 +79,10 @@ fun GameModeScreen(
                 title = "Co-op Mode",
                 description = "Play with friends on the same network",
                 buttonText = "Start Co-op Game",
-                buttonColor = Color(0xFF03A9F4),
+                buttonColor = Color(0xFFFF69B4), // neon pink button
                 onClick = onNavigateToCoOp
             )
+
 
             AnimatedGradientButton(
                 text = "Character Customization",
