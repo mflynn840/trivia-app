@@ -34,7 +34,8 @@ fun LoginButtons(
 ) {
     Column {
         // LOGIN BUTTON
-        Button(
+        AnimatedGradientButton(
+            text = "Login",
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
@@ -54,28 +55,16 @@ fun LoginButtons(
                     }
                 }
             },
-
             modifier = Modifier
-                .fillMaxWidth(0.9f)   // same as TextField width
-                .height(48.dp),       // consistent height
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF006400),
-                contentColor = Color.White
-            ),
-            border = BorderStroke(2.dp, Color.Black)
-        ) {
-            Text(
-                "Login",
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
-
+                .fillMaxWidth(0.9f)
+                .height(48.dp)
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         // REGISTER BUTTON
-        Button(
+        AnimatedGradientButton(
+            text = "Register",
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
@@ -95,19 +84,8 @@ fun LoginButtons(
                 }
             },
             modifier = Modifier
-                .fillMaxWidth(0.9f)   // match text fields
-                .height(48.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF006400),
-                contentColor = Color.White
-            ),
-            border = BorderStroke(2.dp, Color.Black)
-        ) {
-            Text(
-                "Register",
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
+                .fillMaxWidth(0.9f)
+                .height(48.dp)
+        )
     }
 }
