@@ -88,7 +88,8 @@ public class QuestionController {
 
         try {
             result = questionService.getQuestionCountsByCategoryAndDifficulty();
-        } catch(Exception ex) {
+            System.out.println("Fetched counts: " + result); 
+        } catch(IllegalArgumentException ex) {
             // Log the error
             ex.printStackTrace();
             result = Collections.emptyMap();  // return empty JSON instead of 404
@@ -99,6 +100,13 @@ public class QuestionController {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Question> getQuestion(@PathVariable Long id) {
+        return questionService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
 

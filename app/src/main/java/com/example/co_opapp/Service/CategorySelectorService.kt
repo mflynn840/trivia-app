@@ -1,6 +1,7 @@
 package com.example.co_opapp.Service
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
@@ -42,9 +43,15 @@ class CategorySelectorService(context: Context, val JWT_token: String) {
         api = retrofit.create(CategorySelectorApi::class.java)
     }
 
-    suspend fun fetchCounts(): Map<String, Map<String, Long>>{
-        return withContext(Dispatchers.IO) {
-            api.getCountsByCategory("Bearer $JWT_token")
+    suspend fun fetchCounts(): Map<String, Map<String, Long>> {
+        return try {
+            withContext(Dispatchers.IO) {
+                val response = api.getCountsByCategory("Bearer $JWT_token")
+                response
+            }
+        } catch (e: Exception) {
+            Log.e("CategorySelectorService", "Error fetching counts", e)
+            emptyMap() // return empty map on error
         }
     }
 }

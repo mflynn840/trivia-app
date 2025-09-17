@@ -130,7 +130,7 @@ class AuthService(private val context: Context) {
     fun saveJwtToken(context: Context, token: String, username: String) {
         val sharedPref = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putString("jwt_token", "Bearer $token")
+            putString("jwt_token", "$token")
             putString("username", username)
             apply()
         }
