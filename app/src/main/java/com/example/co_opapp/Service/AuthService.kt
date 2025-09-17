@@ -45,18 +45,11 @@ interface AuthApiService {
     ): Response<ResponseBody>
 
 }
-<<<<<<< Updated upstream
 
 // Service class that wraps AuthApiService for easier use in app
 class AuthService(private val context: Context) {
-    var authApi: AuthApiService? = null // Retrofit API instance
-    private var authToken: String? = null // Stores current auth token
-=======
-// Service class that wraps AuthApiService for easier use in app
-class AuthService {
     var authApi: AuthApiService? = null
     private var authToken: String? = null
->>>>>>> Stashed changes
 
     // StateFlow to track the currently logged-in player
     private val _currentPlayer = MutableStateFlow<Player?>(null)
@@ -96,15 +89,15 @@ class AuthService {
                 val loginResponse = response.body()
                 if (loginResponse != null) {
                     _currentPlayer.value = Player(
-                        username = username, id = loginResponse.id,
+                        username = username,
+                        id = loginResponse.id,
                         score = 0,
                         isHost = false,
                         isReady = false,
                         sessionId = "",
                     )
-                    authToken = loginResponse?.token  // Store auth token
-                    saveJwtToken(context, authToken!!, username)
-
+                    authToken = loginResponse.token  // Store auth token
+                    saveJwtToken(authToken!!, username)
                     true
                 } else {
                     Log.e("AuthService", "Login response is null")
@@ -140,15 +133,12 @@ class AuthService {
         return _currentPlayer.value?.username
     }
 
-    fun saveJwtToken(context: Context, token: String, username: String) {
+    fun saveJwtToken(token: String, username: String) {
         val sharedPref = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putString("jwt_token", "$token")
+            putString("jwt_token", token)
             putString("username", username)
             apply()
         }
     }
-
-
 }
-
