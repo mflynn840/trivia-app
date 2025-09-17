@@ -1,13 +1,14 @@
 name: Build Backend
 
 on:
-  push:
-    paths:
-      - 'backend/**'
-  pull_request:
-    paths:
-      - 'backend/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Which environment to deploy to'
+        required: true
+        default: 'production'
 
+        
 jobs:
   build:
     runs-on: ubuntu-latest
