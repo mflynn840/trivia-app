@@ -32,7 +32,10 @@ public class PlayerService {
         player.setProfilePicture(profilePictureBytes);
 
         // Save the player object with the profile picture
-        return playerRepository.save(player);
+        playerRepository.save(player);
+        playerRepository.flush();
+        return player;
+        
     }
 
     public Player getAuthenticatedPlayer(Authentication authentication) {

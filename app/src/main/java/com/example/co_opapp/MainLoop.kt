@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.co_opapp.Service.AuthService
 import com.example.co_opapp.Service.CategorySelectorService
+import com.example.co_opapp.Service.LobbyWebSocketService
 import com.example.co_opapp.Service.ProfilePictureService
 import com.example.co_opapp.ui.theme.CoopAppTheme
 import com.example.co_opapp.ui.screens.GameModeScreen
@@ -47,6 +48,7 @@ fun CoopApp() {
     val navController = rememberNavController()
     val context = LocalContext.current
     val authService = remember { AuthService(context) }
+    val lobbyService = remember { LobbyWebSocketService() }
 
     //Create the services for running a solo or co-op game later
     var soloService by remember { mutableStateOf<SoloGameService?>(null)}
@@ -160,7 +162,7 @@ fun CoopApp() {
                     onNavigateToGame = {
                         navController.navigate("coopQuiz")
                     },
-                    gameService = raceModeService,
+                    lobbyService = lobbyService,
                     authService = authService
                 )
             }
