@@ -66,7 +66,7 @@ fun GameModeScreen(
             )
 
             GameModeCard(
-                icon = "🎮",
+                icon = "\uD83D\uDC64",
                 title = "Single Player",
                 description = "Play alone and test your knowledge",
                 buttonText = "Start Single Player",
@@ -75,7 +75,7 @@ fun GameModeScreen(
             )
 
             GameModeCard(
-                icon = "👥",
+                icon = "\uD83D\uDC65",
                 title = "Co-op Mode",
                 description = "Play with friends on the same network",
                 buttonText = "Start Co-op Game",
