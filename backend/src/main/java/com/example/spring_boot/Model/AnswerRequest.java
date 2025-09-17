@@ -1,7 +1,5 @@
 package com.example.spring_boot.Model;
 
-import jakarta.persistence.Entity;
-
 
 public class AnswerRequest {
     private Long roomId;

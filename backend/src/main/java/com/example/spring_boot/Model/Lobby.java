@@ -1,11 +1,8 @@
 package com.example.spring_boot.Model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import jakarta.persistence.Entity;
 
 public class Lobby {
     private String lobbyId;
