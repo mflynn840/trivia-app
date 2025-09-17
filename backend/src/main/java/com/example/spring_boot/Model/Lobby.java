@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.persistence.Entity;
 
-@Entity
 public class Lobby {
     private String lobbyId;
     private Map<String, Player> players = new ConcurrentHashMap<>(); // sessionId -> Player
