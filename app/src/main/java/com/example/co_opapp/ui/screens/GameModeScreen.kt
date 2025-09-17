@@ -72,7 +72,7 @@ fun GameModeScreen(
                 buttonText = "Start Single Player",
                 buttonColor = Color(0xFF006400),
                 onClick = onNavigateToSinglePlayer,
-                cardColor = Color(0xFF0A2E1A) // darker green for the card background
+                cardColor = Color(0xFF0D0D0D) // darker green for the card background
             )
 
             GameModeCard(
