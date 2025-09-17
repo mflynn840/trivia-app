@@ -1,9 +1,6 @@
 package com.example.co_opapp.ui.screens
 
 import android.media.MediaPlayer
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,24 +23,25 @@ import androidx.compose.ui.unit.dp
 import com.example.co_opapp.Service.AuthService
 import com.example.co_opapp.ui.components.LoginScreen.LoginButtons
 import com.example.co_opapp.R
-import com.example.co_opapp.ui.components.LoginScreen.AnimatedTriviaQuestLogo
 import com.example.co_opapp.ui.components.LoginScreen.rememberLoginFormState
 
 
 @Composable
-fun LoginScreenWithMusic(authService: AuthService) {
+fun LoginScreenWithMusicWrapper(
+    authService: AuthService,
+    modifier: Modifier = Modifier,
+    onNavigateToLobby: () -> Unit
+) {
     val context = LocalContext.current
 
-    // Remember MediaPlayer so it survives recompositions
     val mediaPlayer = remember {
         MediaPlayer.create(context, R.raw.login_music).apply {
             isLooping = true
-            setVolume(1.0f, 1.0f)
+            setVolume(1f, 1f)
             start()
         }
     }
 
-    // Stop and release MediaPlayer when composable leaves composition
     DisposableEffect(Unit) {
         onDispose {
             mediaPlayer.stop()
@@ -51,8 +49,11 @@ fun LoginScreenWithMusic(authService: AuthService) {
         }
     }
 
-    // Show the normal LoginScreen UI
-    LoginScreen(authService = authService)
+    LoginScreen(
+        authService = authService,
+        modifier = modifier,
+        onNavigateToLobby = onNavigateToLobby
+    )
 }
 
 @Composable
