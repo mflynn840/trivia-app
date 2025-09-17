@@ -67,11 +67,9 @@ public class QuestionService {
                   .put(difficulty, count);
         }
 
+        
         return counts;
     }
 
-    public Optional<Question> findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
-    }
+
 }

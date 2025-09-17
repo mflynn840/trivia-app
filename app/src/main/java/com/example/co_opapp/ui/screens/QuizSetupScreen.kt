@@ -8,24 +8,48 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.co_opapp.Service.CategorySelectorService
 
 @Composable
 fun QuizSetupScreen(
     modifier: Modifier = Modifier,
     onStartQuiz: (category: String, difficulty: String, numQuestions: Int) -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    catSelService: CategorySelectorService
 ) {
     // State for selections
-    var selectedCategory by remember { mutableStateOf("General") }
-    var selectedDifficulty by remember { mutableStateOf("Easy") }
+    var selectedCategory by remember { mutableStateOf<String?>(null) }
+    var selectedDifficulty by remember { mutableStateOf<String?>(null) }
     var numQuestionsText by remember { mutableStateOf("5") }
 
-    val categories = listOf("General", "Science", "History", "Math", "Sports")
-    val difficulties = listOf("Easy", "Medium", "Hard")
+
+    //State for question type contents in the backend
+    var counts by remember { mutableStateOf<Map<String, Map<String, Long>>>(emptyMap()) }
+    var categories by remember { mutableStateOf(listOf<String>()) }
+    var difficulties by remember { mutableStateOf(listOf<String>()) }
+
 
     // Dropdown expanded state
     var categoryExpanded by remember { mutableStateOf(false) }
     var difficultyExpanded by remember { mutableStateOf(false) }
+
+
+    // Fetch cateogries and counts from the backend on first composition
+    LaunchedEffect(Unit) {
+        try {
+
+            //get the counts of each category/difficulty combination from the backend
+            counts = catSelService.fetchCounts()
+
+            //compute the lists of categories and difficulties present in db
+            categories = counts.keys.toList()
+            difficulties = counts.values.flatMap { it.keys }.distinct()
+            selectedCategory = categories.firstOrNull()
+            selectedDifficulty = difficulties.firstOrNull()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     Column(
         modifier = modifier
@@ -37,7 +61,7 @@ fun QuizSetupScreen(
         Text("Select Category", style = MaterialTheme.typography.titleMedium)
         Box {
             TextField(
-                value = selectedCategory,
+                value = selectedCategory ?: "",
                 onValueChange = {},
                 readOnly = true,
                 label = { Text("Category") },
@@ -65,7 +89,7 @@ fun QuizSetupScreen(
         Text("Select Difficulty", style = MaterialTheme.typography.titleMedium)
         Box {
             TextField(
-                value = selectedDifficulty,
+                value = selectedDifficulty ?: "",
                 onValueChange = {},
                 readOnly = true,
                 label = { Text("Difficulty") },
@@ -118,7 +142,7 @@ fun QuizSetupScreen(
             Button(
                 onClick = {
                     val numQuestions = numQuestionsText.toIntOrNull() ?: 5
-                    onStartQuiz(selectedCategory, selectedDifficulty, numQuestions)
+                    onStartQuiz(selectedCategory ?: "", selectedDifficulty ?: "" , numQuestions)
                 },
                 modifier = Modifier.weight(1f)
             ) {

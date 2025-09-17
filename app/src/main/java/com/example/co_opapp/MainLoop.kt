@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.co_opapp.Service.AuthService
+import com.example.co_opapp.Service.CategorySelectorService
 import com.example.co_opapp.Service.ProfilePictureService
 import com.example.co_opapp.ui.theme.CoopAppTheme
 import com.example.co_opapp.ui.screens.GameModeScreen
@@ -24,6 +25,7 @@ import com.example.co_opapp.Service.RaceModeGameService
 import com.example.co_opapp.Service.SoloGameService
 import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
 import com.example.co_opapp.ui.screens.QuizSetupScreen
+import com.example.co_opapp.ui.screens.LoadingScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -46,15 +48,12 @@ fun CoopApp() {
     val context = LocalContext.current
     val authService = remember { AuthService(context) }
 
-
     //Create the services for running a solo or co-op game later
     var soloService by remember { mutableStateOf<SoloGameService?>(null)}
     val raceModeService = remember { RaceModeGameService() }
 
     // ProfilePictureService will be created **after login**
     var profilePictureService by remember { mutableStateOf<ProfilePictureService?>(null) }
-
-
 
     //start on the login page
     NavHost(
@@ -78,31 +77,28 @@ fun CoopApp() {
 
         //when the player selects a game mode, go to that game mode
         composable("gameMode") {
+            val service = profilePictureService
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                GameModeScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    onNavigateToSinglePlayer = {
-                        navController.navigate("singlePlayerQuiz")
-                    },
-                    onNavigateToCoOp = {
-                        navController.navigate("lobby")
-                    },
+                if (service != null){
+                    GameModeScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onNavigateToSinglePlayer = { navController.navigate("soloQuizSetup") },
+                        onNavigateToCoOp = { navController.navigate("lobby") },
+                        onNavigateToCharacterMode = { navController.navigate("characterCustomization") },
+                        onNavigateBack = { navController.navigate("login") { popUpTo("login") { inclusive = true } } },
+                        profilePictureService = service
+                    )
 
-                    // <-- New callback for Character Customization
-                    onNavigateToCharacterMode = { navController.navigate("characterCustomization") },
-                    onNavigateBack = {
-                        navController.navigate("login") {
-                            popUpTo("login") { inclusive = true }
+                }else{
+                    LoadingScreen()
+                }
 
-                        }
-                    },
-                    profilePictureService = profilePictureService!!
-                )
             }
         }
 
         //ask the player which category and difficulty
-        composable("quizSetup") {
+        composable("soloQuizSetup") {
+            val categorySelectorService = CategorySelectorService(context, authService.getJwtToken()!!)
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 QuizSetupScreen(
                     modifier = Modifier.padding(innerPadding),
@@ -115,40 +111,41 @@ fun CoopApp() {
                             numQuestions = numQuestions
                         )
 
-                        navController.navigate("singlePlayerQuiz/$category/$difficulty/$numQuestions")
+                        navController.navigate("singlePlayerQuiz")
                     },
                     onNavigateBack = {
                         navController.popBackStack()
-                    }
+                    },
+
+                    catSelService = categorySelectorService
                 )
             }
         }
 
 
         //Single player quiz game is a game skeleton supplied with the soloGameService
-        composable(
-            route = "singlePlayerQuiz/{category}/{difficulty}/{numQuestions}"
-        ) {backStackEntry ->
-            val category = backStackEntry.arguments?.getString("category") ?: "General"
-            val difficulty = backStackEntry.arguments?.getString("difficulty") ?: "Easy"
-            val numQuestions = backStackEntry.arguments?.getString("numQuestions")?.toIntOrNull() ?: 5
-
+        composable(route = "singlePlayerQuiz") {
+            //make the game driver for this game
+            val service = soloService
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                //make the game driver for this game
+                if(service != null){
+                    QuizScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        quizService = soloService!!, // inject the service
 
-                QuizScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    quizService = soloService!!, // inject the service
-
-                    onNavigateBack = {
-                        navController.navigate("gameMode") {
-                            popUpTo("gameMode") { inclusive = true }
+                        onNavigateBack = {
+                            navController.navigate("gameMode") {
+                                popUpTo("gameMode") { inclusive = true }
+                            }
+                        },
+                        onGameComplete = { score, total ->
+                            // Handle completion for single player
                         }
-                    },
-                    onGameComplete = { score, total ->
-                        // Handle completion for single player
-                    }
-                )
+                    )
+                }else{
+                    LoadingScreen()
+                }
+
             }
         }
 
@@ -187,16 +184,19 @@ fun CoopApp() {
             }
         } */
 
-        composable(
-            "characterCustomization"
-        ) { backStackEntry ->
-            val username = backStackEntry.arguments?.getString("username") ?: "Player"
+        composable("characterCustomization") {
+
+            val service = profilePictureService
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                CharacterCustomizationScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    onNavigateBack = { navController.popBackStack() },
-                    profilePictureService = profilePictureService!!
-                )
+                if (service != null) {
+                    CharacterCustomizationScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onNavigateBack = { navController.popBackStack() },
+                        profilePictureService = service
+                    )
+                }else{
+                    LoadingScreen()
+                }
             }
         }
 
