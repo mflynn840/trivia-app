@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.co_opapp.Service.AuthService
+
 import com.example.co_opapp.Service.ProfilePictureService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

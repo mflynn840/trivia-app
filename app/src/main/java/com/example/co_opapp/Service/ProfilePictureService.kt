@@ -16,6 +16,10 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 
 
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+
+
 interface ProfileApiService {
     @Multipart
     @POST("api/players/{username}/upload-profile-picture")
@@ -37,14 +41,23 @@ class ProfilePictureService(
     val authService : AuthService,
     val context : Context) {
 
-    var profileApi: AuthApiService? = null // Retrofit API instance
+    var profileApi: ProfileApiService? = null // Retrofit API instance
 
     private fun initializeApi() {
+        // Create logging interceptor
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY  // Logs request and response lines and their respective headers and bodies (if present)
+        }
+        val client = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+
         val retrofit = Retrofit.Builder()
             .baseUrl("http://192.168.4.21:8080/") // Base URL of the backend
             .addConverterFactory(GsonConverterFactory.create()) // JSON converter
+            .client(client)
             .build()
-        profileApi = retrofit.create(AuthApiService::class.java)
+        profileApi = retrofit.create(ProfileApiService::class.java)
     }
 
     suspend fun uploadProfilePicture(imageUri: Uri): Boolean {
