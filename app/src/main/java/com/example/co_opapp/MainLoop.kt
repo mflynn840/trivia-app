@@ -10,11 +10,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.co_opapp.Service.AuthService
+import com.example.co_opapp.Service.ProfilePictureService
 import com.example.co_opapp.ui.theme.CoopAppTheme
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.LoginScreen
@@ -23,6 +23,7 @@ import com.example.co_opapp.ui.screens.LobbyScreen
 import com.example.co_opapp.Service.RaceModeGameService
 import com.example.co_opapp.Service.SoloGameService
 import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
+import com.example.co_opapp.ui.screens.QuizSetupScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -44,9 +45,14 @@ fun CoopApp() {
     val navController = rememberNavController()
     val context = LocalContext.current
     val authService = remember { AuthService(context) }
-    //Create the services for running a solo or co-op game
-    val soloService = remember { SoloGameService(authService) }
+
+
+    //Create the services for running a solo or co-op game later
+    var soloService by remember { mutableStateOf<SoloGameService?>(null)}
     val raceModeService = remember { RaceModeGameService() }
+
+    // ProfilePictureService will be created **after login**
+    var profilePictureService by remember { mutableStateOf<ProfilePictureService?>(null) }
 
 
 
@@ -62,6 +68,7 @@ fun CoopApp() {
                 LoginScreen(
                     modifier = Modifier.padding(innerPadding),
                     onNavigateToLobby = {
+                        profilePictureService = ProfilePictureService(authService, context)
                         navController.navigate("gameMode")
                     },
                     authService = authService
@@ -89,18 +96,50 @@ fun CoopApp() {
 
                         }
                     },
-                    authService = authService
+                    profilePictureService = profilePictureService!!
+                )
+            }
+        }
+
+        //ask the player which category and difficulty
+        composable("quizSetup") {
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                QuizSetupScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    onStartQuiz = { category, difficulty, numQuestions ->
+                        // Pass the selected options to the quiz driver and create it
+                        soloService = SoloGameService(
+                            authService = authService,
+                            category = category,
+                            difficulty = difficulty,
+                            numQuestions = numQuestions
+                        )
+
+                        navController.navigate("singlePlayerQuiz/$category/$difficulty/$numQuestions")
+                    },
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }
 
 
         //Single player quiz game is a game skeleton supplied with the soloGameService
-        composable("singlePlayerQuiz") {
+        composable(
+            route = "singlePlayerQuiz/{category}/{difficulty}/{numQuestions}"
+        ) {backStackEntry ->
+            val category = backStackEntry.arguments?.getString("category") ?: "General"
+            val difficulty = backStackEntry.arguments?.getString("difficulty") ?: "Easy"
+            val numQuestions = backStackEntry.arguments?.getString("numQuestions")?.toIntOrNull() ?: 5
+
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                //make the game driver for this game
+
                 QuizScreen(
                     modifier = Modifier.padding(innerPadding),
-                    quizService = soloService, // inject the service
+                    quizService = soloService!!, // inject the service
+
                     onNavigateBack = {
                         navController.navigate("gameMode") {
                             popUpTo("gameMode") { inclusive = true }
@@ -156,7 +195,7 @@ fun CoopApp() {
                 CharacterCustomizationScreen(
                     modifier = Modifier.padding(innerPadding),
                     onNavigateBack = { navController.popBackStack() },
-                    authService = authService
+                    profilePictureService = profilePictureService!!
                 )
             }
         }

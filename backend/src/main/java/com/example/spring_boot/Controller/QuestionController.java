@@ -31,10 +31,12 @@ public class QuestionController {
         }
     }
     
-    @GetMapping("/randoms/{count}")
-    public ResponseEntity<List<Question>> getRandomQuestions(@RequestParam int count){
+    @GetMapping("/randoms/{count}/{category}/{difficulty}")
+    public ResponseEntity<List<Question>> getRandomQuestions(@RequestParam int count,
+                                            @RequestParam String category,
+                                            @RequestParam String difficulty){
         try{
-            List<Question> questions = this.questionService.getRandomQuestions(count);
+            List<Question> questions = this.questionService.getRandomQuestions(count, category,null);
             return ResponseEntity.ok(questions);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -78,6 +80,13 @@ public class QuestionController {
             return ResponseEntity.internalServerError().body(Map.of("error", "Failed to fetch question: " + e.getMessage()));
         }
     }
+
+    @GetMapping("/counts_by_category")
+    public ResponseEntity<Map<String, Map<String, Long>>> getQuestionCountsByCategoryAndDifficulty() {
+        Map<String, Map<String, Long>> counts = questionService.getQuestionCountsByCategoryAndDifficulty();
+        return ResponseEntity.ok(counts);
+    }
+
 
 
 

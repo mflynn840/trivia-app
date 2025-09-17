@@ -24,7 +24,6 @@ import com.example.co_opapp.R
 
 
 
-
 /*
  Draw the main gameplay loops UI screen
  Update the game state using the passed in GameDriver
@@ -136,17 +135,6 @@ fun QuizScreen(
                                 fontWeight = FontWeight.Bold
                             )
                         }
-
-
-
-
-
-
-
-
-
-
-
 
 
                     }

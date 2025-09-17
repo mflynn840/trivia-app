@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.Service.AuthService
+import com.example.co_opapp.Service.ProfilePictureService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,7 +44,7 @@ fun BackButton(onNavigateBack: () -> Unit) {
 }
 
 @Composable
-fun SendToBackendButton(imageUri: Uri?, authService: AuthService) {
+fun SendToBackendButton(imageUri: Uri?, profilePictureService: ProfilePictureService) {
     val context = LocalContext.current
 
     Button(
@@ -51,7 +52,7 @@ fun SendToBackendButton(imageUri: Uri?, authService: AuthService) {
             imageUri?.let { uri ->
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        val success = authService.uploadProfilePicture(uri)
+                        val success = profilePictureService.uploadProfilePicture(uri)
                         withContext(Dispatchers.Main) {
                             Toast.makeText(
                                 context,

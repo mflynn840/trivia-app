@@ -2,6 +2,7 @@ package com.example.co_opapp.ui.components
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,21 +18,24 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.Service.AuthService
+import com.example.co_opapp.Service.ProfilePictureService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
 fun CharacterImageCircle(
-    authService: AuthService,
+    profilePictureService: ProfilePictureService,
     modifier: Modifier = Modifier
 ) {
     var avatarBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     // Load avatar asynchronously
-    LaunchedEffect(authService) {
+    LaunchedEffect(profilePictureService) {
         try {
             val bytes: ByteArray? = withContext(Dispatchers.IO) {
-                authService.getProfilePictureBytes() // suspend function returning ByteArray?
+                val b = profilePictureService.getProfilePictureBytes()
+                Log.d("CharacterImageCircle", "Fetched bytes: ${b?.size}")
+                b
             }
             bytes?.let {
                 val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)

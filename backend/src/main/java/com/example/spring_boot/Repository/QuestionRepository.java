@@ -27,4 +27,15 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     
     @Query(value = "SELECT * FROM question WHERE difficulty = :difficulty AND category = :category ORDER BY RANDOM() LIMIT 1", nativeQuery = true)
     Question findRandomQuestionByDifficultyAndCategory(@Param("difficulty") String difficulty, @Param("category") String category);
+
+    @Query(value = "SELECT * FROM question q WHERE (:category IS NULL OR q.category = :category) AND (:difficulty IS NULL OR q.difficulty = :difficulty) ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
+    List<Question> findRandomQuestions(
+            @Param("count") int count,
+            @Param("category") String category,
+            @Param("difficulty") String difficulty
+    );
+
+    // Count number of questions per category and difficulty
+    @Query("SELECT q.category, q.difficulty, COUNT(q) FROM Question q GROUP BY q.category, q.difficulty")
+    List<Object[]> countQuestionsByCategoryAndDifficulty();
 }
