@@ -93,19 +93,15 @@ fun GameModeScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Button(
+            AnimatedGradientButton(
+                text = "Back to Login",
                 onClick = onNavigateBack,
                 modifier = Modifier.fillMaxWidth()
                 .height(38.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03A9F4))
-            ) {
-                Text("Back to Login",
-                    fontSize = 18.sp,
 
-                    fontWeight = FontWeight.Bold,
+            )
 
-                )
             }
         }
     }
-}
+
