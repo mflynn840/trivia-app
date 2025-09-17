@@ -62,7 +62,7 @@ fun GameModeScreen(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black // use white if image is dark
+                color = Color.White // use white if image is dark
             )
 
             GameModeCard(
