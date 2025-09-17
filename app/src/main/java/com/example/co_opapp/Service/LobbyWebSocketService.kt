@@ -55,6 +55,10 @@ class LobbyWebSocketService(
         stompClient?.disconnect()
     }
 
+    fun createLobby() {
+        sendMessage("/app/lobby/create", Any())
+    }
+
     // Join a lobby
     fun joinLobby(lobbyId: String, player: Player) {
         sendMessage("/app/lobby/join/$lobbyId", player)
