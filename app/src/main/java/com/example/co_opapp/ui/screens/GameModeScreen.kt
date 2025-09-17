@@ -67,7 +67,7 @@ fun GameModeScreen(
 
             GameModeCard(
                 icon = "\uD83D\uDC64",
-                title = "Single Player",
+                title = "Story Mode",
                 description = "Play alone and test your knowledge",
                 buttonText = "Start Single Player",
                 buttonColor = Color(0xFF006400),
