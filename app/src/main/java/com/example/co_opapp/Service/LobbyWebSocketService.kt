@@ -47,6 +47,8 @@ class LobbyWebSocketService(
                 LifecycleEvent.Type.OPENED -> true
                 LifecycleEvent.Type.CLOSED,
                 LifecycleEvent.Type.ERROR -> false
+
+                LifecycleEvent.Type.FAILED_SERVER_HEARTBEAT ->  false
             }
         }?.let { disposables.add(it) }
 
