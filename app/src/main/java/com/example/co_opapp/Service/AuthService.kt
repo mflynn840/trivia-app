@@ -45,11 +45,18 @@ interface AuthApiService {
     ): Response<ResponseBody>
 
 }
+<<<<<<< Updated upstream
 
 // Service class that wraps AuthApiService for easier use in app
 class AuthService(private val context: Context) {
     var authApi: AuthApiService? = null // Retrofit API instance
     private var authToken: String? = null // Stores current auth token
+=======
+// Service class that wraps AuthApiService for easier use in app
+class AuthService {
+    var authApi: AuthApiService? = null
+    private var authToken: String? = null
+>>>>>>> Stashed changes
 
     // StateFlow to track the currently logged-in player
     private val _currentPlayer = MutableStateFlow<Player?>(null)
