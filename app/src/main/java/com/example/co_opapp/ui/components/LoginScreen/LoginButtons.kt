@@ -1,11 +1,17 @@
 package com.example.co_opapp.ui.components.LoginScreen
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.co_opapp.Service.AuthService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,15 +54,20 @@ fun LoginButtons(
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth(),
 
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF006400), // Dark green background
+                containerColor = Color(0xFF006400),
                 contentColor = Color.White
             ),
+            border = BorderStroke(2.dp, Color.Black) // moved outside modifier
         ) {
-            Text("Login",
-            style = MaterialTheme.typography.titleMedium, // bigger text
+            Text(
+                "Login",
+                style = MaterialTheme.typography.titleMedium
             )
         }
 
@@ -82,14 +93,19 @@ fun LoginButtons(
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF006400), // Dark green background
-            contentColor = Color.White
-        ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF006400),
+                contentColor = Color.White
+            ),
+            border = BorderStroke(2.dp, Color.Black)
         ) {
-            Text("Register",
-            style = MaterialTheme.typography.titleMedium, // bigger text
+            Text(
+                "Register",
+                style = MaterialTheme.typography.titleMedium
             )
         }
     }
