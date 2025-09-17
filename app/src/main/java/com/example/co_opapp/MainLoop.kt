@@ -149,7 +149,14 @@ fun CoopApp() {
         }
 
         composable("lobby") {
+            // Create the service when we navigate to the lobby
             val lobbyService = remember { LobbyWebSocketService() }
+
+            // Launch the connection when this composable enters the composition
+            LaunchedEffect(Unit) {
+                lobbyService.connect()
+            }
+
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 LobbyScreen(
                     modifier = Modifier.padding(innerPadding),
