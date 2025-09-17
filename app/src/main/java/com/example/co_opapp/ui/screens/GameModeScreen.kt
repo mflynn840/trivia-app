@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.AuthService
 import com.example.co_opapp.Service.ProfilePictureService
+import com.example.co_opapp.ui.components.LoginScreen.AnimatedGradientButton
 
 
 @Composable
@@ -82,35 +83,25 @@ fun GameModeScreen(
                 onClick = onNavigateToCoOp
             )
 
-            Button(
+            AnimatedGradientButton(
+                text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF006400))
-            ) {
-                Text("Character Customization",
-                    fontSize = 22.sp,
-
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                    .height(56.dp)
+            )
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Button(
+            AnimatedGradientButton(
+                text = "Back to Login",
                 onClick = onNavigateBack,
                 modifier = Modifier.fillMaxWidth()
                 .height(38.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03A9F4))
-            ) {
-                Text("Back to Login",
-                    fontSize = 18.sp,
 
-                    fontWeight = FontWeight.Bold,
+            )
 
-                )
             }
         }
     }
-}
+
