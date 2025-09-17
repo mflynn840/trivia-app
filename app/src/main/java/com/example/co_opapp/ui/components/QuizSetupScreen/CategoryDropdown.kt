@@ -1,22 +1,25 @@
 package com.example.co_opapp.ui.components.QuizSetupScreen
 
-import androidx.compose.ui.Modifier
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryDropdown(
     categories: List<String>,
     selectedCategory: String?,
     onCategorySelected: (String) -> Unit
 ) {
-    var categoryExpanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
 
-    Text("Select Category", style = MaterialTheme.typography.titleMedium)
-    Box {
+    // Exposed Dropdown
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it },  // Manage dropdown expanded state
+    ) {
+        // Display the selected category in the TextField
         TextField(
             value = selectedCategory ?: "",
             onValueChange = {},
@@ -24,18 +27,20 @@ fun CategoryDropdown(
             label = { Text("Category") },
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { categoryExpanded = !categoryExpanded }
+                .menuAnchor()  // Link the dropdown to the TextField
         )
-        DropdownMenu(
-            expanded = categoryExpanded,
-            onDismissRequest = { categoryExpanded = false }
+
+        // DropdownMenu
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false } // Close dropdown when clicked outside
         ) {
             categories.forEach { category ->
                 DropdownMenuItem(
                     text = { Text(category) },
                     onClick = {
-                        onCategorySelected(category)
-                        categoryExpanded = false
+                        onCategorySelected(category)  // Notify the parent when a category is selected
+                        expanded = false  // Close the dropdown after selection
                     }
                 )
             }
