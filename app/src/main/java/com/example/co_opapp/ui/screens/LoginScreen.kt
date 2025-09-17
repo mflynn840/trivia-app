@@ -13,11 +13,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.Service.AuthService
 import com.example.co_opapp.ui.components.LoginScreen.LoginButtons
 import com.example.co_opapp.R
-
+import com.example.co_opapp.ui.components.LoginScreen.AnimatedTriviaQuestLogo
 import com.example.co_opapp.ui.components.LoginScreen.rememberLoginFormState
 
 @Composable
@@ -29,6 +30,7 @@ fun LoginScreen(
     val formState = rememberLoginFormState()
 
     Box(modifier = modifier.fillMaxSize()) {
+        // Background image
         Image(
             painter = painterResource(id = R.drawable.login),
             contentDescription = "Login background",
@@ -39,18 +41,14 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(24.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "TriviaQuest",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-            )
-            Spacer(modifier = Modifier.height(24.dp))
+            // Logo
+            AnimatedTriviaQuestLogo()
 
+            // Username field
             TextField(
                 value = formState.username,
                 onValueChange = formState.onUsernameChange,
@@ -58,12 +56,13 @@ fun LoginScreen(
                 singleLine = true,
                 textStyle = LocalTextStyle.current.copy(color = Color.Black),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White.copy(alpha = 0.8f), shape = RoundedCornerShape(8.dp))
+                    .fillMaxWidth(0.9f)
+                    .background(Color.White.copy(alpha = 0.85f), shape = RoundedCornerShape(12.dp))
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Password field
             TextField(
                 value = formState.password,
                 onValueChange = formState.onPasswordChange,
@@ -72,28 +71,32 @@ fun LoginScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 textStyle = LocalTextStyle.current.copy(color = Color.Black),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White.copy(alpha = 0.8f), shape = RoundedCornerShape(8.dp))
+                    .fillMaxWidth(0.9f)
+                    .background(Color.White.copy(alpha = 0.85f), shape = RoundedCornerShape(12.dp))
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Login/Register buttons
             LoginButtons(
                 username = formState.username,
                 password = formState.password,
                 authService = authService,
                 onNavigateToLobby = onNavigateToLobby,
-                messageState = formState.message,
+                messageState = formState.message
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Feedback message
             Text(
                 text = formState.message.value,
-                color = Color.White
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(0.9f)
             )
         }
     }
 }
-
 
