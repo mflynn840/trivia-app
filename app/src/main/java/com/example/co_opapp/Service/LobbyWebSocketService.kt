@@ -10,16 +10,14 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.StompClient
+import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-
-
 class LobbyWebSocketService(
-    private val backendUrl: String = "ws://192.168.4.21:8080/ws"
+    private val backendUrl: String = "ws://192.168.1.140:8080/ws"
 ) {
-
     private val gson = Gson()
     private val disposables = CompositeDisposable()
     private var stompClient: StompClient? = null
@@ -31,35 +29,50 @@ class LobbyWebSocketService(
     private val _lobbyChats = MutableStateFlow<Map<String, List<String>>>(emptyMap())
     val lobbyChats: StateFlow<Map<String, List<String>>> = _lobbyChats
 
+    // Tracks whether the WebSocket is connected
+    private val _isConnected = MutableStateFlow(false)
+    val isConnected: StateFlow<Boolean> = _isConnected
+
+    init {
+        connect()
+    }
+
     fun connect() {
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, backendUrl)
         stompClient?.connect()
 
+        // Lifecycle subscription to track connection status
+        stompClient?.lifecycle()?.subscribe { event: LifecycleEvent ->
+            _isConnected.value = when (event.type) {
+                LifecycleEvent.Type.OPENED -> true
+                LifecycleEvent.Type.CLOSED,
+                LifecycleEvent.Type.ERROR -> false
+            }
+        }?.let { disposables.add(it) }
+
         // Subscribe to lobby updates
-        val disposable = stompClient?.topic("/topic/lobby-updates")
+        stompClient?.topic("/topic/lobby-updates")
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({ frame ->
+            ?.subscribe({ frame: StompMessage ->
                 val lobby = gson.fromJson(frame.payload, Lobby::class.java)
                 val updated = _lobbies.value.filter { it.lobbyId != lobby.lobbyId } + lobby
                 _lobbies.value = updated
             }, { error ->
                 Log.e("LobbyWebSocketService", "Error receiving lobby updates", error)
-            })
-
-        disposable?.let { disposables.add(it) }
+            })?.let { disposables.add(it) }
     }
 
     fun disconnect() {
         disposables.clear()
         stompClient?.disconnect()
+        _isConnected.value = false
     }
 
     fun createLobby() {
         sendMessage("/app/lobby/create", Any())
     }
 
-    // Join a lobby
     fun joinLobby(lobbyId: String, player: Player) {
         sendMessage("/app/lobby/join/$lobbyId", player)
     }
@@ -81,15 +94,13 @@ class LobbyWebSocketService(
         stompClient?.send(destination, json)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({ /* success */ }, { error ->
+            ?.subscribe({}, { error ->
                 Log.e("LobbyWebSocketService", "Error sending message to $destination", error)
-            })
-            ?.let { disposables.add(it) }
+            })?.let { disposables.add(it) }
     }
 
-    // Optional: subscribe to a specific lobby's updates for chat
     fun subscribeToLobby(lobbyId: String) {
-        val disposable = stompClient?.topic("/topic/lobby/$lobbyId")
+        stompClient?.topic("/topic/lobby/$lobbyId")
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe({ frame: StompMessage ->
@@ -99,8 +110,6 @@ class LobbyWebSocketService(
                 }
             }, { error ->
                 Log.e("LobbyWebSocketService", "Error subscribing to lobby $lobbyId", error)
-            })
-
-        disposable?.let { disposables.add(it) }
+            })?.let { disposables.add(it) }
     }
 }

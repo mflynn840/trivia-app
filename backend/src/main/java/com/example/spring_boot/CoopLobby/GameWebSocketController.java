@@ -79,4 +79,10 @@ public class GameWebSocketController {
     private void broadcastLobbyUpdate(Lobby lobby) {
         messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getLobbyId(), lobby);
     }
+
+    @MessageMapping("/lobby/ping")
+    @SendTo("/topic/lobby/ping")
+    public String ping() {
+        return "pong";
+    }
 }

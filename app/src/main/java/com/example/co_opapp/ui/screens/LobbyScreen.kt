@@ -12,7 +12,10 @@ import com.example.co_opapp.Service.LobbyWebSocketService
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.Lobby
 import com.example.co_opapp.data_model.Player
+import com.example.co_opapp.ui.components.LobbyScreen.ConnectionStatusIndicator
 import com.example.co_opapp.ui.components.LobbyScreen.LobbyCard
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun LobbyScreen(
@@ -24,11 +27,13 @@ fun LobbyScreen(
 ) {
     val currentPlayer by authService.currentPlayerFlow.collectAsState()
     var username by remember { mutableStateOf("") }
-    LaunchedEffect(currentPlayer) { username = currentPlayer?.username ?: "" }
 
+    //
     val lobbies by lobbyService.lobbies.collectAsState()
     val lobbyChats by lobbyService.lobbyChats.collectAsState()
     var selectedLobbyId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(currentPlayer) { username = currentPlayer?.username ?: "" }
     LaunchedEffect(Unit) { lobbyService.connect() }
 
     Column(
@@ -43,8 +48,6 @@ fun LobbyScreen(
             label = { Text("Your Username") },
             modifier = Modifier.fillMaxWidth()
         )
-
-
         //Create a new lobby button
         Button(
             onClick = { lobbyService.createLobby() },
@@ -53,6 +56,9 @@ fun LobbyScreen(
             Text("Create Lobby")
         }
 
+        //internal serval status (DEBUGGING ONLY)
+        val isConnected by lobbyService.isConnected.collectAsState()  // New state flow we’ll add
+        ConnectionStatusIndicator(connected = isConnected)
 
         // Lobby cards list
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.weight(1f)) {
