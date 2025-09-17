@@ -70,4 +70,11 @@ dependencies {
     // Navigation Compose
     implementation("androidx.navigation:navigation-compose:2.8.4")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
+
+    // RxJava
+    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
+    implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
+
+    // Stomp client
+    implementation("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
 }
