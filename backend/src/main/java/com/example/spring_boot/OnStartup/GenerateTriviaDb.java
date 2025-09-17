@@ -76,9 +76,6 @@ public class GenerateTriviaDb {
                 String optionC = allAnswers.get(2);
                 String optionD = allAnswers.get(3);
 
-
-
-
                 Question question = new Question(
                         questionText, 
                         correctAnswer, 
