@@ -34,11 +34,9 @@ fun CoopApp() {
     val navController = rememberNavController()
     val context = LocalContext.current
     val authService = remember { AuthService(context) }
-    val lobbyService = remember { LobbyWebSocketService() }
 
     //Create the services for running a solo or co-op game later
     var soloService by remember { mutableStateOf<SoloGameService?>(null)}
-    val raceModeService = remember { RaceModeGameService() }
 
     // ProfilePictureService will be created **after login**
     var profilePictureService by remember { mutableStateOf<ProfilePictureService?>(null) }
@@ -138,6 +136,14 @@ fun CoopApp() {
         }
 
         composable("lobby") {
+            // Create the service when we navigate to the lobby
+            val lobbyService = remember { LobbyWebSocketService() }
+
+            // Launch the connection when this composable enters the composition
+            LaunchedEffect(Unit) {
+                lobbyService.connect()
+            }
+
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 LobbyScreen(
                     modifier = Modifier.padding(innerPadding),
