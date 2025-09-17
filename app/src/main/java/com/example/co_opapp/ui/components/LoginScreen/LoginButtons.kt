@@ -56,20 +56,21 @@ fun LoginButtons(
             },
 
             modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
+                .fillMaxWidth(0.9f)   // same as TextField width
+                .height(48.dp),       // consistent height
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF006400),
                 contentColor = Color.White
             ),
-            border = BorderStroke(2.dp, Color.Black) // moved outside modifier
+            border = BorderStroke(2.dp, Color.Black)
         ) {
             Text(
                 "Login",
                 style = MaterialTheme.typography.titleMedium
             )
         }
+
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -94,7 +95,7 @@ fun LoginButtons(
                 }
             },
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(0.9f)   // match text fields
                 .height(48.dp),
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
