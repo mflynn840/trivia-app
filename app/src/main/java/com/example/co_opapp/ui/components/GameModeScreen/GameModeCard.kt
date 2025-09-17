@@ -17,7 +17,8 @@ fun GameModeCard(
     description: String,
     buttonText: String,
     buttonColor: Color,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    cardColor: Color = MaterialTheme.colorScheme.surface
 ) {
     Card(
         modifier = Modifier
@@ -25,7 +26,7 @@ fun GameModeCard(
             .height(200.dp),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
         Column(
             modifier = Modifier

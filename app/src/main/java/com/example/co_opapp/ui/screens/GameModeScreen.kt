@@ -62,20 +62,21 @@ fun GameModeScreen(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black // use white if image is dark
+                color = Color.White // use white if image is dark
             )
 
             GameModeCard(
-                icon = "🎮",
-                title = "Single Player",
+                icon = "\uD83D\uDC64",
+                title = "Story Mode",
                 description = "Play alone and test your knowledge",
                 buttonText = "Start Single Player",
                 buttonColor = Color(0xFF006400),
-                onClick = onNavigateToSinglePlayer
+                onClick = onNavigateToSinglePlayer,
+                cardColor = Color(0xFF0D0D0D) // darker green for the card background
             )
 
             GameModeCard(
-                icon = "👥",
+                icon = "\uD83D\uDC65",
                 title = "Co-op Mode",
                 description = "Play with friends on the same network",
                 buttonText = "Start Co-op Game",
