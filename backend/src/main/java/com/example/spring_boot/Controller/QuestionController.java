@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.spring_boot.Service.QuestionService;
 import com.example.spring_boot.Model.Question;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -83,10 +84,22 @@ public class QuestionController {
 
     @GetMapping("/counts_by_category")
     public ResponseEntity<Map<String, Map<String, Long>>> getQuestionCountsByCategoryAndDifficulty() {
-        Map<String, Map<String, Long>> counts = questionService.getQuestionCountsByCategoryAndDifficulty();
-        return ResponseEntity.ok(counts);
-    }
+        Map<String, Map<String, Long>> result;
 
+        try {
+            result = questionService.getQuestionCountsByCategoryAndDifficulty();
+        } catch(Exception ex) {
+            // Log the error
+            ex.printStackTrace();
+            result = Collections.emptyMap();  // return empty JSON instead of 404
+        }
+
+        if(result == null) {
+            result = Collections.emptyMap();  // defensive
+        }
+
+        return ResponseEntity.ok(result);
+    }
 
 
 
