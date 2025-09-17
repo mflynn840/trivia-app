@@ -18,11 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-// Data class to parse backend error responses
-data class ApiError(
-    val error: String? = null,
-    val message: String? = null
-)
 
 @Composable
 fun LoginButtons(
