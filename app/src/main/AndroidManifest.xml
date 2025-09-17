@@ -15,29 +15,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CoopApp">
-        android:name=".T"
 
-        <!-- MainActivity -->
+        <!-- LoginActivity: launcher -->
         <activity
-
+            android:name="com.example.co_opapp.ui.components.LoginScreen.LoginActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.CoopApp">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- LoginActivity -->
-        <activity
-            android:name=".ui.components.LoginScreen.LoginActivity"
-            android:exported="true"
-            android:label="Login">
-        </activity>
-
-
     </application>
-
 
 </manifest>
