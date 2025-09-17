@@ -28,7 +28,7 @@ import android.content.Intent
 import com.example.co_opapp.ui.screens.LoginScreenWithMusicWrapper
 
 @Composable
-fun CoopApp() {
+fun TriviaGame() {
 
     //the main loop contains a controller for switching between pages
     val navController = rememberNavController()
