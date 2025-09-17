@@ -17,6 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 
+
 // Retrofit interface defining API endpoints for authentication
 interface AuthApiService {
     // Endpoint to register a new user
@@ -37,7 +38,7 @@ interface AuthApiService {
         @Header("Authorization") token: String
     ): Response<ResponseBody>
 
-    @GET("/players/{username}/avatar")
+    @GET("api/players/{username}/get-profile-picture")
     suspend fun getAvatar(
         @Path("username") username: String,
         @Header("Authorization") token: String
@@ -89,7 +90,7 @@ class AuthService(private val context: Context) {
                 if (loginResponse != null) {
                     _currentPlayer.value = Player(username = username, id = loginResponse.id)
                     authToken = loginResponse?.token  // Store auth token
-                    saveJwtToken(context, authToken!!)
+                    saveJwtToken(context, authToken!!, username)
 
                     true
                 } else {
@@ -126,59 +127,15 @@ class AuthService(private val context: Context) {
         return _currentPlayer.value?.username
     }
 
-    fun saveJwtToken(context: Context, token: String) {
+    fun saveJwtToken(context: Context, token: String, username: String) {
         val sharedPref = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putString("jwt_token", "Bearer $token")
+            putString("username", username)
             apply()
         }
     }
 
-    suspend fun uploadProfilePicture(imageUri: Uri): Boolean {
-        val part = imageUri.toMultipartBody(context, "file") ?: return false
-        return try {
-            val response = authApi?.uploadProfilePicture(
-                getUsername()!!,
-                part,
-                "Bearer ${this.getJwtToken()!!}"
-            )
-
-            if (response == null) {
-                Log.e("AuthService", "No response from backend")
-                return false
-            }
-
-            Log.d("AuthService", "HTTP status: ${response.code()}")
-
-            if (response.isSuccessful) {
-
-                Log.d("AuthService", "Upload successful:")
-                true
-            } else {
-                val errorString = response.errorBody()?.string() ?: "Unknown error body"
-                Log.e("AuthService", "Upload failed: $errorString")
-                false
-            }
-        } catch (e: Exception) {
-            Log.e("AuthService", "Exception while uploading avatar", e)
-            false
-        }
-    }
-
-    suspend fun getProfilePictureBytes(): ByteArray? {
-        return try {
-            val response = authApi?.getAvatar(getUsername()!!, "Bearer ${getJwtToken()!!}")
-            if (response?.isSuccessful == true) {
-                response.body()?.bytes() // convert ResponseBody to ByteArray
-            } else {
-                Log.e("AuthService", "Failed to fetch avatar: HTTP ${response?.code()}")
-                null
-            }
-        } catch (e: Exception) {
-            Log.e("AuthService", "Exception fetching avatar", e)
-            null
-        }
-    }
 
 }
 
