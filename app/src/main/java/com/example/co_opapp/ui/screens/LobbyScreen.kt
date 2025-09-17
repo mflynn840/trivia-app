@@ -44,6 +44,16 @@ fun LobbyScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+
+        //Create a new lobby button
+        Button(
+            onClick = { lobbyService.createLobby() },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Create Lobby")
+        }
+
+
         // Lobby cards list
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.weight(1f)) {
             items(lobbies) { lobby ->
