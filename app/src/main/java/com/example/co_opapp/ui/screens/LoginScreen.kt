@@ -53,7 +53,7 @@ fun LoginScreen(
             // --- Logo at top as circle ---
             Box(
                 modifier = Modifier
-                    .size(300.dp)
+                    .size(275.dp)
                     .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.2f))
                     .border(2.dp, Color.White, CircleShape),
