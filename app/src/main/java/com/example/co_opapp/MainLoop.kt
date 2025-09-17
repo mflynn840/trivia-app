@@ -2,8 +2,6 @@ package com.example.co_opapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -17,9 +15,7 @@ import com.example.co_opapp.Service.AuthService
 import com.example.co_opapp.Service.CategorySelectorService
 import com.example.co_opapp.Service.LobbyWebSocketService
 import com.example.co_opapp.Service.ProfilePictureService
-import com.example.co_opapp.ui.theme.CoopAppTheme
 import com.example.co_opapp.ui.screens.GameModeScreen
-import com.example.co_opapp.ui.screens.LoginScreen
 import com.example.co_opapp.ui.screens.QuizScreen
 import com.example.co_opapp.ui.screens.LobbyScreen
 import com.example.co_opapp.Service.RaceModeGameService
@@ -28,18 +24,8 @@ import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
 import com.example.co_opapp.ui.screens.QuizSetupScreen
 import com.example.co_opapp.ui.screens.LoadingScreen
 
-
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            CoopAppTheme {
-                CoopApp()
-            }
-        }
-    }
-}
+import android.content.Intent
+import com.example.co_opapp.ui.screens.LoginScreenWithMusicWrapper
 
 @Composable
 fun CoopApp() {
@@ -66,16 +52,17 @@ fun CoopApp() {
         //when the player completes login, go to the "select game-mode screen"
         composable("login") {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                LoginScreen(
+                LoginScreenWithMusicWrapper(
+                    authService = authService,
                     modifier = Modifier.padding(innerPadding),
                     onNavigateToLobby = {
                         profilePictureService = ProfilePictureService(authService, context)
                         navController.navigate("gameMode")
-                    },
-                    authService = authService
+                    }
                 )
             }
         }
+
 
         //when the player selects a game mode, go to that game mode
         composable("gameMode") {
