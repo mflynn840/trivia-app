@@ -15,8 +15,8 @@ public class DummyDataGenerator implements CommandLineRunner {
 
     }
     public void run(String... args) throws Exception {
-        fetch.run();
         gen.populate();
+        fetch.run();
         
     }
 
