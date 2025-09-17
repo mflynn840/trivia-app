@@ -46,7 +46,21 @@ data class Player(
     val username: String,
     val score: Int = 0,
     var isHost: Boolean = false,
-    var isReady: Boolean = false
+    var isReady: Boolean = false,
+    var sessionId: String
+)
+
+data class ChatMessage(
+    val username: String,
+    val message: String
+)
+
+data class Lobby(
+    val lobbyId: String,
+    val maxPlayers: Int = 4,
+    val players: Map<String, Player> = emptyMap(), // sessionId -> Player
+    val chatMessages: List<String> = emptyList(),
+    val gameState: GameState = GameState.WAITING
 )
 
 data class AnswerRequest(val questionId: Long, val answer: String)
@@ -54,4 +68,7 @@ data class AnswerResponse(val correct: Boolean, val correctAnswer: String)
 
 data class AnswersRequest(val questionIds: List<Long>, val answers: List<String>)
 data class AnswersResponse(val corrects: List<Boolean>, val correctAnswers: List<String>)
+
+
+
 

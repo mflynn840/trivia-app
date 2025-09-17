@@ -31,6 +31,8 @@ public class Player implements UserDetails {
 
     private boolean isHost;
     private boolean isReady;
+    
+    private String sessionId;
 
     byte[] profilePicture;
 
@@ -55,7 +57,8 @@ public class Player implements UserDetails {
     public String getPassword() { return this.password; }
     public void setPassword(String password) { this.password = password; }
 
-
+    public String getSessionId(){return this.sessionId;}
+    public void setSessionId(String sessionId){this.sessionId=sessionId;}
 
     // Return a list of the user's privileges
     @Override
@@ -84,20 +87,14 @@ public class Player implements UserDetails {
         return true;
     }
 
-    public void setIsHost(boolean b) {
-        this.isHost = b;
-    }
-
-    public boolean getIsHost(){return this.isHost;}
-
-    public void setIsReady(boolean b) {
-        this.isReady = b;
-    }
-
-    public boolean getIsReady(){return this.isReady;}
+    public void setHost(boolean b) {this.isHost = b;}
+    public boolean isHost(){return this.isHost;}
+    public void setReady(boolean b) {this.isReady = b;}
+    public boolean isReady(){return this.isReady;}
 
 
     public byte[] getProfilePicture(){return this.profilePicture;}
     public void setProfilePicture(byte[] profilePicture){this.profilePicture = profilePicture;}
+
 
 }

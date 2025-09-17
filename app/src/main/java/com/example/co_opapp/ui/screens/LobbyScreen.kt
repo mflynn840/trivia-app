@@ -4,49 +4,46 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.co_opapp.Service.AuthService
-import com.example.co_opapp.Service.RaceModeGameService
-import com.example.co_opapp.data_model.GameState
+import com.example.co_opapp.Service.LobbyWebSocketService
+import com.example.co_opapp.data_model.ChatMessage
+import com.example.co_opapp.data_model.Lobby
 import com.example.co_opapp.data_model.Player
+import kotlinx.coroutines.launch
 
 @Composable
 fun LobbyScreen(
-    gameService: RaceModeGameService,
+    lobbyService: LobbyWebSocketService,
     authService: AuthService,
     modifier: Modifier = Modifier,
     onNavigateToGame: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    // Observe current player
+    val scope = rememberCoroutineScope()
+
+    // Current player
     val currentPlayer by authService.currentPlayerFlow.collectAsState()
     var username by remember { mutableStateOf("") }
 
-    // Keep username synced with logged-in player
     LaunchedEffect(currentPlayer) {
         username = currentPlayer?.username ?: ""
     }
 
-    var selectedLobbyId by remember { mutableStateOf<Long?>(null) }
-    var isJoining by remember { mutableStateOf(false) }
+    var selectedLobbyId by remember { mutableStateOf<String?>(null) }
+    var chatInput by remember { mutableStateOf("") }
 
-    val gameState by gameService.gameState.collectAsState()
-    val connectionStatus by gameService.connectionStatus.collectAsState()
-    val errorMessage by gameService.errorMessage.collectAsState()
-    val lobbies by gameService.lobbies.collectAsState()
+    val lobbies by lobbyService.lobbies.collectAsState()
+    val lobbyChats by lobbyService.lobbyChats.collectAsState()
 
-    // Navigate to game automatically when in progress
-    LaunchedEffect(gameState) {
-        if (gameState?.gameState == GameState.IN_PROGRESS) {
-            onNavigateToGame()
-        }
-    }
+    // Connect websocket on first composition
+    LaunchedEffect(Unit) { lobbyService.connect() }
 
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp),
@@ -58,11 +55,7 @@ fun LobbyScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                "Select a Lobby",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
+            Text("Select a Lobby", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
             Button(onClick = onNavigateBack) { Text("Logout") }
         }
 
@@ -72,44 +65,32 @@ fun LobbyScreen(
             onValueChange = { username = it },
             label = { Text("Your Username") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !connectionStatus
         )
 
-        // Lobby cards
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        // Lobby list
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.weight(1f)) {
             items(lobbies) { lobby ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { selectedLobbyId = lobby.id },
+                        .clickable {
+                            selectedLobbyId = lobby.lobbyId
+                            lobbyService.subscribeToLobby(lobby.lobbyId)
+                        },
                     colors = CardDefaults.cardColors(
-                        containerColor = if (selectedLobbyId == lobby.id)
+                        containerColor = if (selectedLobbyId == lobby.lobbyId)
                             MaterialTheme.colorScheme.primaryContainer
-                        else
-                            MaterialTheme.colorScheme.surface
+                        else MaterialTheme.colorScheme.surface
                     )
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            "Lobby #${lobby.id}",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            "Players: ${lobby.players.size}/${lobby.maxPlayers}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Text(
-                            "Status: ${lobby.gameState.name}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Lobby #${lobby.lobbyId}", fontWeight = FontWeight.Bold)
+                        Text("Players: ${lobby.players.size}/${lobby.maxPlayers}")
+                        Text("Status: ${lobby.gameState.name}")
                         if (lobby.players.isNotEmpty()) {
                             Text("Players:", fontWeight = FontWeight.SemiBold)
-                            lobby.players.forEach { player ->
-                                Text(
-                                    "${player.username}${if (player.isHost) " (Host)" else ""} ${if (player.isReady) "✓ Ready" else ""}"
-                                )
+                            lobby.players.values.forEach { player ->
+                                Text("${player.username}${if (player.isHost) " (Host)" else ""} ${if (player.isReady) "✓ Ready" else ""}")
                             }
                         }
                     }
@@ -117,39 +98,78 @@ fun LobbyScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Join button
-        Button(
-            onClick = {
-                // Only join if currentPlayer exists
-                currentPlayer?.let { player ->
-                    selectedLobbyId?.let { lobbyId ->
-                        isJoining = true
-                        gameService.joinLobby(
-                            player = player,
-                            lobbyId = lobbyId,
-                            onSuccess = { isJoining = false },
-                            onError = { isJoining = false }
-                        )
+        // Chat
+        selectedLobbyId?.let { lobbyId ->
+            Column(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                val messages = lobbyChats[lobbyId] ?: emptyList()
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    items(messages) { msg ->
+                        Text(msg)
                     }
                 }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = selectedLobbyId != null && !isJoining && username.isNotBlank() && currentPlayer != null
-        ) {
-            if (isJoining) CircularProgressIndicator(modifier = Modifier.size(16.dp))
-            else Text("Join Selected Lobby")
+
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    OutlinedTextField(
+                        value = chatInput,
+                        onValueChange = { chatInput = it },
+                        label = { Text("Type a message") },
+                        modifier = Modifier.weight(1f),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                currentPlayer?.let { player ->
+                                    lobbyService.sendChat(lobbyId, ChatMessage(player.username, chatInput))
+                                    chatInput = ""
+                                }
+                            }
+                        )
+                    )
+                    Button(
+                        onClick = {
+                            currentPlayer?.let { player ->
+                                lobbyService.sendChat(lobbyId, ChatMessage(player.username, chatInput))
+                                chatInput = ""
+                            }
+                        },
+                        modifier = Modifier.padding(start = 8.dp)
+                    ) { Text("Send") }
+                }
+            }
         }
 
-        // Error message
-        errorMessage?.let { error ->
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
-            ) {
-                Text(error, modifier = Modifier.padding(16.dp), color = MaterialTheme.colorScheme.onErrorContainer)
-            }
+        // Join / Leave / Ready buttons
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(
+                onClick = {
+                    currentPlayer?.let { player ->
+                        selectedLobbyId?.let { lobbyId ->
+                            lobbyService.joinLobby(lobbyId, player)
+                        }
+                    }
+                },
+                enabled = selectedLobbyId != null
+            ) { Text("Join") }
+
+            Button(
+                onClick = {
+                    currentPlayer?.let { player ->
+                        selectedLobbyId?.let { lobbyId ->
+                            lobbyService.leaveLobby(lobbyId, player)
+                        }
+                    }
+                },
+                enabled = selectedLobbyId != null
+            ) { Text("Leave") }
+
+            Button(
+                onClick = {
+                    currentPlayer?.let { player ->
+                        selectedLobbyId?.let { lobbyId ->
+                            lobbyService.toggleReady(lobbyId, player)
+                        }
+                    }
+                },
+                enabled = selectedLobbyId != null
+            ) { Text("Toggle Ready") }
         }
     }
 }
