@@ -6,14 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.co_opapp.Service.AuthService
 import com.example.co_opapp.ui.screens.LoginScreen
+import com.example.co_opapp.ui.components.TriviaGame
+
+
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val authService = AuthService(this)
-
         setContent {
-            LoginScreen(authService = authService)
+            TriviaGame()
         }
     }
 }
