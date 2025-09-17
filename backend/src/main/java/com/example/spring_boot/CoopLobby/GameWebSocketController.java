@@ -21,16 +21,14 @@ public class GameWebSocketController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    
-    // Create a lobby
     @MessageMapping("/lobby/create")
     @SendTo("/topic/lobby-updates")
     public Lobby createLobby() {
         Lobby lobby = lobbyManager.createLobby();
+        System.out.println("Created lobby: " + lobby.getLobbyId());
         return lobby;
     }
 
-    // Join a lobby
     @MessageMapping("/lobby/join/{lobbyId}")
     public void joinLobby(@PathVariable String lobbyId, Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
@@ -40,7 +38,6 @@ public class GameWebSocketController {
         }
     }
 
-    // Leave a lobby
     @MessageMapping("/lobby/leave/{lobbyId}")
     public void leaveLobby(@PathVariable String lobbyId, Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
@@ -53,7 +50,6 @@ public class GameWebSocketController {
         }
     }
 
-    // Toggle ready state
     @MessageMapping("/lobby/ready/{lobbyId}")
     public void toggleReady(@PathVariable String lobbyId, Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
@@ -66,7 +62,6 @@ public class GameWebSocketController {
         }
     }
 
-    // Chat message
     @MessageMapping("/lobby/chat/{lobbyId}")
     public void sendChat(@PathVariable String lobbyId, ChatMessage msg) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
