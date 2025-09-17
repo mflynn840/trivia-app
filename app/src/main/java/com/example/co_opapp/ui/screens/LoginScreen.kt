@@ -1,5 +1,9 @@
 package com.example.co_opapp.ui.screens
 
+import android.media.MediaPlayer
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -23,6 +28,32 @@ import com.example.co_opapp.ui.components.LoginScreen.LoginButtons
 import com.example.co_opapp.R
 import com.example.co_opapp.ui.components.LoginScreen.AnimatedTriviaQuestLogo
 import com.example.co_opapp.ui.components.LoginScreen.rememberLoginFormState
+
+
+@Composable
+fun LoginScreenWithMusic(authService: AuthService) {
+    val context = LocalContext.current
+
+    // Remember MediaPlayer so it survives recompositions
+    val mediaPlayer = remember {
+        MediaPlayer.create(context, R.raw.login_music).apply {
+            isLooping = true
+            setVolume(1.0f, 1.0f)
+            start()
+        }
+    }
+
+    // Stop and release MediaPlayer when composable leaves composition
+    DisposableEffect(Unit) {
+        onDispose {
+            mediaPlayer.stop()
+            mediaPlayer.release()
+        }
+    }
+
+    // Show the normal LoginScreen UI
+    LoginScreen(authService = authService)
+}
 
 @Composable
 fun LoginScreen(
@@ -45,12 +76,12 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
-            verticalArrangement = Arrangement.Top, // move content to top
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(60.dp)) // optional top spacing
+            Spacer(modifier = Modifier.height(60.dp))
 
-            // --- Logo at top as circle ---
+            // Logo circle
             Box(
                 modifier = Modifier
                     .size(275.dp)
@@ -67,33 +98,31 @@ fun LoginScreen(
                 )
             }
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // Username field
+            // Username
             TextField(
                 value = formState.username,
                 onValueChange = formState.onUsernameChange,
                 label = { Text("Username", color = Color.Black) },
                 singleLine = true,
-                textStyle = LocalTextStyle.current.copy(color = Color.Black),
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .background(Color.White.copy(alpha = 0.85f), shape = RoundedCornerShape(12.dp))
+                    .background(Color.White.copy(alpha = 0.85f), RoundedCornerShape(12.dp))
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Password field
+            // Password
             TextField(
                 value = formState.password,
                 onValueChange = formState.onPasswordChange,
                 label = { Text("Password", color = Color.Black) },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
-                textStyle = LocalTextStyle.current.copy(color = Color.Black),
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .background(Color.White.copy(alpha = 0.85f), shape = RoundedCornerShape(12.dp))
+                    .background(Color.White.copy(alpha = 0.85f), RoundedCornerShape(12.dp))
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -109,7 +138,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Feedback message
+            // Feedback
             Text(
                 text = formState.message.value,
                 color = Color.White,
