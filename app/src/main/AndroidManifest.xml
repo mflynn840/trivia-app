@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -16,27 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoopApp">
 
-        <!-- MainActivity -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.CoopApp">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
-        <!-- LoginActivity -->
+        <!-- Optional: Login screen if you need it as a standalone activity -->
         <activity
             android:name=".ui.components.LoginScreen.LoginActivity"
             android:exported="true"
-            android:label="Login">
-        </activity>
-
-
+            android:label="Login" />
     </application>
-
-
 </manifest>
