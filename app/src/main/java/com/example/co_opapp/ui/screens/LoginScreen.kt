@@ -25,7 +25,6 @@ import com.example.co_opapp.ui.components.LoginScreen.LoginButtons
 import com.example.co_opapp.R
 import com.example.co_opapp.ui.components.LoginScreen.rememberLoginFormState
 
-
 @Composable
 fun LoginScreenWithMusicWrapper(
     authService: AuthService,
@@ -34,14 +33,15 @@ fun LoginScreenWithMusicWrapper(
 ) {
     val context = LocalContext.current
 
+    // Hold mediaPlayer across recompositions
     val mediaPlayer = remember {
         MediaPlayer.create(context, R.raw.login_music).apply {
             isLooping = true
-            setVolume(1f, 1f)
             start()
         }
     }
 
+    // Release when leaving this screen
     DisposableEffect(Unit) {
         onDispose {
             mediaPlayer.stop()
