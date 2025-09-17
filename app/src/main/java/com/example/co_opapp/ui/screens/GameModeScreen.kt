@@ -71,7 +71,8 @@ fun GameModeScreen(
                 description = "Play alone and test your knowledge",
                 buttonText = "Start Single Player",
                 buttonColor = Color(0xFF006400),
-                onClick = onNavigateToSinglePlayer
+                onClick = onNavigateToSinglePlayer,
+                cardColor = Color(0xFF0A2E1A) // darker green for the card background
             )
 
             GameModeCard(
