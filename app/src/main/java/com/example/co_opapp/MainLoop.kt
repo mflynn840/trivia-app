@@ -108,7 +108,6 @@ fun CoopApp() {
                             authService = authService,
                             category = category,
                             difficulty = difficulty,
-                            numQuestions = numQuestions
                         )
 
                         navController.navigate("singlePlayerQuiz")
