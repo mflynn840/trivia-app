@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.Backend.AuthService
@@ -49,17 +50,18 @@ fun GameModeScreen(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier
-                .padding(48.dp)
+                .padding(38.dp)
                 .align(Alignment.Center)
         ) {
-            Spacer(modifier = Modifier.height(38.dp))
+            Spacer(modifier = Modifier.height(58.dp))
 
             Text(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.Serif,
                 color = Color.White
             )
 
@@ -82,22 +84,18 @@ fun GameModeScreen(
             )
 
             AnimatedGradientButton(
+
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
+
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(56.dp),
             )
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            AnimatedGradientButton(
-                text = "Back to Login",
-                onClick = onNavigateBack,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(38.dp)
-            )
+
         }
     }
 }
