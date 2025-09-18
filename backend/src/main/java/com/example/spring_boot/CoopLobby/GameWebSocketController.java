@@ -1,10 +1,8 @@
 package com.example.spring_boot.CoopLobby;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -25,29 +23,44 @@ public class GameWebSocketController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    // -------------------
+    // All Lobbies Topic
+    // -------------------
+    @MessageMapping("/lobby/getAll")
+    public void sendAllLobbies() {
+        Map<String, Lobby> all = lobbyManager.getAllLobbies();
+        messagingTemplate.convertAndSend("/topic/lobby/all", all);
+    }
+
+    // -------------------
+    // Create Lobby
+    // -------------------
     @MessageMapping("/lobby/create")
-    @SendTo("/topic/lobby-updates")
-    public Object createLobby(@Payload CreateLobbyRequest request) {
+    public void createLobby(@Payload CreateLobbyRequest request) {
         try {
             Lobby lobby = lobbyManager.createLobby(request.getName());
             System.out.println("Created lobby: " + lobby.getName());
-            return lobby;
+
+            // Notify all subscribers about updated list of lobbies
+            sendAllLobbies();
+
         } catch (IllegalArgumentException e) {
-            // return an error object instead of throwing
-            return Map.of(
+            messagingTemplate.convertAndSend("/topic/lobby/errors", Map.of(
                 "error", true,
                 "message", e.getMessage()
-            );
+            ));
         }
     }
-        
 
+    // -------------------
+    // Lobby-specific actions
+    // -------------------
     @MessageMapping("/lobby/join/{lobbyId}")
     public void joinLobby(String lobbyId, Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null && !lobby.isFull()) {
             lobby.getPlayers().put(player.getSessionId(), player);
-            broadcastLobbyUpdate(lobby);
+            broadcastLobbyState(lobby);
         }
     }
 
@@ -56,9 +69,10 @@ public class GameWebSocketController {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
             lobby.getPlayers().remove(player.getSessionId());
-            broadcastLobbyUpdate(lobby);
+            broadcastLobbyState(lobby);
             if (lobby.isEmpty()) {
                 lobbyManager.removeLobby(lobbyId);
+                sendAllLobbies(); // update all lobbies topic
             }
         }
     }
@@ -70,7 +84,7 @@ public class GameWebSocketController {
             Player p = lobby.getPlayers().get(player.getSessionId());
             if (p != null) {
                 p.setReady(!p.isReady());
-                broadcastLobbyUpdate(lobby);
+                broadcastLobbyState(lobby);
             }
         }
     }
@@ -80,26 +94,20 @@ public class GameWebSocketController {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
             lobby.getChatMessages().add(msg.getUsername() + ": " + msg.getMessage());
-            broadcastLobbyUpdate(lobby);
+            broadcastLobbyState(lobby);
         }
     }
 
-    private void broadcastLobbyUpdate(Lobby lobby) {
+    // -------------------
+    // Helper: Broadcast lobby state to lobby-specific topic
+    // -------------------
+    private void broadcastLobbyState(Lobby lobby) {
         messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName(), lobby);
     }
 
+    // Optional: ping for connection testing
     @MessageMapping("/lobby/ping")
-    @SendTo("/topic/lobby/ping")
-    public String ping() {
-        return "pong";
+    public void ping() {
+        messagingTemplate.convertAndSend("/topic/lobby/ping", "pong");
     }
-
-
-    @MessageMapping("/lobby/getAll")
-    @SendTo("/topic/lobby/all")
-    public Map<String, Lobby> getAllLobbies() {
-        return lobbyManager.getAllLobbies();
-    }
-
-    
 }
