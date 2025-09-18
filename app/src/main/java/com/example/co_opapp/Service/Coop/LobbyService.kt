@@ -4,7 +4,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.example.co_opapp.Service.Backend.WebSocketClientManager
 import com.example.co_opapp.data_model.ChatMessage
-import com.example.co_opapp.data_model.CreateLobbyRequest
 import com.example.co_opapp.data_model.Lobby
 import com.example.co_opapp.data_model.PlayerDTO
 
@@ -70,8 +69,7 @@ class LobbyService(
     }
 
     fun createLobby(lobbyName: String) {
-        val request = CreateLobbyRequest(name = lobbyName)
-        wsManager.send("/app/lobby/create", request)
+        wsManager.send("/app/lobby/create", lobbyName)
     }
 
 

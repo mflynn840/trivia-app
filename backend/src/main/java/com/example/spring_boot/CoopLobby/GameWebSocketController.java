@@ -27,12 +27,20 @@ public class GameWebSocketController {
 
     @MessageMapping("/lobby/create")
     @SendTo("/topic/lobby-updates")
-    public Lobby createLobby(@Payload CreateLobbyRequest request) {
-        Lobby lobby = lobbyManager.createLobby(request.getName());
-        System.out.println("Created lobby: " + lobby.getName());
-        return lobby;
+    public Object createLobby(@Payload CreateLobbyRequest request) {
+        try {
+            Lobby lobby = lobbyManager.createLobby(request.getName());
+            System.out.println("Created lobby: " + lobby.getName());
+            return lobby;
+        } catch (IllegalArgumentException e) {
+            // return an error object instead of throwing
+            return Map.of(
+                "error", true,
+                "message", e.getMessage()
+            );
+        }
     }
-    
+        
 
     @MessageMapping("/lobby/join/{lobbyId}")
     public void joinLobby(String lobbyId, Player player) {

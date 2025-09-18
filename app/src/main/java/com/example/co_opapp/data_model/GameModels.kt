@@ -48,7 +48,7 @@ data class Player(
     val id: Long,
     val username: String,
     val score: Int = 0,
-    var isReady: Boolean = false,
+    var ready: Boolean = false,
     var sessionId: String
 )
 

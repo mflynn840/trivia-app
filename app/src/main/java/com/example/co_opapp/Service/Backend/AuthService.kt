@@ -45,7 +45,7 @@ class AuthService(context: Context) {
                 username = username,
                 id = loginResp.id,
                 score = 0,
-                isReady = false,
+                ready = false,
                 sessionId = ""
             )
             _currentPlayer.value = player
