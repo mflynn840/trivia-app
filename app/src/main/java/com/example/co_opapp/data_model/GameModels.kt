@@ -72,6 +72,10 @@ data class Lobby(
     val name: String,
 )
 
+data class CreateLobbyRequest(
+    val name: String
+)
+
 data class AnswersRequest(val questionIds: List<Long>, val answers: List<String>)
 data class AnswersResponse(val corrects: List<Boolean>, val correctAnswers: List<String>)
 

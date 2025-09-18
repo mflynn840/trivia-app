@@ -1,9 +1,8 @@
-package com.example.co_opapp.Service
+package com.example.co_opapp.Service.Backend
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.example.co_opapp.Service.AuthService
 import com.example.co_opapp.Repository.ProfileRepository
 
 /**

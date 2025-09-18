@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.co_opapp.Service.ProfileService
+import com.example.co_opapp.Service.Backend.ProfileService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
