@@ -1,7 +1,7 @@
-package com.example.co_opapp.Service
+package com.example.co_opapp.Service.Backend
 
-import com.example.co_opapp.Repository.TriviaRepository
 import com.example.co_opapp.Interfaces.GameDriver
+import com.example.co_opapp.Repository.TriviaRepository
 import com.example.co_opapp.data_model.AnswersRequest
 import com.example.co_opapp.data_model.TriviaQuestion
 import kotlinx.coroutines.CoroutineScope

@@ -1,11 +1,10 @@
 package com.example.co_opapp.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.co_opapp.Service.CategorySelectorService
+import com.example.co_opapp.Service.Hooks.CategorySelectorService
 import com.example.co_opapp.ui.components.QuizSetupScreen.ActionButtons
 import com.example.co_opapp.ui.components.QuizSetupScreen.CategoryDropdown
 import com.example.co_opapp.ui.components.QuizSetupScreen.DifficultyDropdown

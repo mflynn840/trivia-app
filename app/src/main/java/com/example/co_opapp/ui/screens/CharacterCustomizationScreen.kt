@@ -13,8 +13,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.R
-import com.example.co_opapp.Service.AuthService
-import com.example.co_opapp.Service.ProfileService
+import com.example.co_opapp.Service.Backend.AuthService
+import com.example.co_opapp.Service.Backend.ProfileService
 import com.example.co_opapp.SessionManager
 import com.example.co_opapp.ui.components.*
 import com.example.co_opapp.ui.components.CharacterCustomizationScreen.BackButton

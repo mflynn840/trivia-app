@@ -1,4 +1,4 @@
-package com.example.co_opapp.Service
+package com.example.co_opapp.Service.Coop
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf

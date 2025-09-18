@@ -21,8 +21,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import com.example.co_opapp.R
-import com.example.co_opapp.Service.AuthService
-import com.example.co_opapp.Service.ProfileService
+import com.example.co_opapp.Service.Backend.AuthService
+import com.example.co_opapp.Service.Backend.ProfileService
 import com.example.co_opapp.ui.components.LoginScreen.AnimatedGradientButton
 
 @Composable

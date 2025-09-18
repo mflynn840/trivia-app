@@ -7,13 +7,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.co_opapp.Service.ChatWindow
-import com.example.co_opapp.Service.LobbyService
+import com.example.co_opapp.Service.Coop.ChatWindow
+import com.example.co_opapp.Service.Coop.LobbyService
 import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.ui.components.LobbyScreen.*
 import com.example.co_opapp.data_model.PlayerDTO
-
 
 @Composable
 fun LobbyScreen(
@@ -81,11 +80,8 @@ fun LobbyScreen(
                     lobby = lobby,
                     isSelected = selectedLobbyName == lobby.name,
                     onSelect = {
-                        // Only select if lobby name is not null
-                        if (!lobby.name.isNullOrEmpty()) {
-                            selectedLobbyName = lobby.name
-                            lobbyService.subscribeToLobby(lobby.name) // Use name instead of id
-                        }
+                        selectedLobbyName = lobby.name
+                        lobbyService.subscribeToLobby(lobby.name) // Use name instead of id
                     },
                     onJoin = { handlePlayerAction(lobby.name) { player -> lobbyService.joinLobby(lobby.name, player) } },
                     onLeave = { handlePlayerAction(lobby.name) { player -> lobbyService.leaveLobby(lobby.name, player) } },
