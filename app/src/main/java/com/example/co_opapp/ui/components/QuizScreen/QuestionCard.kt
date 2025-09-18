@@ -1,20 +1,14 @@
 package com.example.co_opapp.ui.components.QuizScreen
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.border
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
@@ -31,45 +25,48 @@ fun QuestionCard(
     totalQuestions: Int,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
-    backgroundColor: Color = Color(0xFF87CEEB) // light blue
+    backgroundColor: Color = Color.White.copy(alpha = 0.6f)
 ) {
+    val scrollState = rememberScrollState()
+
     Card(
         modifier = modifier
-            .fillMaxWidth(0.85f) // narrower width, centered
-            .height(200.dp)
-            .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
+            .fillMaxWidth(0.85f)
+            .border(2.dp, Color.Black, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
 
-            // Question progress
             Text(
                 text = "Question ${questionIndex + 1} of $totalQuestions",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth() // <-- important
             )
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Question body
-            Text(
-                text = question,
-                fontFamily = FontFamily.Serif,
-                fontSize = 22.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f, fill = true)
-            )
+            // Scrollable question text (~2 lines visible)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp) // ~ lines of text visible
+                    .verticalScroll(scrollState)
+            ) {
+                Text(
+                    text = question,
+                    fontFamily = FontFamily.Serif,
+                    fontSize = fontSize,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }
-

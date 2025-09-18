@@ -24,7 +24,7 @@ fun BackgroundBox(
     Box(modifier = modifier.fillMaxSize()) {
         // Load background image from drawable
         Image(
-            painter = painterResource(id = R.drawable.forest_background),
+            painter = painterResource(id = R.drawable.city_background),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
