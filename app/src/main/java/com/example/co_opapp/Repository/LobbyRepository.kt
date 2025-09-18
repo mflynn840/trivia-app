@@ -10,7 +10,7 @@ class LobbyRepository {
 
     fun updateLobby(lobbyUpdate: Lobby, includeChat: Boolean = true) {
         val updatedList = _lobbies.value.toMutableList()
-        val index = updatedList.indexOfFirst { it.lobbyId == lobbyUpdate.lobbyId }
+        val index = updatedList.indexOfFirst { it.name == lobbyUpdate.name }
 
         if (index >= 0) {
             val existing = updatedList[index]

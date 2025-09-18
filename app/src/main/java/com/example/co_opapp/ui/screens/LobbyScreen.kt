@@ -78,15 +78,14 @@ fun LobbyScreen(
             items(lobbies) { lobby ->
                 LobbyCard(
                     lobby = lobby,
-                    isSelected = selectedLobbyId == lobby.lobbyId,
-                    currentPlayer = player,
+                    isSelected = selectedLobbyId == lobby.name,
                     onSelect = {
-                        selectedLobbyId = lobby.lobbyId
-                        lobbyService.subscribeToLobby(lobby.lobbyId)
+                        selectedLobbyId = lobby.name
+                        lobbyService.subscribeToLobby(lobby.name)
                     },
-                    onJoin = { handlePlayerAction(lobby.lobbyId) { player -> lobbyService.joinLobby(lobby.lobbyId, player) } },
-                    onLeave = { handlePlayerAction(lobby.lobbyId) { player -> lobbyService.leaveLobby(lobby.lobbyId, player) } },
-                    onToggleReady = { handlePlayerAction(lobby.lobbyId) { player -> lobbyService.toggleReady(lobby.lobbyId, player) } }
+                    onJoin = { handlePlayerAction(lobby.name) { player -> lobbyService.joinLobby(lobby.name, player) } },
+                    onLeave = { handlePlayerAction(lobby.name) { player -> lobbyService.leaveLobby(lobby.name, player) } },
+                    onToggleReady = { handlePlayerAction(lobby.name) { player -> lobbyService.toggleReady(lobby.name, player) } }
                 )
             }
         }

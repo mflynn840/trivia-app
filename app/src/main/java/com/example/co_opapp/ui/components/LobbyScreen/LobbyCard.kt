@@ -1,60 +1,84 @@
 package com.example.co_opapp.ui.components.LobbyScreen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.co_opapp.data_model.GameState
 import com.example.co_opapp.data_model.Lobby
 import com.example.co_opapp.data_model.Player
-import com.example.co_opapp.data_model.PlayerDTO
+
+
+fun getLobbyStatus(gameState: GameState): String {
+    return when (gameState) {
+        GameState.WAITING -> "Waiting"
+        GameState.IN_PROGRESS -> "In Progress"
+        GameState.FINISHED -> "Finished"
+        GameState.WAITING_FOR_PLAYERS -> "Waiting for Players"
+    }
+}
+
 @Composable
 fun LobbyCard(
     lobby: Lobby,
     isSelected: Boolean,
-    currentPlayer: Player?,
     onSelect: () -> Unit,
-    onJoin: (PlayerDTO) -> Unit,
-    onLeave: (PlayerDTO) -> Unit,
-    onToggleReady: (PlayerDTO) -> Unit,
-    modifier: Modifier = Modifier
+    onJoin: () -> Unit,
+    onLeave: () -> Unit,
+    onToggleReady: () -> Unit
 ) {
-    Card(
-        modifier = modifier
+    // Make lobby properties reactive
+    val lobbyName by remember { derivedStateOf { lobby.name } }
+    val numPlayers by remember { derivedStateOf { lobby.players.size } }
+    val status by remember { derivedStateOf { getLobbyStatus(lobby.gameState) } }
+
+    // Define a color based on selection status
+    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+
+    // Column to arrange all the elements
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
-            .clickable { onSelect() },
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
-            else MaterialTheme.colorScheme.surface
-        )
+            .background(backgroundColor)
+            .padding(16.dp)
+            .clickable { onSelect() }
     ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            // Lobby information
-            Text("Lobby #${lobby.lobbyId}", style = MaterialTheme.typography.titleMedium)
-            Text("Players: ${lobby.players.size}/${lobby.maxPlayers}")
-            Text("Status: ${lobby.gameState.name}")
+        // Lobby name
+        Text(
+            text = "Lobby: $lobbyName",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Black
+        )
 
-            // Display players in the lobby
-            if (lobby.players.isNotEmpty()) {
-                Column {
-                    Text("Players:", style = MaterialTheme.typography.bodyMedium)
-                    lobby.players.values.forEach { player ->
-                        Text(" ${player.username} ${if (player.isReady) "✓ Ready" else ""}")
-                    }
-                }
-            }
+        // Number of players
+        Text(
+            text = "Players: $numPlayers/${lobby.maxPlayers}",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.Gray
+        )
 
-            // Integrating LobbyActions component
-            currentPlayer?.let { player ->
-                LobbyActions(
-                    selectedLobbyId = lobby.lobbyId,
-                    currentPlayer = player,
-                    onJoin = { onJoin(PlayerDTO(player.sessionId, player.username)) },
-                    onLeave = { onLeave(PlayerDTO(player.sessionId, player.username)) },
-                    onToggleReady = { onToggleReady(PlayerDTO(player.sessionId, player.username)) }
-                )
-            }
+        // Status
+        Text(
+            text = "Status: $status",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.Gray
+        )
+
+        // Actions
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Button(onClick = onJoin) { Text("Join") }
+            Button(onClick = onLeave) { Text("Leave") }
+            Button(onClick = onToggleReady) { Text("Toggle Ready") }
         }
     }
+
+
 }
+
