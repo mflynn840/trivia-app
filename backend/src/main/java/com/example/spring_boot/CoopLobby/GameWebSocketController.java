@@ -3,6 +3,7 @@ package com.example.spring_boot.CoopLobby;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,8 @@ import com.example.spring_boot.Managers.LobbyManager;
 import com.example.spring_boot.Model.ChatMessage;
 import com.example.spring_boot.Model.Lobby;
 import com.example.spring_boot.Model.Player;
+import com.example.spring_boot.dto.CreateLobbyRequest;
+
 import java.util.Map;
 
 @Controller
@@ -24,11 +27,12 @@ public class GameWebSocketController {
 
     @MessageMapping("/lobby/create")
     @SendTo("/topic/lobby-updates")
-    public Lobby createLobby() {
-        Lobby lobby = lobbyManager.createLobby();
+    public Lobby createLobby(@Payload CreateLobbyRequest request) {
+        Lobby lobby = lobbyManager.createLobby(request.getName());
         System.out.println("Created lobby: " + lobby.getName());
         return lobby;
     }
+    
 
     @MessageMapping("/lobby/join/{lobbyId}")
     public void joinLobby(String lobbyId, Player player) {
@@ -82,10 +86,12 @@ public class GameWebSocketController {
         return "pong";
     }
 
-    
+
     @MessageMapping("/lobby/getAll")
     @SendTo("/topic/lobby/all")
     public Map<String, Lobby> getAllLobbies() {
         return lobbyManager.getAllLobbies();
     }
+
+    
 }
