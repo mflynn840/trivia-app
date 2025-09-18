@@ -18,7 +18,7 @@ public class Lobby {
         return name;
     }
 
-    public void setLobbyId(String lobbyId) {
+    public void setName(String name) {
         this.name = name;
     }
 

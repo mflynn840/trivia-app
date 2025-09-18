@@ -63,10 +63,10 @@ fun LobbyScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Button(
-            onClick = { lobbyService.createLobby() },
-            modifier = Modifier.fillMaxWidth()
-        ) { Text("Create Lobby") }
+        LobbyNameSelector(
+            onCreateLobby = { lobbyName -> lobbyService.createLobby(lobbyName) },
+            modifier = Modifier.padding(top = 8.dp)
+        )
 
         ConnectionStatusIndicator(connected = isConnected)
 
