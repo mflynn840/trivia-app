@@ -1,4 +1,4 @@
-package com.example.co_opapp.ui.components
+package com.example.co_opapp
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,8 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.co_opapp.Service.AuthService
 import com.example.co_opapp.Service.CategorySelectorService
-import com.example.co_opapp.UIConsumables.LobbyDomainService
-import com.example.co_opapp.Service.ProfilePictureService
+import com.example.co_opapp.Service.LobbyService
+import com.example.co_opapp.Service.ProfileService
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.QuizScreen
 import com.example.co_opapp.ui.screens.LobbyScreen
@@ -36,7 +36,7 @@ fun TriviaGame() {
     var soloService by remember { mutableStateOf<SoloGameService?>(null) }
 
     // ProfilePictureService will be created **after login**
-    var profilePictureService by remember { mutableStateOf<ProfilePictureService?>(null) }
+    var profilePictureService by remember { mutableStateOf<ProfileService?>(null) }
 
     // Start on the login page
     NavHost(
@@ -51,7 +51,7 @@ fun TriviaGame() {
                     authService = authService,
                     modifier = Modifier.padding(innerPadding),
                     onNavigateToLobby = {
-                        profilePictureService = ProfilePictureService(authService, context)
+                        profilePictureService = ProfileService(authService, context)
                         navController.navigate("gameMode")
                     }
                 )
@@ -129,7 +129,7 @@ fun TriviaGame() {
 
         // Lobby for co-op
         composable("lobby") {
-            val lobbyDomainService = remember { LobbyDomainService() }
+            val lobbyDomainService = remember { LobbyService() }
 
             // Launch the connection when this composable enters the composition
             LaunchedEffect(Unit) {

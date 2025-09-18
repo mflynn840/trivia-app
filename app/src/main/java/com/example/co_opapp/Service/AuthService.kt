@@ -1,143 +1,79 @@
 package com.example.co_opapp.Service
 
 import android.content.Context
-import android.net.Uri
 import android.util.Log
-import com.example.co_opapp.data_model.LoginResponse
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.State
 import com.example.co_opapp.data_model.Player
-import com.example.co_opapp.data_model.UserCredentials
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.example.co_opapp.Repository.AuthRepository
+import com.example.co_opapp.Service.api.AuthApiService
+import com.example.co_opapp.data_model.LoginResponse
 import okhttp3.MultipartBody
-import okhttp3.ResponseBody
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
 
+class AuthService(context: Context) {
 
+    private val api: AuthApiService = Retrofit.Builder()
+        .baseUrl("http://192.168.4.21:8080/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(AuthApiService::class.java)
 
-// Retrofit interface defining API endpoints for authentication
-interface AuthApiService {
-    // Endpoint to register a new user
-    @POST("api/auth/register")
-    suspend fun register(@Body credentials: UserCredentials): Response<Map<String, String>>
-    // Endpoint to log in an existing user
-    @POST("api/auth/login")
-    suspend fun login(@Body credentials: UserCredentials): Response<LoginResponse>
-    // Endpoint to validate an existing token
-    @POST("api/auth/validate")
-    suspend fun validateToken(@Header("Authorization") token: String): Response<Map<String, Any>>
+    private val repository = AuthRepository(api)
 
-    @Multipart
-    @POST("api/players/{username}/upload-profile-picture")
-    suspend fun uploadProfilePicture(
-        @Path("username") username: String,
-        @Part image: MultipartBody.Part,
-        @Header("Authorization") token: String
-    ): Response<ResponseBody>
+    private val _currentPlayer = mutableStateOf<Player?>(null)
+    val currentPlayer: State<Player?> get() = _currentPlayer
 
-    @GET("api/players/{username}/get-profile-picture")
-    suspend fun getAvatar(
-        @Path("username") username: String,
-        @Header("Authorization") token: String
-    ): Response<ResponseBody>
-
-}
-
-// Service class that wraps AuthApiService for easier use in app
-class AuthService(private val context: Context) {
-    var authApi: AuthApiService? = null
     private var authToken: String? = null
+    private val sharedPrefs = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
 
-    // StateFlow to track the currently logged-in player
-    private val _currentPlayer = MutableStateFlow<Player?>(null)
-    val currentPlayerFlow: StateFlow<Player?> = _currentPlayer.asStateFlow()
+    fun getJwtToken(): String? = sharedPrefs.getString("jwt_token", null)
+    fun getUsername(): String? = _currentPlayer.value?.username
 
-    // Initialize the API on service creation
-    init {
-        initializeApi()
-    }
-
-    private fun initializeApi() {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.4.21:8080/") // Base URL of the backend
-            .addConverterFactory(GsonConverterFactory.create()) // JSON converter
-            .build()
-        authApi = retrofit.create(AuthApiService::class.java)
-    }
-
-    // Returns the current Player object
-    fun getMyPlayer(): Player? = _currentPlayer.value
-
-    // Register a new user with username/password
     suspend fun register(username: String, password: String): Boolean {
-        return try {
-            authApi?.register(UserCredentials(username, password))?.isSuccessful == true
-        } catch (e: Exception) {
-            Log.e("AuthService", "Registration failed", e); false
-        }
+        return repository.register(username, password)
     }
 
-    // Log in a user with username/password
     suspend fun login(username: String, password: String): Boolean {
-        return try {
-            val response = authApi?.login(UserCredentials(username, password))
-
-            if (response?.isSuccessful == true) {
-                val loginResponse = response.body()
-                if (loginResponse != null) {
-                    _currentPlayer.value = Player(
-                        username = username,
-                        id = loginResponse.id,
-                        score = 0,
-                        isReady = false,
-                        sessionId = "",
-                    )
-                    authToken = loginResponse.token  // Store auth token
-                    saveJwtToken(authToken!!, username)
-                    true
-                } else {
-                    Log.e("AuthService", "Login response is null")
-                    false
-                }
-            } else {
-                Log.e("AuthService", "Login failed: ${response?.message()}")
-                false
-            }
-        } catch (e: Exception) {
-            Log.e("AuthService", "Login failed", e)
-            false
-        }
+        val loginResp: LoginResponse? = repository.login(username, password)
+        return if (loginResp != null) {
+            authToken = loginResp.token
+            saveJwtToken(authToken!!, username)
+            _currentPlayer.value = Player(
+                username = username,
+                id = loginResp.id,
+                score = 0,
+                isReady = false,
+                sessionId = ""
+            )
+            true
+        } else false
     }
 
-    // Validate the stored token with backend
     suspend fun validateToken(): Boolean {
         val token = authToken ?: return false
-        return try {
-            authApi?.validateToken(token)?.isSuccessful == true
-        } catch (e: Exception) {
-            Log.e("AuthService", "Token validation failed", e)
-            false
-        }
+        return repository.validateToken(token)
     }
 
-    fun getJwtToken(): String? {
-        val sharedPref = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
-        return sharedPref.getString("jwt_token", null)
-    }
-
-    fun getUsername(): String? {
-        return _currentPlayer.value?.username
-    }
-
-    fun saveJwtToken(token: String, username: String) {
-        val sharedPref = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
+    private fun saveJwtToken(token: String, username: String) {
+        with(sharedPrefs.edit()) {
             putString("jwt_token", token)
             putString("username", username)
             apply()
         }
+    }
+
+    suspend fun uploadProfilePicture(image: MultipartBody.Part): Boolean {
+        val username = getUsername() ?: return false
+        val token = "Bearer ${getJwtToken() ?: return false}"
+        val resp = repository.uploadProfilePicture(username, image, token)
+        return resp?.isSuccessful == true
+    }
+
+    suspend fun getAvatarBytes(): ByteArray? {
+        val username = getUsername() ?: return null
+        val token = "Bearer ${getJwtToken() ?: return null}"
+        return repository.getAvatar(username, token)?.body()?.bytes()
     }
 }

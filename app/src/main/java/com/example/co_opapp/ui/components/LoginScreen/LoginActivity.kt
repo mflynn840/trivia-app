@@ -1,12 +1,9 @@
 package com.example.co_opapp.ui.components.LoginScreen
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.co_opapp.Service.AuthService
-import com.example.co_opapp.ui.screens.LoginScreen
-import com.example.co_opapp.ui.components.TriviaGame
+import com.example.co_opapp.TriviaGame
 
 
 

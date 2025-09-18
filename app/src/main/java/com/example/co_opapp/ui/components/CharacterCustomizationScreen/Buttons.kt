@@ -10,8 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-
-import com.example.co_opapp.Service.ProfilePictureService
+import com.example.co_opapp.Service.ProfileService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,7 +43,7 @@ fun BackButton(onNavigateBack: () -> Unit) {
 }
 
 @Composable
-fun SendToBackendButton(imageUri: Uri?, profilePictureService: ProfilePictureService) {
+fun SendToBackendButton(imageUri: Uri?, profilePictureService: ProfileService) {
     val context = LocalContext.current
 
     Button(

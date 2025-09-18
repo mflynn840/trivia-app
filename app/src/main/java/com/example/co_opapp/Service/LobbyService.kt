@@ -1,11 +1,7 @@
-package com.example.co_opapp.UIConsumables
+package com.example.co_opapp.Service
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-
-import com.example.co_opapp.Repository.LobbyRepository
-import com.example.co_opapp.Service.WebSocketClientManager
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.Lobby
 import com.example.co_opapp.data_model.PlayerDTO
@@ -15,7 +11,7 @@ import com.example.co_opapp.data_model.PlayerDTO
  * High level UI-facing API for interacting with the backends websocket
  */
 
-class LobbyDomainService(
+class LobbyService(
     backendUrl: String = "ws://192.168.4.21:8080/ws"
 ) {
 
