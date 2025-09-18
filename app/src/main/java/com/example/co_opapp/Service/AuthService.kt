@@ -64,16 +64,5 @@ class AuthService(context: Context) {
         }
     }
 
-    suspend fun uploadProfilePicture(image: MultipartBody.Part): Boolean {
-        val username = getUsername() ?: return false
-        val token = "Bearer ${getJwtToken() ?: return false}"
-        val resp = repository.uploadProfilePicture(username, image, token)
-        return resp?.isSuccessful == true
-    }
 
-    suspend fun getAvatarBytes(): ByteArray? {
-        val username = getUsername() ?: return null
-        val token = "Bearer ${getJwtToken() ?: return null}"
-        return repository.getAvatar(username, token)?.body()?.bytes()
-    }
 }
