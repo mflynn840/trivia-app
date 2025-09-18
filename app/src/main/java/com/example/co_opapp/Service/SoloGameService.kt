@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.example.co_opapp.Interface.GameDriver
+import com.example.co_opapp.UIConsumables.GameDriver
 import com.example.co_opapp.data_model.AnswersRequest
 import com.example.co_opapp.data_model.AnswersResponse
 import kotlinx.coroutines.CoroutineScope

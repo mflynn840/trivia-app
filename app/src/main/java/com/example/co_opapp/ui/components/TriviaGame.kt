@@ -1,7 +1,5 @@
 package com.example.co_opapp.ui.components
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -13,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.co_opapp.Service.AuthService
 import com.example.co_opapp.Service.CategorySelectorService
-import com.example.co_opapp.Service.LobbyWebSocketService
+import com.example.co_opapp.UIConsumables.LobbyDomainService
 import com.example.co_opapp.Service.ProfilePictureService
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.QuizScreen
@@ -23,7 +21,6 @@ import com.example.co_opapp.Service.SoloGameService
 import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
 import com.example.co_opapp.ui.screens.QuizSetupScreen
 import com.example.co_opapp.ui.screens.LoadingScreen
-import android.content.Intent
 import com.example.co_opapp.ui.screens.LoginScreenWithMusicWrapper
 
 
@@ -132,11 +129,11 @@ fun TriviaGame() {
 
         // Lobby for co-op
         composable("lobby") {
-            val lobbyService = remember { LobbyWebSocketService() }
+            val lobbyDomainService = remember { LobbyDomainService() }
 
             // Launch the connection when this composable enters the composition
             LaunchedEffect(Unit) {
-                lobbyService.connect()
+                lobbyDomainService.connect()
             }
 
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -148,7 +145,7 @@ fun TriviaGame() {
                         }
                     },
                     onNavigateToGame = { navController.navigate("coopQuiz") },
-                    lobbyService = lobbyService,
+                    lobbyService = lobbyDomainService,
                     authService = authService
                 )
             }

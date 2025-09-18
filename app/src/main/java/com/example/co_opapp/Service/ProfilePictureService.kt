@@ -3,6 +3,7 @@ package com.example.co_opapp.Service
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -17,6 +18,7 @@ import retrofit2.http.Path
 
 
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 
 
@@ -119,6 +121,21 @@ class ProfilePictureService(
             }
         } catch (e: Exception) {
             Log.e("AuthService", "Exception fetching avatar", e)
+            null
+        }
+    }
+
+    //send images as multipart/form data (compress images to jpeg)
+    fun Uri.toMultipartBody(context: Context, name: String): MultipartBody.Part? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(this) ?: return null
+            val bytes = inputStream.readBytes()
+            inputStream.close()
+
+            val requestBody = bytes.toRequestBody("image/*".toMediaTypeOrNull())
+            MultipartBody.Part.createFormData(name, "avatar.jpg", requestBody)
+        } catch (e: Exception) {
+            e.printStackTrace()
             null
         }
     }
