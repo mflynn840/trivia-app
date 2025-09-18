@@ -53,7 +53,7 @@ fun QuizScreen(
     Box(modifier = modifier.fillMaxSize()) {
         // --- BACKGROUND IMAGE ---
         Image(
-            painter = painterResource(id = R.drawable.forest_background),
+            painter = painterResource(id = R.drawable.city_background),
             contentDescription = "Quiz Background",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -68,7 +68,7 @@ fun QuizScreen(
             shape = RoundedCornerShape(16.dp),                // same rounded corners
             border = BorderStroke(2.dp, Color.Black),         // border that follows the shape
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF87CEEB)            // solid light purple
+                containerColor = Color.White.copy(alpha = 0.6f)
             )
         ) {
             Text("Back", color = Color.Black)
