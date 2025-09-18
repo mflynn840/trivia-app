@@ -27,11 +27,9 @@ public class Player implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
 
-    private boolean isHost;
-    private boolean isReady;
-    
+    private Role role;
+    private boolean isReady = false;
     private String sessionId;
 
     byte[] profilePicture;
@@ -87,8 +85,6 @@ public class Player implements UserDetails {
         return true;
     }
 
-    public void setHost(boolean b) {this.isHost = b;}
-    public boolean isHost(){return this.isHost;}
     public void setReady(boolean b) {this.isReady = b;}
     public boolean isReady(){return this.isReady;}
 

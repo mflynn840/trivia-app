@@ -3,7 +3,6 @@ package com.example.co_opapp.Service
 import android.util.Log
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.Lobby
-import com.example.co_opapp.data_model.Player
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -14,7 +13,7 @@ import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import ua.naiksoftware.stomp.dto.StompHeader
+import com.example.co_opapp.data_model.PlayerDTO
 
 
 class LobbyWebSocketService(
@@ -136,17 +135,17 @@ class LobbyWebSocketService(
         sendMessage("/app/lobby/create", Any())
     }
 
-    fun joinLobby(lobbyId: String, player: Player) {
+    fun joinLobby(lobbyId: String, player: PlayerDTO) {
         Log.d(TAG, "Joining lobby $lobbyId with player ${player.username}")
         sendMessage("/app/lobby/join/$lobbyId", player)
     }
 
-    fun leaveLobby(lobbyId: String, player: Player) {
+    fun leaveLobby(lobbyId: String, player: PlayerDTO) {
         Log.d(TAG, "Leaving lobby $lobbyId with player ${player.username}")
         sendMessage("/app/lobby/leave/$lobbyId", player)
     }
 
-    fun toggleReady(lobbyId: String, player: Player) {
+    fun toggleReady(lobbyId: String, player: PlayerDTO) {
         Log.d(TAG, "Toggling ready state in lobby $lobbyId for player ${player.username}")
         sendMessage("/app/lobby/ready/$lobbyId", player)
     }

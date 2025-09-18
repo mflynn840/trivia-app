@@ -14,7 +14,7 @@ public class UpdateQuestionDb implements CommandLineRunner {
 
     }
     public void run(String... args) throws Exception {
-        gen.populate("./questions");
+        //gen.populate("./questions");
         
     }
 
