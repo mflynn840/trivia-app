@@ -14,6 +14,7 @@ import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.PlayerDTO
 import com.example.co_opapp.ui.components.LobbyScreen.ConnectionStatusIndicator
 import com.example.co_opapp.ui.components.LobbyScreen.LobbyCard
+import com.example.co_opapp.ui.components.LobbyScreen.BackButton
 
 @Composable
 fun LobbyScreen(
@@ -26,7 +27,7 @@ fun LobbyScreen(
     val currentPlayer = SessionManager.currentPlayer
     var username by remember { mutableStateOf("") }
 
-    //use the service layer to manage the states of the lobbies, chats and connection status
+    // Use the service layer to manage the states of the lobbies, chats, and connection status
     val lobbies by lobbyService.lobbies
     val lobbyChats by lobbyService.lobbyChats
     val isConnected by remember { derivedStateOf { lobbyService.isConnected } }
@@ -41,6 +42,9 @@ fun LobbyScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // Add the back button to the top
+        BackButton(onNavigateBack = onNavigateBack)
+
         Text("Select a Lobby", style = MaterialTheme.typography.headlineMedium)
 
         OutlinedTextField(
