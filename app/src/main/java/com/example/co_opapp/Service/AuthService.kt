@@ -1,16 +1,16 @@
 package com.example.co_opapp.Service
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import com.example.co_opapp.data_model.Player
 import com.example.co_opapp.Repository.AuthRepository
 import com.example.co_opapp.Service.api.AuthApiService
 import com.example.co_opapp.data_model.LoginResponse
-import okhttp3.MultipartBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.example.co_opapp.SessionManager
+import android.util.Log
 
 class AuthService(context: Context) {
 
@@ -40,15 +40,24 @@ class AuthService(context: Context) {
         return if (loginResp != null) {
             authToken = loginResp.token
             saveJwtToken(authToken!!, username)
-            _currentPlayer.value = Player(
+
+            // Update _currentPlayer state
+            val player = Player(
                 username = username,
                 id = loginResp.id,
                 score = 0,
                 isReady = false,
                 sessionId = ""
             )
+            _currentPlayer.value = player
+
+            // Sync the SessionManager with the updated player data
+            SessionManager.currentPlayer = player  // Set the player in the SessionManager
+
             true
-        } else false
+        } else {
+            false
+        }
     }
 
     suspend fun validateToken(): Boolean {
@@ -63,6 +72,4 @@ class AuthService(context: Context) {
             apply()
         }
     }
-
-
 }
