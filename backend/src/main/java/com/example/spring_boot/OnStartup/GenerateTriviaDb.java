@@ -2,6 +2,7 @@ package com.example.spring_boot.OnStartup;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,22 +27,40 @@ public class GenerateTriviaDb {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public void populate(){
-        this.questionRepository.deleteAll();
-        try{
-            this.saveTriviaQuestions();
-        }catch(java.io.IOException e){
-            System.err.println("INVALID TRIVIA JSON");
+
+    /**
+     * parse each json in the folder and save it to the db
+     * JSONS are assumed to be returned from 
+     *
+     */
+    public void populate(String folderName){
+        File folder = new File("./questions");
+
+        if(folder.exists() && folder.isDirectory()){
+            File[] files = folder.listFiles();
+            if(files != null){
+                Arrays.stream(files)
+                    .filter(file -> file.isFile()) // only process files
+                    .forEach(file -> {
+                        System.out.println("Adding contents of file" + file.getName());
+                        try {
+                            saveTriviaQuestions(file);
+                        } catch (java.io.IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+            }
+            
         }
         this.questionRepository.flush();
         System.out.println("Trivia Data populated");
     }
 
-    public void saveTriviaQuestions() throws java.io.IOException {
+    public void saveTriviaQuestions(File jsonFile) throws java.io.IOException {
+
 
         // Load the trivia questions JSON file
         try {
-            File jsonFile = new File("questions.json"); // Adjust path if needed
             JsonNode rootNode = objectMapper.readTree(jsonFile);
             JsonNode resultsNode = rootNode.path("results");
 
