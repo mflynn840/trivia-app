@@ -3,31 +3,63 @@ package com.example.spring_boot.Model;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Lobby {
+
     private String lobbyId;
+    private int maxPlayers = 4;
     private Map<String, Player> players = new ConcurrentHashMap<>(); // sessionId -> Player
-    private List<String> chatMessages = new java.util.concurrent.CopyOnWriteArrayList<>();
+    private List<String> chatMessages = new CopyOnWriteArrayList<>();
+    private GameState gameState = GameState.WAITING;
 
-    public boolean isFull() {
-        return players.size() >= 4;
-    }
-    
-    public boolean isEmpty() {
-        return players.isEmpty();
+    // --- Getters & Setters ---
+    public String getLobbyId() {
+        return lobbyId;
     }
 
-    public void setLobbyId(String id) {
-        this.lobbyId=id;
+    public void setLobbyId(String lobbyId) {
+        this.lobbyId = lobbyId;
     }
-    public String getLobbyId(){return this.lobbyId;}
 
-    public List<String> getChatMessages(){return this.chatMessages;}
-    public void setChatMessages(List<String> chatMessages){this.chatMessages=chatMessages;}
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public void setMaxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
+    }
 
     public Map<String, Player> getPlayers() {
         return players;
     }
 
+    public void setPlayers(Map<String, Player> players) {
+        this.players = players;
+    }
 
+    public List<String> getChatMessages() {
+        return chatMessages;
+    }
+
+    public void setChatMessages(List<String> chatMessages) {
+        this.chatMessages = chatMessages;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
+    // --- Convenience Methods ---
+    public boolean isFull() {
+        return players.size() >= maxPlayers;
+    }
+
+    public boolean isEmpty() {
+        return players.isEmpty();
+    }
 }

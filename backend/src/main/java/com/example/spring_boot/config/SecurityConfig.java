@@ -21,14 +21,12 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable()) // Disable CSRF as we are using JWT
                 .authorizeHttpRequests(auth ->
                 auth.requestMatchers("/api/auth/**").permitAll() // Allow public access to auth endpoints
+                .requestMatchers("/ws/**").permitAll() 
                     .anyRequest().authenticated()) // All other requests require authentication
                     // Add the JWT filter to the security filter chain
                     .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                     .formLogin(AbstractHttpConfigurer::disable)  // no redirect to login page
                     .httpBasic(AbstractHttpConfigurer::disable);
-
-        
-        
         return http.build();
     }
 }

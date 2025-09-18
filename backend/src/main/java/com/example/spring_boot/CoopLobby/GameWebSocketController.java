@@ -5,7 +5,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.spring_boot.Managers.LobbyManager;
 import com.example.spring_boot.Model.ChatMessage;
@@ -30,7 +29,7 @@ public class GameWebSocketController {
     }
 
     @MessageMapping("/lobby/join/{lobbyId}")
-    public void joinLobby(@PathVariable String lobbyId, Player player) {
+    public void joinLobby(String lobbyId, Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null && !lobby.isFull()) {
             lobby.getPlayers().put(player.getSessionId(), player);
@@ -39,7 +38,7 @@ public class GameWebSocketController {
     }
 
     @MessageMapping("/lobby/leave/{lobbyId}")
-    public void leaveLobby(@PathVariable String lobbyId, Player player) {
+    public void leaveLobby(String lobbyId, Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
             lobby.getPlayers().remove(player.getSessionId());
@@ -51,7 +50,7 @@ public class GameWebSocketController {
     }
 
     @MessageMapping("/lobby/ready/{lobbyId}")
-    public void toggleReady(@PathVariable String lobbyId, Player player) {
+    public void toggleReady(String lobbyId, Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
             Player p = lobby.getPlayers().get(player.getSessionId());
@@ -63,7 +62,7 @@ public class GameWebSocketController {
     }
 
     @MessageMapping("/lobby/chat/{lobbyId}")
-    public void sendChat(@PathVariable String lobbyId, ChatMessage msg) {
+    public void sendChat(String lobbyId, ChatMessage msg) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
             lobby.getChatMessages().add(msg.getUsername() + ": " + msg.getMessage());

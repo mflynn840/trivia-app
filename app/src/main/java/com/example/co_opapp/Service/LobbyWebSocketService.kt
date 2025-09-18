@@ -14,6 +14,8 @@ import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import ua.naiksoftware.stomp.dto.StompHeader
+
 
 class LobbyWebSocketService(
     private val backendUrl: String = "ws://192.168.4.21:8080/ws"
@@ -38,9 +40,13 @@ class LobbyWebSocketService(
     /**
      * Connect to backend WebSocket server
      */
+
     fun connect() {
         Log.d(TAG, "Attempting to connect to WebSocket at $backendUrl")
+
+
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, backendUrl)
+        stompClient?.connect()
 
         // Track lifecycle events
         stompClient?.lifecycle()?.subscribe { event: LifecycleEvent ->
@@ -78,6 +84,7 @@ class LobbyWebSocketService(
             Log.e(TAG, "Exception while initiating WebSocket connection", e)
         }
     }
+
 
     /**
      * Disconnect the client
