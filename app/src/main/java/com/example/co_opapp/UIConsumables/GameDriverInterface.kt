@@ -1,7 +1,6 @@
-package com.example.co_opapp.Interface
+package com.example.co_opapp.UIConsumables
 
 import com.example.co_opapp.data_model.TriviaQuestion
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 //QuizServiceInterface is a common interface that abstracts the functionality both services provide:

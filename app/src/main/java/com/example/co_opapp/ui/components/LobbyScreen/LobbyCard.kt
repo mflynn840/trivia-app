@@ -53,8 +53,6 @@ fun LobbyCard(
                     lobby.players.values.forEach { player ->
                         Text(" ${player.username} ${if (player.isReady) "✓ Ready" else ""}")
                     }
-                    Text("Players: ${lobby.players.size}/${lobby.maxPlayers}")
-
                 }
             }
 

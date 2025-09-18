@@ -68,7 +68,7 @@ data class Lobby(
     val lobbyId: String,
     val maxPlayers: Int = 4,
     val players: SnapshotStateMap<String, PlayerDTO> = mutableStateMapOf(),
-    val chatMessages: List<String> = emptyList(),
+    val chatMessages: SnapshotStateMap<String, PlayerDTO> = mutableStateMapOf(),
     val gameState: GameState = GameState.WAITING
 )
 
