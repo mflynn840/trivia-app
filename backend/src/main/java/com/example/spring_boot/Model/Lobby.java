@@ -7,19 +7,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Lobby {
 
-    private String lobbyId;
+    private String name;
     private int maxPlayers = 4;
     private Map<String, Player> players = new ConcurrentHashMap<>(); // sessionId -> Player
     private List<String> chatMessages = new CopyOnWriteArrayList<>();
     private GameState gameState = GameState.WAITING;
 
     // --- Getters & Setters ---
-    public String getLobbyId() {
-        return lobbyId;
+    public String getName() {
+        return name;
     }
 
-    public void setLobbyId(String lobbyId) {
-        this.lobbyId = lobbyId;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getMaxPlayers() {

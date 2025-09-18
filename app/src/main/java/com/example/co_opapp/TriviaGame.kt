@@ -1,6 +1,5 @@
 package com.example.co_opapp
 
-import android.media.MediaPlayer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -10,15 +9,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.co_opapp.Service.AuthService
-import com.example.co_opapp.Service.CategorySelectorService
-import com.example.co_opapp.Service.LobbyService
-import com.example.co_opapp.Service.ProfileService
+import com.example.co_opapp.Service.Backend.AuthService
+import com.example.co_opapp.Service.Hooks.CategorySelectorService
+import com.example.co_opapp.Service.Coop.LobbyService
+import com.example.co_opapp.Service.Backend.ProfileService
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.QuizScreen
 import com.example.co_opapp.ui.screens.LobbyScreen
 //import com.example.co_opapp.Service.RaceModeGameService
-import com.example.co_opapp.Service.SoloGameService
+import com.example.co_opapp.Service.Backend.SoloGameService
 import com.example.co_opapp.ui.components.MusicWrapper
 import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
 import com.example.co_opapp.ui.screens.QuizSetupScreen

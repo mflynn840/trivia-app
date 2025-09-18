@@ -1,16 +1,15 @@
-package com.example.co_opapp.Service
+package com.example.co_opapp.Service.Backend
 
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
-import com.example.co_opapp.data_model.Player
+import androidx.compose.runtime.mutableStateOf
 import com.example.co_opapp.Repository.AuthRepository
 import com.example.co_opapp.Service.api.AuthApiService
+import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.LoginResponse
+import com.example.co_opapp.data_model.Player
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.example.co_opapp.SessionManager
-import android.util.Log
 
 class AuthService(context: Context) {
 

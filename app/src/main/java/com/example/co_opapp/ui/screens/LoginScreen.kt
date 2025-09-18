@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.co_opapp.Service.AuthService
+import com.example.co_opapp.Service.Backend.AuthService
 import com.example.co_opapp.ui.components.LoginScreen.LoginButtons
 import com.example.co_opapp.R
 import com.example.co_opapp.ui.components.LoginScreen.rememberLoginFormState
