@@ -24,16 +24,22 @@ class LobbyService(
     private val _selectedLobbyChats = mutableStateOf<Map<String, List<String>>>(emptyMap())
     val lobbyChats: State<Map<String, List<String>>> get() = _selectedLobbyChats
 
-    val isConnected: Boolean get() = wsManager.isConnected
+
+    //use mutableStateOf to ensure variables are reactive
+    private val _isConnected = mutableStateOf(false)
+    val isConnected: Boolean get() = _isConnected.value
 
     fun connect() {
         wsManager.connect {
+            //when connected update flag and subscribe to lobby updates
+            _isConnected.value = true
             subscribeToLobbyUpdates()
         }
     }
 
     fun disconnect() {
         wsManager.disconnect()
+        _isConnected.value = false
     }
 
     fun joinLobby(lobbyId: String, player: PlayerDTO) {
@@ -55,7 +61,7 @@ class LobbyService(
     fun subscribeToLobby(lobbyId: String) {
         wsManager.subscribe("/topic/lobby/$lobbyId", Lobby::class.java) { lobby ->
             _lobbies.value = _lobbies.value.toMutableList().apply {
-                val idx = indexOfFirst { it.lobbyId == lobby.lobbyId }
+                val idx = indexOfFirst { it.name == lobby.name }
                 if (idx >= 0) set(idx, lobby) else add(lobby)
             }
         }
@@ -69,7 +75,7 @@ class LobbyService(
     private fun subscribeToLobbyUpdates() {
         wsManager.subscribe("/topic/lobby-updates", Lobby::class.java) { lobby ->
             _lobbies.value = _lobbies.value.toMutableList().apply {
-                val idx = indexOfFirst { it.lobbyId == lobby.lobbyId }
+                val idx = indexOfFirst { it.name == lobby.name }
                 if (idx >= 0) set(idx, lobby) else add(lobby)
             }
         }

@@ -65,11 +65,11 @@ data class ChatMessage(
 )
 
 data class Lobby(
-    val lobbyId: String,
     val maxPlayers: Int = 4,
     val players: SnapshotStateMap<String, PlayerDTO> = mutableStateMapOf(),
-    val chatMessages: SnapshotStateMap<String, PlayerDTO> = mutableStateMapOf(),
-    val gameState: GameState = GameState.WAITING
+    val chatMessages: SnapshotStateMap<String, ChatMessage> = mutableStateMapOf(),
+    val gameState: GameState = GameState.WAITING,
+    val name: String,
 )
 
 data class AnswersRequest(val questionIds: List<Long>, val answers: List<String>)
