@@ -146,7 +146,6 @@ fun TriviaGame() {
                     },
                     onNavigateToGame = { navController.navigate("coopQuiz") },
                     lobbyService = lobbyDomainService,
-                    authService = authService
                 )
             }
         }
