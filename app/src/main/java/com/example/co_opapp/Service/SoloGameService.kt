@@ -1,165 +1,93 @@
 package com.example.co_opapp.Service
 
+import com.example.co_opapp.Repository.TriviaRepository
+import com.example.co_opapp.Interfaces.GameDriver
+import com.example.co_opapp.data_model.AnswersRequest
 import com.example.co_opapp.data_model.TriviaQuestion
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import com.example.co_opapp.UIConsumables.GameDriver
-import com.example.co_opapp.data_model.AnswersRequest
-import com.example.co_opapp.data_model.AnswersResponse
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.Dispatchers
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Query
-
-
-/* Handle the logic of running a solo trivia game
-    1. SETUP: Ping the backend for 5 trivia questions
-    2. yield each of the 5 trivia questions to the UI for answering questions
-    3. store the results of each of the 5 selected answers
-    4. when all 5 questions have been answered, send the responses to the backend to see how many were correct
-    5. get the response and use it to update the game to show the ending screen
- */
-interface BackendQuestionApi {
-
-    @GET("api/questions/randoms/count/category/difficulty")
-    suspend fun getRandomQuestions(
-        @Query("count") count: Int,
-        @Query("category") category : String,
-        @Query("difficulty") difficulty: String,
-        @Header("Authorization") token: String
-    ): Response<List<TriviaQuestion>>
-
-    @POST("api/game/check-answers")
-    suspend fun checkAnswers(
-        @Body answersRequest: AnswersRequest,
-        @Header("Authorization") token: String
-    ): Response<AnswersResponse>
-
-
-}
 
 class SoloGameService(
     private val authService: AuthService,
     private val category: String,
     private val difficulty: String,
+    private val repository: TriviaRepository = TriviaRepository()
 ) : GameDriver {
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.4.21:8080/") // replace with your backend URL
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val api = retrofit.create(BackendQuestionApi::class.java)
-
-    // State variables
-    val _allQuestions = MutableStateFlow<List<TriviaQuestion>>(emptyList())
+    private val _allQuestions = MutableStateFlow<List<TriviaQuestion>>(emptyList())
     private val _selectedAnswers = MutableStateFlow<List<String>>(emptyList())
     private val _score = MutableStateFlow(0)
     private val _curQuestionIndex = MutableStateFlow(0)
     private val _numQuestions = MutableStateFlow(0)
     private val _error = MutableStateFlow<String?>(null)
 
-    // Create a CoroutineScope for the service
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
-
-    // The current question is based on the current question index
     override val currentQuestion: StateFlow<TriviaQuestion?> = _allQuestions
-        .combine(_curQuestionIndex) { allQuestions, index ->
-            allQuestions.getOrNull(index)  // Get the question at the current index
-        }.stateIn(scope, started = SharingStarted.Eagerly, initialValue = null)
-
+        .combine(_curQuestionIndex) { questions, index -> questions.getOrNull(index) }
+        .stateIn(scope, SharingStarted.Companion.Eagerly, null)
 
     override val score: StateFlow<Int> = _score.asStateFlow()
     override val questionIndex: StateFlow<Int> = _curQuestionIndex.asStateFlow()
     override val totalQuestions: StateFlow<Int> = _numQuestions.asStateFlow()
     override val error: StateFlow<String?> = _error.asStateFlow()
 
-    // Fetch n questions from the backend
     override suspend fun fetchNextQuestions() {
+        val token = authService.getJwtToken() ?: return
         try {
-            val response = api.getRandomQuestions(5,
-                category,
-                difficulty,
-                "Bearer ${authService.getJwtToken()!!}")
+            val response = repository.getRandomQuestions(5, category, difficulty, "Bearer $token")
             if (response.isSuccessful) {
-                val body = response.body()
-                if (body != null && body.isNotEmpty()) {
-
-                    _allQuestions.value = body
-                    _numQuestions.value = body.size
+                response.body()?.let {
+                    _allQuestions.value = it
+                    _numQuestions.value = it.size
                     _error.value = null
-                } else {
-                    _error.value = "Received empty question from server"
-                }
+                } ?: run { _error.value = "No questions received" }
             } else {
-                _error.value = "Failed to load question: ${response.code()} ${response.message()}"
+                _error.value = "Failed to fetch questions: ${response.code()}"
             }
         } catch (e: Exception) {
             _error.value = "Exception: ${e.localizedMessage}"
         }
     }
 
-    // Submit the selected answer and move to the next question
     override suspend fun submitAnswer(answer: String) {
-        val question = _allQuestions.value.getOrNull(_curQuestionIndex.value)
+        val question = _allQuestions.value.getOrNull(_curQuestionIndex.value) ?: return
+        _selectedAnswers.value = _selectedAnswers.value + answer
+        _curQuestionIndex.value += 1
 
-        // If the question exists, store the answer
-        if (question != null) {
-            val updatedAnswers = _selectedAnswers.value + answer
-            _selectedAnswers.value = updatedAnswers
-
-            // Increment the question index to go to the next question
-            _curQuestionIndex.value += 1
-
-            // If all questions have been answered, submit them to the backend
-            if (_selectedAnswers.value.size == _allQuestions.value.size) {
-                submitAnswers(_selectedAnswers.value)
-            }
+        if (_selectedAnswers.value.size == _allQuestions.value.size) {
+            submitAnswers(_selectedAnswers.value)
         }
     }
 
-    // Submit answers to the backend
-    override suspend fun submitAnswers(answers: List<String>) : List<Boolean> {
-        try {
+    override suspend fun submitAnswers(answers: List<String>): List<Boolean> {
+        val token = authService.getJwtToken() ?: return List(answers.size) { false }
+        return try {
             val questionIds = _allQuestions.value.map { it.id }
-
-            val answersRequest = AnswersRequest(
-                questionIds = questionIds,
-                answers = answers
-            )
-
-            val response = api.checkAnswers(answersRequest,"Bearer ${authService.getJwtToken()!!}")
-
+            val response = repository.checkAnswers(AnswersRequest(questionIds, answers), "Bearer $token")
             if (response.isSuccessful) {
-                val answerResults = response.body()!!
-                _score.value = answerResults.corrects.count { it }
+                val results = response.body()!!
+                _score.value = results.corrects.count { it }
                 _error.value = null
-                return answerResults.corrects
+                results.corrects
             } else {
-                _error.value = "Failed to submit answers: ${response.code()} ${response.message()}"
-                return List(answers.size) { false }
+                _error.value = "Failed to submit answers: ${response.code()}"
+                List(answers.size) { false }
             }
         } catch (e: Exception) {
             _error.value = "Exception: ${e.localizedMessage}"
-            return List(answers.size) { false }
-
+            List(answers.size) { false }
         }
     }
 
-    // Reset the game state
     override fun resetGame() {
         _allQuestions.value = emptyList()
         _selectedAnswers.value = emptyList()

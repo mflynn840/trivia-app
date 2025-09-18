@@ -18,7 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.sp
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.AuthService
-import com.example.co_opapp.Service.ProfilePictureService
+import com.example.co_opapp.Service.ProfileService
 import com.example.co_opapp.ui.components.LoginScreen.AnimatedGradientButton
 
 
@@ -29,7 +29,7 @@ fun GameModeScreen(
     onNavigateToCoOp: () -> Unit = {},
     onNavigateToCharacterMode: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    profilePictureService : ProfilePictureService
+    profilePictureService : ProfileService
 ) {
     Box(modifier = modifier.fillMaxSize()) {
 

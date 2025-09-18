@@ -14,7 +14,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.AuthService
-import com.example.co_opapp.Service.ProfilePictureService
+import com.example.co_opapp.Service.ProfileService
+import com.example.co_opapp.SessionManager
 import com.example.co_opapp.ui.components.*
 import com.example.co_opapp.ui.components.CharacterCustomizationScreen.BackButton
 import com.example.co_opapp.ui.components.CharacterCustomizationScreen.SendToBackendButton
@@ -22,7 +23,7 @@ import com.example.co_opapp.ui.components.CharacterCustomizationScreen.UploadIma
 
 @Composable
 fun CharacterCustomizationScreen(
-    profilePictureService: ProfilePictureService,
+    profilePictureService: ProfileService,
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit = {}
 ) {
@@ -48,7 +49,7 @@ fun CharacterCustomizationScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            GreetingBox(username = profilePictureService.authService.getUsername()!!)
+            GreetingBox(username = SessionManager.currentPlayer?.username!!)
 
             Spacer(modifier = Modifier.height(24.dp))
 

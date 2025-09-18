@@ -8,7 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.Service.AuthService
-import com.example.co_opapp.UIConsumables.LobbyDomainService
+import com.example.co_opapp.Service.LobbyService
+import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.PlayerDTO
 import com.example.co_opapp.ui.components.LobbyScreen.ConnectionStatusIndicator
@@ -16,13 +17,13 @@ import com.example.co_opapp.ui.components.LobbyScreen.LobbyCard
 
 @Composable
 fun LobbyScreen(
-    lobbyService: LobbyDomainService,
+    lobbyService: LobbyService,
     authService: AuthService,
     modifier: Modifier = Modifier,
     onNavigateToGame: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    val currentPlayer by authService.currentPlayerFlow.collectAsState(initial = null)
+    val currentPlayer = SessionManager.currentPlayer
     var username by remember { mutableStateOf("") }
 
     //use the service layer to manage the states of the lobbies, chats and connection status

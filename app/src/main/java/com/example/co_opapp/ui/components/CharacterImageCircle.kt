@@ -17,14 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.co_opapp.Service.AuthService
-import com.example.co_opapp.Service.ProfilePictureService
+import com.example.co_opapp.Service.ProfileService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
 fun CharacterImageCircle(
-    profilePictureService: ProfilePictureService,
+    profilePictureService: ProfileService,
     modifier: Modifier = Modifier
 ) {
     var avatarBitmap by remember { mutableStateOf<Bitmap?>(null) }
