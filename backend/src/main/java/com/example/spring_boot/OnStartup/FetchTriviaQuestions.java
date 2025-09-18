@@ -2,10 +2,10 @@ package com.example.spring_boot.OnStartup;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.beans.factory.annotation.Value;
 import java.io.FileWriter;
 import java.io.IOException;
-import org.springframework.http.ResponseEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,62 +31,86 @@ public class FetchTriviaQuestions {
 
     public void run() {
         try {
-            fetchAndSaveTriviaQuestions();
+            String token = getSessionToken();
+            fetchAndSaveTriviaQuestions(20, token); // Start with 20 questions
         } catch (Exception e) {
-            logger.error("An error occurred while fetching and saving trivia questions: ", e);
+            logger.error("Error in FetchTriviaQuestions run method: ", e);
         }
-        // Removed System.exit(0) to allow app to continue running
     }
 
-    public void fetchAndSaveTriviaQuestions() {
-        JSONArray allQuestions = new JSONArray();
-
-        String url = String.format("%s?amount=50&type=multiple", apiUrl);
-
-        ResponseEntity<String> response;
+    // Request a session token from Open Trivia DB
+    private String getSessionToken() {
+        String tokenUrl = "https://opentdb.com/api_token.php?command=request";
         try {
-            response = restTemplate.getForEntity(url, String.class);
-            logger.info("API Response: {}", response.getBody());
+            String responseBody = restTemplate.getForObject(tokenUrl, String.class);
+            JSONObject obj = new JSONObject(responseBody);
+            return obj.getString("token");
         } catch (Exception e) {
-            logger.error("Error making request to URL: {}", url, e);
-            return;
+            logger.warn("Failed to get session token, continuing without it. Error: {}", e.getMessage());
+            return null; // Token is optional
         }
+    }
 
-        if (response.getStatusCode().is2xxSuccessful()) {
-            try {
-                JSONObject triviaData = new JSONObject(response.getBody());
+    private void fetchAndSaveTriviaQuestions(int amount, String token) {
+        JSONArray allQuestions = new JSONArray();
+        String url = apiUrl + "?amount=" + amount + "&type=multiple";
+        if (token != null) url += "&token=" + token;
 
-                int responseCode = triviaData.getInt("response_code");
-                if (responseCode != 0) {
-                    logger.warn("Trivia API returned non-success response code: {}", responseCode);
-                    return;
-                }
+        try {
+            logger.info("Requesting {} questions from Trivia API...", amount);
+            String responseBody = restTemplate.getForObject(url, String.class);
+            JSONObject triviaData = new JSONObject(responseBody);
 
-                JSONArray questions = triviaData.getJSONArray("results");
-                if (questions.length() > 0) {
-                    // Merge questions into allQuestions
+            int responseCode = triviaData.getInt("response_code");
+
+            switch (responseCode) {
+                case 0: // Success
+                    JSONArray questions = triviaData.getJSONArray("results");
                     for (int i = 0; i < questions.length(); i++) {
                         allQuestions.put(questions.getJSONObject(i));
                     }
-                    logger.info("Fetched {} questions.", questions.length());
+                    logger.info("Fetched {} questions successfully.", questions.length());
                     saveQuestionsToFile(allQuestions);
-                } else {
-                    logger.info("No questions available in the response.");
-                }
-            } catch (JSONException e) {
-                logger.error("Error parsing JSON response: {}", e.getMessage());
+                    break;
+
+                case 2: // Not enough questions
+                    if (amount > 1) {
+                        int nextAmount = Math.max(amount / 2, 1);
+                        logger.warn("Not enough questions for amount {}. Retrying with {}...", amount, nextAmount);
+                        Thread.sleep(500); // small delay to avoid hitting rate limit
+                        fetchAndSaveTriviaQuestions(nextAmount, token);
+                    }
+                    break;
+
+                case 5: // Token empty / rate limit
+                    logger.warn("Rate limited by Trivia API (response_code 5). Retrying in 2 seconds...");
+                    Thread.sleep(2000);
+                    fetchAndSaveTriviaQuestions(amount, token);
+                    break;
+
+                default:
+                    logger.warn("Trivia API returned response_code={} with no questions.", responseCode);
+                    break;
             }
-        } else {
-            logger.error("Failed to fetch questions from API. Status: {}", response.getStatusCode());
+
+        } catch (HttpClientErrorException.TooManyRequests e) {
+            logger.warn("HTTP 429 Too Many Requests. Retrying in 2 seconds...");
+            try { Thread.sleep(2000); } catch (InterruptedException ex) { /* ignore */ }
+            fetchAndSaveTriviaQuestions(amount, token);
+
+        } catch (JSONException e) {
+            logger.error("Error parsing JSON response: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error fetching questions from API: {}", e.getMessage());
         }
     }
 
     private void saveQuestionsToFile(JSONArray allQuestions) {
         try {
             java.nio.file.Files.createDirectories(java.nio.file.Paths.get(questionsDir));
-            try (FileWriter file = new FileWriter(questionsDir + "/all_questions_50.json")) {
-                file.write(allQuestions.toString(4)); // Pretty-print JSON
-                logger.info("Saved {} questions to all_questions_50.json", allQuestions.length());
+            try (FileWriter file = new FileWriter(questionsDir + "/all_questions.json")) {
+                file.write(allQuestions.toString(4));
+                logger.info("Saved {} questions to all_questions.json", allQuestions.length());
             }
         } catch (IOException e) {
             logger.error("Error writing questions file: {}", e.getMessage());
