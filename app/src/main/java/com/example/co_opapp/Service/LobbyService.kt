@@ -61,7 +61,7 @@ class LobbyService(
     fun subscribeToLobby(lobbyId: String) {
         wsManager.subscribe("/topic/lobby/$lobbyId", Lobby::class.java) { lobby ->
             _lobbies.value = _lobbies.value.toMutableList().apply {
-                val idx = indexOfFirst { it.lobbyId == lobby.lobbyId }
+                val idx = indexOfFirst { it.name == lobby.name }
                 if (idx >= 0) set(idx, lobby) else add(lobby)
             }
         }
@@ -75,7 +75,7 @@ class LobbyService(
     private fun subscribeToLobbyUpdates() {
         wsManager.subscribe("/topic/lobby-updates", Lobby::class.java) { lobby ->
             _lobbies.value = _lobbies.value.toMutableList().apply {
-                val idx = indexOfFirst { it.lobbyId == lobby.lobbyId }
+                val idx = indexOfFirst { it.name == lobby.name }
                 if (idx >= 0) set(idx, lobby) else add(lobby)
             }
         }
