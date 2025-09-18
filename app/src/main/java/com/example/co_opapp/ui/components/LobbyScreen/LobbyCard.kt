@@ -9,7 +9,6 @@ import androidx.compose.ui.unit.dp
 import com.example.co_opapp.data_model.Lobby
 import com.example.co_opapp.data_model.Player
 import com.example.co_opapp.data_model.PlayerDTO
-
 @Composable
 fun LobbyCard(
     lobby: Lobby,
@@ -19,7 +18,6 @@ fun LobbyCard(
     onJoin: (PlayerDTO) -> Unit,
     onLeave: (PlayerDTO) -> Unit,
     onToggleReady: (PlayerDTO) -> Unit,
-    onShowChat: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -54,8 +52,7 @@ fun LobbyCard(
                     currentPlayer = player,
                     onJoin = { onJoin(PlayerDTO(player.sessionId, player.username)) },
                     onLeave = { onLeave(PlayerDTO(player.sessionId, player.username)) },
-                    onToggleReady = { onToggleReady(PlayerDTO(player.sessionId, player.username)) },
-                    onShowChat = onShowChat
+                    onToggleReady = { onToggleReady(PlayerDTO(player.sessionId, player.username)) }
                 )
             }
         }

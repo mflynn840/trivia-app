@@ -7,14 +7,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.co_opapp.Service.ChatWindow
 import com.example.co_opapp.Service.LobbyService
 import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.ChatMessage
+import com.example.co_opapp.ui.components.LobbyScreen.*
 import com.example.co_opapp.data_model.PlayerDTO
-import com.example.co_opapp.ui.components.LobbyScreen.ConnectionStatusIndicator
-import com.example.co_opapp.ui.components.LobbyScreen.LobbyCard
-import com.example.co_opapp.ui.components.LobbyScreen.BackButton
-import com.example.co_opapp.ui.components.LobbyScreen.ChatWindow
 
 @Composable
 fun LobbyScreen(
@@ -23,22 +21,21 @@ fun LobbyScreen(
     onNavigateToGame: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    // Observe changes in SessionManager to keep the username up to date
     val player = SessionManager.currentPlayer
     var username by remember { mutableStateOf(player?.username.orEmpty()) }
-
-    // Update username when the player changes
-    LaunchedEffect(player) {
-        username = player?.username.orEmpty()
-    }
 
     val lobbies by lobbyService.lobbies
     val lobbyChats by lobbyService.lobbyChats
     val isConnected by remember { derivedStateOf { lobbyService.isConnected } }
 
     var selectedLobbyId by remember { mutableStateOf<String?>(null) }
-    var chatLobbyId by remember { mutableStateOf<String?>(null) }
+    var isChatVisible by remember { mutableStateOf(false) }
     var chatInput by remember { mutableStateOf("") }
+
+    // Update username when the player changes
+    LaunchedEffect(player) {
+        username = player?.username.orEmpty()
+    }
 
     // Connect to the service
     LaunchedEffect(Unit) { lobbyService.connect() }
@@ -50,14 +47,14 @@ fun LobbyScreen(
         }
     }
 
-    // Show the chat dialog if `chatLobbyId` is set
-    val showChatDialog = chatLobbyId != null
+    // Show or hide chat window
+    val toggleChatVisibility = { isVisible: Boolean ->
+        isChatVisible = isVisible
+    }
 
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
-        // Back Button
         BackButton(onNavigateBack = onNavigateBack)
 
-        // Title and Username
         Text("Select a Lobby", style = MaterialTheme.typography.headlineMedium)
         OutlinedTextField(
             value = username,
@@ -66,13 +63,11 @@ fun LobbyScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Create Lobby Button
         Button(
             onClick = { lobbyService.createLobby() },
             modifier = Modifier.fillMaxWidth()
         ) { Text("Create Lobby") }
 
-        // Connection Status Indicator
         ConnectionStatusIndicator(connected = isConnected)
 
         // Lobbies List
@@ -91,29 +86,34 @@ fun LobbyScreen(
                     },
                     onJoin = { handlePlayerAction(lobby.lobbyId) { player -> lobbyService.joinLobby(lobby.lobbyId, player) } },
                     onLeave = { handlePlayerAction(lobby.lobbyId) { player -> lobbyService.leaveLobby(lobby.lobbyId, player) } },
-                    onToggleReady = { handlePlayerAction(lobby.lobbyId) { player -> lobbyService.toggleReady(lobby.lobbyId, player) } },
-                    onShowChat = { chatLobbyId = lobby.lobbyId }
+                    onToggleReady = { handlePlayerAction(lobby.lobbyId) { player -> lobbyService.toggleReady(lobby.lobbyId, player) } }
                 )
             }
         }
-    }
 
-    // Chat Dialog
-    if (showChatDialog) {
-        ChatWindow(
-            lobbyId = chatLobbyId!!,
-            messages = lobbyChats[chatLobbyId] ?: emptyList(),
-            chatInput = chatInput,
-            onInputChange = { chatInput = it },
-            onSend = {
-                player?.let {
-                    if (chatInput.isNotBlank()) {
-                        lobbyService.sendChat(chatLobbyId!!, ChatMessage(it.username, chatInput))
-                        chatInput = ""
-                    }
-                }
-            },
-            onDismiss = { chatLobbyId = null }
-        )
+        // Chat Window Trigger
+        selectedLobbyId?.let { lobbyId ->
+            Button(
+                onClick = { toggleChatVisibility(true) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Open Chat")
+            }
+
+            // Chat Popup/Dialog
+            if (isChatVisible) {
+                ChatWindow(
+                    lobbyId = lobbyId,
+                    messages = lobbyChats[lobbyId] ?: emptyList(),
+                    chatInput = chatInput,
+                    onInputChange = { chatInput = it },
+                    onSendMessage = {
+                        lobbyService.sendChat(lobbyId, ChatMessage(username, chatInput))
+                        chatInput = "" // Clear input after sending
+                    },
+                    onDismiss = { toggleChatVisibility(false) }
+                )
+            }
+        }
     }
 }

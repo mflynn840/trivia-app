@@ -14,8 +14,7 @@ fun LobbyActions(
     currentPlayer: Player?,
     onJoin: () -> Unit,
     onLeave: () -> Unit,
-    onToggleReady: () -> Unit,
-    onShowChat: () -> Unit
+    onToggleReady: () -> Unit
 ) {
     // Ensure currentPlayer is non-null and selectedLobbyId is valid
     if (currentPlayer != null && selectedLobbyId != null) {
@@ -25,11 +24,6 @@ fun LobbyActions(
                 Button(onClick = onJoin) { Text("Join") }
                 Button(onClick = onLeave) { Text("Leave") }
                 Button(onClick = onToggleReady) { Text("Toggle Ready") }
-            }
-
-            // Show Chat button
-            Button(onClick = onShowChat, modifier = Modifier.fillMaxWidth()) {
-                Text("Show Chat")
             }
         }
     }
