@@ -33,7 +33,8 @@ fun LobbyCard(
 ) {
     // Make lobby properties reactive
     val lobbyName by remember { derivedStateOf { lobby.name } }
-    val numPlayers by remember { derivedStateOf { lobby.players.size } }
+    val numPlayers by remember { derivedStateOf { lobby.players?.size ?: 0 } }
+    val maxPlayers by remember { derivedStateOf { lobby.maxPlayers } }
     val status by remember { derivedStateOf { getLobbyStatus(lobby.gameState) } }
 
     // Define a color based on selection status
@@ -56,7 +57,7 @@ fun LobbyCard(
 
         // Number of players
         Text(
-            text = "Players: $numPlayers/${lobby.maxPlayers}",
+            text = "Players: $numPlayers/$maxPlayers",
             style = MaterialTheme.typography.bodySmall,
             color = Color.Gray
         )
@@ -78,7 +79,4 @@ fun LobbyCard(
             Button(onClick = onToggleReady) { Text("Toggle Ready") }
         }
     }
-
-
 }
-
