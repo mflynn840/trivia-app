@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,18 +75,21 @@ fun GameModeCard(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(text = icon, fontSize = 48.sp, color = textColor)
+
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Serif,
                     color = textColor
                 )
 
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = FontFamily.Serif,
                     color = textColor.copy(alpha = 0.7f)
                 )
 
