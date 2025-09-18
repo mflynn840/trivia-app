@@ -14,6 +14,7 @@ import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.ui.components.LobbyScreen.*
 import com.example.co_opapp.data_model.PlayerDTO
 
+
 @Composable
 fun LobbyScreen(
     lobbyService: LobbyService,
@@ -28,7 +29,7 @@ fun LobbyScreen(
     val lobbyChats by lobbyService.lobbyChats
     val isConnected by remember { derivedStateOf { lobbyService.isConnected } }
 
-    var selectedLobbyId by remember { mutableStateOf<String?>(null) }
+    var selectedLobbyName by remember { mutableStateOf<String?>(null) }
     var isChatVisible by remember { mutableStateOf(false) }
     var chatInput by remember { mutableStateOf("") }
 
@@ -41,7 +42,7 @@ fun LobbyScreen(
     LaunchedEffect(Unit) { lobbyService.connect() }
 
     // Handle Player Actions
-    val handlePlayerAction: (String, (PlayerDTO) -> Unit) -> Unit = { lobbyId, action ->
+    val handlePlayerAction: (String, (PlayerDTO) -> Unit) -> Unit = { lobbyName, action ->
         player?.let {
             action(PlayerDTO(it.sessionId, it.username))
         }
@@ -78,10 +79,13 @@ fun LobbyScreen(
             items(lobbies) { lobby ->
                 LobbyCard(
                     lobby = lobby,
-                    isSelected = selectedLobbyId == lobby.name,
+                    isSelected = selectedLobbyName == lobby.name,
                     onSelect = {
-                        selectedLobbyId = lobby.name
-                        lobbyService.subscribeToLobby(lobby.name)
+                        // Only select if lobby name is not null
+                        if (!lobby.name.isNullOrEmpty()) {
+                            selectedLobbyName = lobby.name
+                            lobbyService.subscribeToLobby(lobby.name) // Use name instead of id
+                        }
                     },
                     onJoin = { handlePlayerAction(lobby.name) { player -> lobbyService.joinLobby(lobby.name, player) } },
                     onLeave = { handlePlayerAction(lobby.name) { player -> lobbyService.leaveLobby(lobby.name, player) } },
@@ -91,7 +95,7 @@ fun LobbyScreen(
         }
 
         // Chat Window Trigger
-        selectedLobbyId?.let { lobbyId ->
+        selectedLobbyName?.let { lobbyName ->
             Button(
                 onClick = { toggleChatVisibility(true) },
                 modifier = Modifier.fillMaxWidth()
@@ -102,12 +106,12 @@ fun LobbyScreen(
             // Chat Popup/Dialog
             if (isChatVisible) {
                 ChatWindow(
-                    lobbyId = lobbyId,
-                    messages = lobbyChats[lobbyId] ?: emptyList(),
+                    lobbyId = lobbyName,  // Use lobby name here
+                    messages = lobbyChats[lobbyName] ?: emptyList(),
                     chatInput = chatInput,
                     onInputChange = { chatInput = it },
                     onSendMessage = {
-                        lobbyService.sendChat(lobbyId, ChatMessage(username, chatInput))
+                        lobbyService.sendChat(lobbyName, ChatMessage(username, chatInput))
                         chatInput = "" // Clear input after sending
                     },
                     onDismiss = { toggleChatVisibility(false) }
