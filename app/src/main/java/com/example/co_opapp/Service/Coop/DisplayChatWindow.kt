@@ -1,4 +1,4 @@
-package com.example.co_opapp.Service
+package com.example.co_opapp.Service.Coop
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.co_opapp.data_model.ChatMessage
 
 @Composable
 fun ChatWindow(

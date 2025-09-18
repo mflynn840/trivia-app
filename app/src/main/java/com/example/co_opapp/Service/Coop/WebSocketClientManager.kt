@@ -1,4 +1,4 @@
-package com.example.co_opapp.Service
+package com.example.co_opapp.Service.Coop
 
 import android.util.Log
 import com.google.gson.Gson
