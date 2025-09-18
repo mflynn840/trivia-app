@@ -1,11 +1,19 @@
 package com.example.co_opapp.ui.components.GameModeScreen
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -23,25 +31,41 @@ fun GameModeCard(
     onClick: () -> Unit,
     textColor: Color = Color.White
 ) {
+    val infiniteTransition = rememberInfiniteTransition(label = "cardGradientAnim")
+
+    // Animate offset for moving gradient
+    val offsetX by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(6000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "cardGradientShift"
+    )
+
+    val gradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF1E90FF),
+            Color(0xFFB22222)
+        ),
+        start = Offset(0f, 0f),
+        end = Offset(offsetX, offsetX) // moves diagonally
+    )
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent) // transparent to show gradient
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
-        // Gradient background
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.linearGradient(
-                        colors = listOf(Color(0xFF0D0D0D), Color(0xFF1A1A1A)), // dark gradient
-                        start = Offset(0f, 0f),
-                        end = Offset(1000f, 1000f) // diagonal
-                    )
-                )
+                .clip(MaterialTheme.shapes.medium) // clip gradient to card shape
+                .background(gradient) // ✅ animated gradient here
                 .padding(24.dp)
         ) {
             Column(
