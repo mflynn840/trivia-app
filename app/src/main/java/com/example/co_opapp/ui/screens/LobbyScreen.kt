@@ -12,7 +12,7 @@ import com.example.co_opapp.Service.LobbyWebSocketService
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.ui.components.LobbyScreen.ConnectionStatusIndicator
 import com.example.co_opapp.ui.components.LobbyScreen.LobbyCard
-
+import com.example.co_opapp.data_model.PlayerDTO  // <-- new DTO
 
 @Composable
 fun LobbyScreen(
@@ -25,7 +25,6 @@ fun LobbyScreen(
     val currentPlayer by authService.currentPlayerFlow.collectAsState()
     var username by remember { mutableStateOf("") }
 
-    //
     val lobbies by lobbyService.lobbies.collectAsState()
     val lobbyChats by lobbyService.lobbyChats.collectAsState()
     var selectedLobbyId by remember { mutableStateOf<String?>(null) }
@@ -37,7 +36,6 @@ fun LobbyScreen(
         modifier = modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Header
         Text("Select a Lobby", style = MaterialTheme.typography.headlineMedium)
         OutlinedTextField(
             value = username,
@@ -45,19 +43,13 @@ fun LobbyScreen(
             label = { Text("Your Username") },
             modifier = Modifier.fillMaxWidth()
         )
-        //Create a new lobby button
-        Button(
-            onClick = { lobbyService.createLobby() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Button(onClick = { lobbyService.createLobby() }, modifier = Modifier.fillMaxWidth()) {
             Text("Create Lobby")
         }
 
-        //internal serval status (DEBUGGING ONLY)
-        val isConnected by lobbyService.isConnected.collectAsState()  // New state flow we’ll add
+        val isConnected by lobbyService.isConnected.collectAsState()
         ConnectionStatusIndicator(connected = isConnected)
 
-        // Lobby cards list
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.weight(1f)) {
             items(lobbies) { lobby ->
                 LobbyCard(
@@ -74,9 +66,22 @@ fun LobbyScreen(
                             lobbyService.sendChat(lobby.lobbyId, ChatMessage(player.username, message))
                         }
                     },
-                    onJoin = { player -> lobbyService.joinLobby(lobby.lobbyId, player) },
-                    onLeave = { player -> lobbyService.leaveLobby(lobby.lobbyId, player) },
-                    onToggleReady = { player -> lobbyService.toggleReady(lobby.lobbyId, player) }
+                    // Use PlayerDTO instead of full Player
+                    onJoin = { player ->
+                        currentPlayer?.let { p ->
+                            lobbyService.joinLobby(lobby.lobbyId, PlayerDTO(p.sessionId, p.username))
+                        }
+                    },
+                    onLeave = { player ->
+                        currentPlayer?.let { p ->
+                            lobbyService.leaveLobby(lobby.lobbyId, PlayerDTO(p.sessionId, p.username))
+                        }
+                    },
+                    onToggleReady = { player ->
+                        currentPlayer?.let { p ->
+                            lobbyService.toggleReady(lobby.lobbyId, PlayerDTO(p.sessionId, p.username))
+                        }
+                    }
                 )
             }
         }

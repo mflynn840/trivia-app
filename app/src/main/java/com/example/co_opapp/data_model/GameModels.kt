@@ -1,5 +1,8 @@
 package com.example.co_opapp.data_model
 
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
+
 // --- User/Auth ---
 data class UserCredentials(val username: String, val password: String)
 data class LoginResponse(
@@ -45,10 +48,16 @@ data class Player(
     val id: Long,
     val username: String,
     val score: Int = 0,
-    var isHost: Boolean = false,
     var isReady: Boolean = false,
     var sessionId: String
 )
+
+data class PlayerDTO(
+    val sessionId: String,
+    val username: String,
+    val isReady: Boolean = false
+)
+
 
 data class ChatMessage(
     val username: String,
@@ -58,13 +67,10 @@ data class ChatMessage(
 data class Lobby(
     val lobbyId: String,
     val maxPlayers: Int = 4,
-    val players: Map<String, Player> = emptyMap(), // sessionId -> Player
+    val players: SnapshotStateMap<String, PlayerDTO> = mutableStateMapOf(),
     val chatMessages: List<String> = emptyList(),
     val gameState: GameState = GameState.WAITING
 )
-
-data class AnswerRequest(val questionId: Long, val answer: String)
-data class AnswerResponse(val correct: Boolean, val correctAnswer: String)
 
 data class AnswersRequest(val questionIds: List<Long>, val answers: List<String>)
 data class AnswersResponse(val corrects: List<Boolean>, val correctAnswers: List<String>)

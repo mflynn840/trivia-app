@@ -92,7 +92,6 @@ class AuthService(private val context: Context) {
                         username = username,
                         id = loginResponse.id,
                         score = 0,
-                        isHost = false,
                         isReady = false,
                         sessionId = "",
                     )

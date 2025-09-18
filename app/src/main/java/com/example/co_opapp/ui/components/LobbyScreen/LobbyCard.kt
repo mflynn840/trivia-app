@@ -14,7 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.Lobby
+import com.example.co_opapp.data_model.PlayerDTO
 import com.example.co_opapp.data_model.Player
+
+
+
 
 @Composable
 fun LobbyCard(
@@ -24,52 +28,54 @@ fun LobbyCard(
     currentPlayer: Player?,
     onSelect: () -> Unit,
     onSendMessage: (String) -> Unit,
-    onJoin: (Player) -> Unit,
-    onLeave: (Player) -> Unit,
-    onToggleReady: (Player) -> Unit,
+    onJoin: (PlayerDTO) -> Unit,
+    onLeave: (PlayerDTO) -> Unit,
+    onToggleReady: (PlayerDTO) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var chatInput by remember { mutableStateOf("") }
 
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onSelect() },
+        modifier = modifier.fillMaxWidth().clickable { onSelect() },
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer
             else MaterialTheme.colorScheme.surface
         )
     ) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            // Lobby info
             Text("Lobby #${lobby.lobbyId}", style = MaterialTheme.typography.titleMedium)
             Text("Players: ${lobby.players.size}/${lobby.maxPlayers}")
             Text("Status: ${lobby.gameState.name}")
+
             if (lobby.players.isNotEmpty()) {
                 Column {
                     Text("Players:", style = MaterialTheme.typography.bodyMedium)
                     lobby.players.values.forEach { player ->
-                        Text("${player.username}${if (player.isHost) " (Host)" else ""} ${if (player.isReady) "✓ Ready" else ""}")
+                        Text(" ${player.username} ${if (player.isReady) "✓ Ready" else ""}")
                     }
+                    Text("Players: ${lobby.players.size}/${lobby.maxPlayers}")
+
                 }
             }
 
-            // Join / Leave / Ready buttons
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 currentPlayer?.let { player ->
-                    Button(onClick = { onJoin(player) }) { Text("Join") }
-                    Button(onClick = { onLeave(player) }) { Text("Leave") }
-                    Button(onClick = { onToggleReady(player) }) { Text("Toggle Ready") }
+                    Button(onClick = { onJoin(PlayerDTO(player.sessionId, player.username)) }) { Text("Join") }
+                    Button(onClick = { onLeave(PlayerDTO(player.sessionId, player.username)) }) { Text("Leave") }
+                    Button(onClick = { onToggleReady(PlayerDTO(player.sessionId, player.username)) }) { Text("Toggle Ready") }
                 }
             }
 
-            // Chat, only if lobby is selected
             if (isSelected) {
                 Column(modifier = Modifier.fillMaxWidth().height(200.dp)) {
                     LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         items(chatMessages) { msg -> Text(msg) }
                     }
-                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         OutlinedTextField(
                             value = chatInput,
                             onValueChange = { chatInput = it },

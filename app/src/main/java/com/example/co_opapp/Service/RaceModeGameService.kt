@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.net.InetAddress
-
+/*
 class RaceModeGameService {
 
     // Currently connected player
@@ -88,3 +88,4 @@ class RaceModeGameService {
         _gameState.value = _gameState.value
     }
 }
+*/
