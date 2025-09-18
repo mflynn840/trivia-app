@@ -31,8 +31,8 @@ fun CharacterImageCircle(
     profilePictureService: ProfileService,
     modifier: Modifier = Modifier,
     circleSize: Dp = 125.dp,
-    topPadding: Dp = 32.dp,
-    endPadding: Dp = 16.dp
+    topPadding: Dp = 42.dp,
+    endPadding: Dp = 22.dp
 ) {
     var avatarBitmap by remember { mutableStateOf<Bitmap?>(null) }
 

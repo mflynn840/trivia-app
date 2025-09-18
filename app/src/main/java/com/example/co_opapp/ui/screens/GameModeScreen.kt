@@ -55,7 +55,7 @@ fun GameModeScreen(
                 .padding(38.dp)
                 .align(Alignment.Center)
         ) {
-            Spacer(modifier = Modifier.height(58.dp))
+            Spacer(modifier = Modifier.height(68.dp))
 
             Text(
                 text = "Choose Game Mode",
