@@ -1,5 +1,6 @@
 package com.example.co_opapp.ui.components.LoginScreen
 
+import android.graphics.fonts.FontFamily
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -24,7 +25,7 @@ import androidx.compose.ui.unit.dp
 fun AnimatedGradientButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "gradientAnim")
 
