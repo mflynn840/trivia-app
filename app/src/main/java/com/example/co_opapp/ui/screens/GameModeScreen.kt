@@ -55,13 +55,13 @@ fun GameModeScreen(
                 .padding(38.dp)
                 .align(Alignment.Center)
         ) {
-            Spacer(modifier = Modifier.height(68.dp))
+            Spacer(modifier = Modifier.height(78.dp))
 
             Text(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Serif,
+                fontFamily = FontFamily.SansSerif,
                 color = Color.White
             )
 
@@ -70,6 +70,7 @@ fun GameModeScreen(
                 title = "Story Mode",
                 description = "Play alone and test your knowledge",
                 buttonText = "Start Single Player",
+
                 buttonColor = Color(0xFF00F9FF),
                 onClick = onNavigateToSinglePlayer
             )
@@ -81,6 +82,7 @@ fun GameModeScreen(
                 buttonText = "Start Co-op Game",
                 buttonColor = Color(0xFFFF073A),
                 onClick = onNavigateToCoOp
+
             )
 
             AnimatedGradientButton(
@@ -88,9 +90,10 @@ fun GameModeScreen(
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
 
+
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(76.dp),
             )
 
             Spacer(modifier = Modifier.height(40.dp))
