@@ -11,7 +11,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.co_opapp.Service.Backend.AuthService
 import com.example.co_opapp.Service.Hooks.CategorySelectorService
-import com.example.co_opapp.Service.Coop.LobbyService
 import com.example.co_opapp.Service.Backend.ProfileService
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.QuizScreen
@@ -118,8 +117,12 @@ fun TriviaGame() {
                     }
                 }
             }
+        }
+    }
+}
 
             // Lobby for co-op
+            /*
             composable("lobby") {
                 val lobbyDomainService = remember { LobbyService() }
 
@@ -179,3 +182,4 @@ fun TriviaGame() {
         }
     }
 }
+*/

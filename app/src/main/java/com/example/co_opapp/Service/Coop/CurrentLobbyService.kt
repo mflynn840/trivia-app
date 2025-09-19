@@ -1,7 +1,9 @@
 package com.example.co_opapp.Service.Coop
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.co_opapp.Service.Backend.WebSocketClientManager
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.Lobby
@@ -25,12 +27,12 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
             _lobby.value = updatedLobby
             // Update reactive chat list
             _chatMessages.clear()
-            _chatMessages.addAll(updatedLobby.chatMessages)
+            //_chatMessages.addAll(updatedLobby.chatMessages)
         }
     }
 
-    fun sendChat(lobbyName: String, message: ChatMessage) {
-        wsManager.send("/app/lobby/chat/$lobbyName", message)
+    fun sendChat() {
+
     }
 
     fun joinLobby(lobbyName: String, player: PlayerDTO) {
@@ -49,4 +51,4 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
         wsManager.send("/app/lobby/chat/$lobbyName", message)
     }
 }
-}
+
