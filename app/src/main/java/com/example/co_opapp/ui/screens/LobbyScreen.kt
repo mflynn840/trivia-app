@@ -29,7 +29,7 @@ fun LobbyScreen(
 
     val lobbies by remember { derivedStateOf { allLobbiesService.lobbies.value } }
     val currentLobbyState by remember { derivedStateOf { currentLobbyService.lobby.value } }
-    val isConnected by remember { derivedStateOf { allLobbiesService.isConnected }}
+    val isConnected by remember { derivedStateOf { allLobbiesService.isConnected } }
 
     var selectedLobbyName by remember { mutableStateOf<String?>(null) }
     var isChatVisible by remember { mutableStateOf(false) }
@@ -88,21 +88,27 @@ fun LobbyScreen(
                     onSelect = {
                         selectedLobbyName = lobby.name
                     },
-                    onJoin = { player?.let { p ->
-                        handlePlayerAction(PlayerDTO(p.sessionId, p.username)) { dto ->
-                            allLobbiesService.joinLobby(lobby.name, dto)
+                    onJoin = {
+                        player?.let { p ->
+                            handlePlayerAction(PlayerDTO(p.sessionId, p.username)) { dto ->
+                                allLobbiesService.joinLobby(lobby.name, dto)
+                            }
                         }
-                    } },
-                    onLeave = { player?.let { p ->
-                        handlePlayerAction(PlayerDTO(p.sessionId, p.username)) { dto ->
-                            currentLobbyService.leaveLobby(lobby.name, dto)
+                    },
+                    onLeave = {
+                        player?.let { p ->
+                            handlePlayerAction(PlayerDTO(p.sessionId, p.username)) { dto ->
+                                currentLobbyService.leaveLobby(lobby.name, dto)
+                            }
                         }
-                    } },
-                    onToggleReady = { player?.let { p ->
-                        handlePlayerAction(PlayerDTO(p.sessionId, p.username)) { dto ->
-                            currentLobbyService.toggleReady(lobby.name, dto)
+                    },
+                    onToggleReady = {
+                        player?.let { p ->
+                            handlePlayerAction(PlayerDTO(p.sessionId, p.username)) { dto ->
+                                currentLobbyService.toggleReady(lobby.name, dto)
+                            }
                         }
-                    } }
+                    }
                 )
             }
         }
@@ -125,7 +131,7 @@ fun LobbyScreen(
                     onSendMessage = {
                         player?.let { p ->
                             val msg = ChatMessage(p.username, chatInput)
-                            currentLobbyService.sendChat(lobbyName,msg)
+                            currentLobbyService.sendChat(lobbyName, msg)
                             chatInput = ""
                         }
                     },
@@ -133,4 +139,5 @@ fun LobbyScreen(
                 )
             }
         }
-
+    }
+}
