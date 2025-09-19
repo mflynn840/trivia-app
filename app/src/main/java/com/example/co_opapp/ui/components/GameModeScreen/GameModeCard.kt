@@ -82,14 +82,14 @@ fun GameModeCard(
                     text = title,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Serif,
+                    fontFamily = FontFamily.SansSerif,
                     color = textColor
                 )
 
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
-                    fontFamily = FontFamily.Serif,
+                    fontFamily = FontFamily.SansSerif,
                     color = textColor.copy(alpha = 0.7f)
                 )
 
@@ -100,7 +100,7 @@ fun GameModeCard(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
                 ) {
-                    Text(buttonText, color = Color.White)
+                    Text(buttonText, color = Color.White, fontFamily = FontFamily.SansSerif)
                 }
             }
         }
