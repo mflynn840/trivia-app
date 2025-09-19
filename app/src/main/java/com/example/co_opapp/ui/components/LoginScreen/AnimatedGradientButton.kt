@@ -55,7 +55,7 @@ fun AnimatedGradientButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth(0.9f) // match TextField width
-            .height(48.dp),
+            .height(38.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
         contentPadding = PaddingValues()
