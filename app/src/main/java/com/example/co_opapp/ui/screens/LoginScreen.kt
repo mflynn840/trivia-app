@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -47,7 +48,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(38.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -59,7 +60,13 @@ fun LoginScreen(
                     .size(275.dp)
                     .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.2f))
-                    .border(2.dp, Color.White, CircleShape),
+                    .border(4.dp, Color(0xFF00F9FF), CircleShape) // Neon blue border
+                    .shadow(
+                        elevation = 16.dp,
+                        shape = CircleShape,
+                        ambientColor = Color(0xFF00F9FF),
+                        spotColor = Color(0xFF00F9FF)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -69,6 +76,7 @@ fun LoginScreen(
                     contentScale = ContentScale.Crop
                 )
             }
+
 
             Spacer(modifier = Modifier.height(24.dp))
 
