@@ -1,6 +1,8 @@
 package com.example.co_opapp.data_model
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 
 // --- User/Auth ---
@@ -67,7 +69,7 @@ data class ChatMessage(
 data class Lobby(
     val maxPlayers: Int = 4,
     val players: SnapshotStateMap<String, PlayerDTO> = mutableStateMapOf(),
-    val chatMessages: SnapshotStateMap<String, ChatMessage> = mutableStateMapOf(),
+    val chatMessages: SnapshotStateList<ChatMessage> = mutableStateListOf(),
     val gameState: GameState = GameState.WAITING,
     val name: String,
 )
