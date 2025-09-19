@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -75,7 +76,7 @@ fun LoginScreen(
             TextField(
                 value = formState.username,
                 onValueChange = formState.onUsernameChange,
-                label = { Text("Username", color = Color.Black) },
+                label = { Text("Username", color = Color.Black, fontFamily = FontFamily.SansSerif) },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
@@ -88,7 +89,7 @@ fun LoginScreen(
             TextField(
                 value = formState.password,
                 onValueChange = formState.onPasswordChange,
-                label = { Text("Password", color = Color.Black) },
+                label = { Text("Password", color = Color.Black, fontFamily = FontFamily.SansSerif) },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier

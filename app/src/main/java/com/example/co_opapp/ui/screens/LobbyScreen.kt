@@ -133,5 +133,4 @@ fun LobbyScreen(
                 )
             }
         }
-    }
-}
+
