@@ -29,7 +29,7 @@ fun LoginButtons(
 ) {
     Column {
         // LOGIN BUTTON
-        AnimatedGradientButton(
+        NeonSignButton(
             text = "Login",
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -58,7 +58,7 @@ fun LoginButtons(
         Spacer(modifier = Modifier.height(12.dp))
 
         // REGISTER BUTTON
-        AnimatedGradientButton(
+        NeonSignButton(
             text = "Register",
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
