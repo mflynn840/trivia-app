@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.animation.core.*
-
+import androidx.compose.ui.text.style.TextAlign
 
 
 @Composable
@@ -59,50 +59,8 @@ fun NeonGameModeCard(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Icon
-            Text(
-                text = icon,
-                fontSize = 32.sp,
-                color = neonColor.copy(alpha = glowAlpha),
-                shadow = Shadow(
-                    color = neonColor.copy(alpha = glowAlpha),
-                    offset = Offset(0f, 0f),
-                    blurRadius = 16f
-                )
-            )
 
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Title
-            Text(
-                text = title,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                color = neonColor.copy(alpha = glowAlpha),
-                shadow = Shadow(
-                    color = neonColor.copy(alpha = glowAlpha),
-                    offset = Offset(0f, 0f),
-                    blurRadius = 16f
-                )
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Description
-            Text(
-                text = description,
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                color = neonColor.copy(alpha = glowAlpha * 0.8f),
-                shadow = Shadow(
-                    color = neonColor.copy(alpha = glowAlpha * 0.8f),
-                    offset = Offset(0f, 0f),
-                    blurRadius = 12f
-                )
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
 
             // Action Button
             Button(
@@ -110,19 +68,9 @@ fun NeonGameModeCard(
                 colors = ButtonDefaults.buttonColors(containerColor = neonColor.copy(alpha = 0.2f)),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = buttonText,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    color = neonColor.copy(alpha = glowAlpha),
-                    shadow = androidx.compose.ui.graphics.Shadow(
-                        color = neonColor.copy(alpha = glowAlpha),
-                        offset = Offset(0f, 0f),
-                        blurRadius = 16f
-                    ),
 
-                )
+
+
             }
         }
     }
