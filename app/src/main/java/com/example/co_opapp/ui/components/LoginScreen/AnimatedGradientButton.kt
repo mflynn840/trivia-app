@@ -36,7 +36,7 @@ fun AnimatedGradientButton(
         initialValue = 0f,
         targetValue = 1000f, // arbitrary large number to make it move
         animationSpec = infiniteRepeatable(
-            animation = tween(4000, easing = LinearEasing),
+            animation = tween(8000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "gradientShift"
