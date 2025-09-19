@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.Backend.AuthService
 import com.example.co_opapp.Service.Backend.ProfileService
-import com.example.co_opapp.ui.components.LoginScreen.AnimatedGradientButton
+import com.example.co_opapp.ui.components.LoginScreen.NeonSignButton
 
 @Composable
 fun GameModeScreen(
@@ -108,7 +108,7 @@ fun GameModeScreen(
 
             )
 
-            AnimatedGradientButton(
+            NeonSignButton(
 
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
