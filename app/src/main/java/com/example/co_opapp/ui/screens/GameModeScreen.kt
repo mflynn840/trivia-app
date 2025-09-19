@@ -14,6 +14,9 @@ import com.example.co_opapp.ui.components.GameModeScreen.GameModeCard
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.painterResource
@@ -43,6 +46,20 @@ fun GameModeScreen(
             modifier = Modifier.fillMaxSize()
         )
 
+        // Back button (top-left)
+        IconButton(
+            onClick = onNavigateBack,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White
+            )
+        }
+
         CharacterImageCircle(
             modifier = Modifier.align(Alignment.TopEnd),
             profilePictureService = profilePictureService
@@ -55,22 +72,23 @@ fun GameModeScreen(
                 .padding(38.dp)
                 .align(Alignment.Center)
         ) {
-            Spacer(modifier = Modifier.height(58.dp))
+            Spacer(modifier = Modifier.height(78.dp))
 
             Text(
                 text = "Choose Game Mode",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Serif,
+                fontFamily = FontFamily.SansSerif,
                 color = Color.White
             )
 
             GameModeCard(
-                icon = "\uD83D\uDC64",
+                icon = "\uD83D\uDCD6",
                 title = "Story Mode",
                 description = "Play alone and test your knowledge",
                 buttonText = "Start Single Player",
-                buttonColor = Color(0xFF00F9FF),
+
+                buttonColor = Color(0xFF1E90FF),
                 onClick = onNavigateToSinglePlayer
             )
 
@@ -79,8 +97,9 @@ fun GameModeScreen(
                 title = "Co-op Mode",
                 description = "Play with friends on the same network",
                 buttonText = "Start Co-op Game",
-                buttonColor = Color(0xFFFF073A),
+                buttonColor = Color(0xFFB22222),
                 onClick = onNavigateToCoOp
+
             )
 
             AnimatedGradientButton(
@@ -88,9 +107,10 @@ fun GameModeScreen(
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
 
+
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(76.dp),
             )
 
             Spacer(modifier = Modifier.height(40.dp))

@@ -11,7 +11,7 @@ class LobbyListService(
     private val wsManager: WebSocketClientManager
 ) {
     private val _lobbies = mutableStateOf<List<Lobby>>(emptyList())
-    val lobbies: State<List<Lobby>> get() = _lobbies
+    //val lobbies: State<List<Lobby>> get() = _lobbies
 
     private val _isConnected = mutableStateOf(false)
     val isConnected: Boolean get() = _isConnected.value

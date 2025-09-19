@@ -119,8 +119,12 @@ fun TriviaGame() {
                     }
                 }
             }
+        }
+    }
+}
 
             // Lobby for co-op
+            /*
             composable("lobby") {
                 val wsConnection = remember { WebSocketClientManager() }
                 val lobbyListService = remember { LobbyListService(wsConnection) }
@@ -183,3 +187,4 @@ fun TriviaGame() {
         }
     }
 }
+*/
