@@ -119,12 +119,8 @@ fun TriviaGame() {
                     }
                 }
             }
-        }
-    }
-}
 
             // Lobby for co-op
-            /*
             composable("lobby") {
                 val wsConnection = remember { WebSocketClientManager() }
                 val lobbyListService = remember { LobbyListService(wsConnection) }
@@ -150,25 +146,6 @@ fun TriviaGame() {
                 }
             }
 
-            /*
-        composable("coopQuiz") {
-            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                QuizScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    quizService = coopService,
-                    onNavigateBack = {
-                        navController.navigate("gameMode") {
-                            popUpTo("gameMode") { inclusive = true }
-                        }
-                    },
-                    onGameComplete = { score, total ->
-                        // show results, maybe navigate back to menu
-                    }
-                )
-            }
-        }
-        */
-
             // Character customization
             composable("characterCustomization") {
                 val service = profilePictureService
@@ -184,7 +161,29 @@ fun TriviaGame() {
                     }
                 }
             }
+
+
         }
     }
+}
+
+
+
+/*
+composable("coopQuiz") {
+Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    QuizScreen(
+        modifier = Modifier.padding(innerPadding),
+        quizService = coopService,
+        onNavigateBack = {
+            navController.navigate("gameMode") {
+                popUpTo("gameMode") { inclusive = true }
+            }
+        },
+        onGameComplete = { score, total ->
+            // show results, maybe navigate back to menu
+        }
+    )
+}
 }
 */
