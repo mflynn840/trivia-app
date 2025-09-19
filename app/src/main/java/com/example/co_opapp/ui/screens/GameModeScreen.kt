@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.ui.components.CharacterImageCircle
-import com.example.co_opapp.ui.components.GameModeScreen.GameModeCard
+import com.example.co_opapp.ui.components.GameModeScreen.NeonGameModeCard
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -88,24 +88,22 @@ fun GameModeScreen(
                     )
             )
 
-            GameModeCard(
+            NeonGameModeCard(
                 icon = "\uD83D\uDCD6",
                 title = "Story Mode",
                 description = "Play alone and test your knowledge",
                 buttonText = "Start Single Player",
-
-                buttonColor = Color(0xFF1E90FF),
+                neonColor = Color(0xFF00F9FF), // Neon Cyan
                 onClick = onNavigateToSinglePlayer
             )
 
-            GameModeCard(
+            NeonGameModeCard(
                 icon = "\uD83D\uDC65",
                 title = "Co-op Mode",
                 description = "Play with friends on the same network",
                 buttonText = "Start Co-op Game",
-                buttonColor = Color(0xFFB22222),
+                neonColor = Color(0xFFFF073A), // Neon Pink
                 onClick = onNavigateToCoOp
-
             )
 
             NeonSignButton(
