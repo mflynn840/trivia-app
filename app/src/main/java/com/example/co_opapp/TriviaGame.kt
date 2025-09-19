@@ -15,8 +15,10 @@ import com.example.co_opapp.Service.Backend.ProfileService
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.QuizScreen
 import com.example.co_opapp.ui.screens.LobbyScreen
-//import com.example.co_opapp.Service.RaceModeGameService
 import com.example.co_opapp.Service.Backend.SoloGameService
+import com.example.co_opapp.Service.Coop.WebSocketClientManager
+import com.example.co_opapp.Service.Coop.CurrentLobbyService
+import com.example.co_opapp.Service.Coop.LobbyListService
 import com.example.co_opapp.ui.components.MusicWrapper
 import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
 import com.example.co_opapp.ui.screens.QuizSetupScreen
@@ -117,18 +119,16 @@ fun TriviaGame() {
                     }
                 }
             }
-        }
-    }
-}
 
             // Lobby for co-op
-            /*
             composable("lobby") {
-                val lobbyDomainService = remember { LobbyService() }
+                val wsConnection = remember { WebSocketClientManager() }
+                val lobbyListService = remember { LobbyListService(wsConnection) }
+                val currentLobbyService = remember { CurrentLobbyService(wsConnection) }
 
                 // Launch the connection when this composable enters the composition
                 LaunchedEffect(Unit) {
-                    lobbyDomainService.connect()
+                    wsConnection.connect()
                 }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -140,29 +140,11 @@ fun TriviaGame() {
                             }
                         },
                         onNavigateToGame = { navController.navigate("coopQuiz") },
-                        lobbyService = lobbyDomainService,
+                        allLobbiesService = lobbyListService,
+                        currentLobbyService = currentLobbyService,
                     )
                 }
             }
-
-            /*
-        composable("coopQuiz") {
-            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                QuizScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    quizService = coopService,
-                    onNavigateBack = {
-                        navController.navigate("gameMode") {
-                            popUpTo("gameMode") { inclusive = true }
-                        }
-                    },
-                    onGameComplete = { score, total ->
-                        // show results, maybe navigate back to menu
-                    }
-                )
-            }
-        }
-        */
 
             // Character customization
             composable("characterCustomization") {
@@ -179,7 +161,29 @@ fun TriviaGame() {
                     }
                 }
             }
+
+
         }
     }
+}
+
+
+
+/*
+composable("coopQuiz") {
+Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    QuizScreen(
+        modifier = Modifier.padding(innerPadding),
+        quizService = coopService,
+        onNavigateBack = {
+            navController.navigate("gameMode") {
+                popUpTo("gameMode") { inclusive = true }
+            }
+        },
+        onGameComplete = { score, total ->
+            // show results, maybe navigate back to menu
+        }
+    )
+}
 }
 */

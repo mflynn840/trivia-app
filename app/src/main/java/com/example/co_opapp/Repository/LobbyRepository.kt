@@ -18,7 +18,7 @@ class LobbyRepository {
             existing.players.putAll(lobbyUpdate.players)
             if (includeChat) {
                 existing.chatMessages.clear()
-                existing.chatMessages.putAll(lobbyUpdate.chatMessages)
+                existing.chatMessages.addAll(lobbyUpdate.chatMessages)
             }
         } else {
             updatedList.add(lobbyUpdate)
