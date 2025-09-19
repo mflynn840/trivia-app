@@ -1,13 +1,8 @@
 package com.example.co_opapp.ui.components.GameModeScreen
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,6 +14,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -30,78 +26,55 @@ fun GameModeCard(
     buttonText: String,
     buttonColor: Color,
     onClick: () -> Unit,
-    textColor: Color = Color.White
+    textColor: Color = Color.White,
+    modifier: Modifier = Modifier
 ) {
-    val infiniteTransition = rememberInfiniteTransition(label = "cardGradientAnim")
-
-    // Animate offset for moving gradient
-    val offsetX by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1000f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(6000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "cardGradientShift"
-    )
-
-    val gradient = Brush.linearGradient(
-        colors = listOf(
-            Color(0xFF1E90FF),
-            Color(0xFFB22222)
-        ),
-        start = Offset(0f, 0f),
-        end = Offset(offsetX, offsetX) // moves diagonally
-    )
-
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(200.dp),
-        shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+            .padding(12.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.6f) // semi-transparent white background
+        )
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(MaterialTheme.shapes.medium) // clip gradient to card shape
-                .background(gradient) // ✅ animated gradient here
-                .padding(24.dp)
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            // Icon
+            Text(text = icon, fontSize = 32.sp)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Title
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                color = Color.Black // ensure readable against white background
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Description
+            Text(
+                text = description,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                color = Color.DarkGray
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Action Button
+            Button(
+                onClick = onClick,
+                colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = icon, fontSize = 48.sp, color = textColor)
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.SansSerif,
-                    color = textColor
-                )
-
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontFamily = FontFamily.SansSerif,
-                    color = textColor.copy(alpha = 0.7f)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = onClick,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = buttonColor)
-                ) {
-                    Text(buttonText, color = Color.White, fontFamily = FontFamily.SansSerif)
-                }
+                Text(buttonText, color = textColor)
             }
         }
     }
