@@ -11,13 +11,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.co_opapp.Service.Backend.AuthService
 import com.example.co_opapp.Service.Hooks.CategorySelectorService
-import com.example.co_opapp.Service.Coop.LobbyService
 import com.example.co_opapp.Service.Backend.ProfileService
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.QuizScreen
 import com.example.co_opapp.ui.screens.LobbyScreen
-//import com.example.co_opapp.Service.RaceModeGameService
 import com.example.co_opapp.Service.Backend.SoloGameService
+import com.example.co_opapp.Service.Coop.WebSocketClientManager
+import com.example.co_opapp.Service.Coop.CurrentLobbyService
+import com.example.co_opapp.Service.Coop.LobbyListService
 import com.example.co_opapp.ui.components.MusicWrapper
 import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
 import com.example.co_opapp.ui.screens.QuizSetupScreen
@@ -121,11 +122,13 @@ fun TriviaGame() {
 
             // Lobby for co-op
             composable("lobby") {
-                val lobbyDomainService = remember { LobbyService() }
+                val wsConnection = remember { WebSocketClientManager() }
+                val lobbyListService = remember { LobbyListService(wsConnection) }
+                val currentLobbyService = remember { CurrentLobbyService(wsConnection) }
 
                 // Launch the connection when this composable enters the composition
                 LaunchedEffect(Unit) {
-                    lobbyDomainService.connect()
+                    wsConnection.connect()
                 }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -137,7 +140,8 @@ fun TriviaGame() {
                             }
                         },
                         onNavigateToGame = { navController.navigate("coopQuiz") },
-                        lobbyService = lobbyDomainService,
+                        allLobbiesService = lobbyListService,
+                        currentLobbyService = currentLobbyService,
                     )
                 }
             }

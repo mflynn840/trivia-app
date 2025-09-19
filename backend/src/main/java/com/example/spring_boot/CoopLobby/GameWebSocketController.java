@@ -98,12 +98,16 @@ public class GameWebSocketController {
         }
     }
 
+
+    
     // -------------------
     // Helper: Broadcast lobby state to lobby-specific topic
     // -------------------
     private void broadcastLobbyState(Lobby lobby) {
         messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName(), lobby);
     }
+
+
 
     // Optional: ping for connection testing
     @MessageMapping("/lobby/ping")
