@@ -50,14 +50,14 @@ import androidx.compose.ui.unit.sp
         Box(
             modifier = modifier
                 .fillMaxWidth(0.9f)
-                .height(52.dp)
+                .height(62.dp)
                 .shadow(
                     elevation = 16.dp,
                     shape = RoundedCornerShape(16.dp),
                     ambientColor = neonColor.copy(alpha = glowAlpha * 0.6f),
                     spotColor = neonColor.copy(alpha = glowAlpha * 0.6f)
                 )
-                .border(3.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp))
+                .border(6.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp))
                 .background(Color(0xFF111111), RoundedCornerShape(16.dp)) // dark base
                 .clickable { onClick() },
             contentAlignment = Alignment.Center
@@ -67,7 +67,7 @@ import androidx.compose.ui.unit.sp
                 text = text,
                 style = TextStyle(
                     color = neonColor.copy(alpha = glowAlpha),
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
                     fontFamily = FontFamily.SansSerif,
                     shadow = Shadow(

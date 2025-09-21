@@ -55,7 +55,7 @@ fun GameModeScreen(
             onClick = onNavigateBack,
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(16.dp)
+                .padding(32.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
@@ -69,6 +69,8 @@ fun GameModeScreen(
             profilePictureService = profilePictureService
         )
 
+        Spacer(modifier = Modifier.height(20.dp))
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -76,31 +78,20 @@ fun GameModeScreen(
                 .padding(38.dp)
                 .align(Alignment.Center)
         ) {
-            Spacer(modifier = Modifier.height(78.dp))
-
-            Text(
-                text = "Choose Game Mode",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.SansSerif,
-                    color = Color.White.copy(alpha = 0.9f),
-
-                    )
-            )
 
             NeonGameModeCard(
-                title = "Story Mode",
-                description = "Play alone and test your knowledge",
-                buttonText = "Start Single Player",
+                icon = "\uD83D\uDC64",
+                title = "Test Your Knowledge",
+                buttonText = "Story Mode",
                 neonColor = Color(0xFF00F0FF),
                 onClick = onNavigateToSinglePlayer
             )
 
             NeonGameModeCard(
-                title = "Co-op Mode",
-                description = "Play with friends on the same network",
-                buttonText = "Start Co-op Game",
-                neonColor = Color(0xFFFF0033),
+                icon = "\uD83D\uDC65",
+                title = "Play With Friends",
+                buttonText = "Co-op Mode",
+                neonColor = Color(0xFF00F0FF),
                 onClick = onNavigateToCoOp
             )
 
@@ -112,11 +103,8 @@ fun GameModeScreen(
 
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(76.dp),
+                    .height(66.dp),
             )
-
-            Spacer(modifier = Modifier.height(30.dp))
-
 
         }
     }
