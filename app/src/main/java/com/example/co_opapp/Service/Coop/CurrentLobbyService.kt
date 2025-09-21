@@ -42,8 +42,8 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
     }
 
     /** Send a chat message to this lobby */
-    fun sendChat(lobbyName: String, message: ChatMessage) {
-        wsManager.send("/app/lobby/chat/$lobbyName", message)
+    fun sendChat(message: ChatMessage) {
+        wsManager.send("/app/lobby/chat/${lobby.value?.name}", message)
     }
 
     fun leaveLobby(lobbyName: String, player: PlayerDTO) {
@@ -52,6 +52,10 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
 
     fun toggleReady(lobbyName: String, player: PlayerDTO) {
         wsManager.send("/app/lobby/ready/$lobbyName", player)
+    }
+
+    fun joinLobby(lobbyName: String, username: String){
+        wsManager.send("/app/lobby/join/$lobbyName", PlayerDTO(lobbyName, username, false))
     }
 
 

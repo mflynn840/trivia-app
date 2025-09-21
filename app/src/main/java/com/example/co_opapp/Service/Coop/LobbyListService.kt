@@ -36,9 +36,6 @@ class LobbyListService(
         wsManager.send("/app/lobby/create", mapOf("name" to name))
     }
 
-    fun joinLobby(lobbyName: String, player: PlayerDTO) {
-        wsManager.send("/app/lobby/join/$lobbyName", player)
-    }
 
     fun toggleReady(lobbyName: String, player: PlayerDTO) {
         wsManager.send("/app/lobby/ready/$lobbyName", player)
