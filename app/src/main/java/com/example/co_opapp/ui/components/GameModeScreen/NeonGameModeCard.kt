@@ -58,7 +58,7 @@ fun NeonGameModeCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(12.dp)
-            .border(8.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp)),
+            .border(6.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF0D0D0D)
@@ -70,8 +70,6 @@ fun NeonGameModeCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Spacer(modifier = Modifier.height(10.dp))
-
             // Icon
             Text(
                 text = icon,
@@ -79,25 +77,21 @@ fun NeonGameModeCard(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
-
             // Title
             Text(
                 text = title,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFFFFFFFF),
+                color = neonColor.copy(alpha = glowAlpha),
                 style = TextStyle(
                     shadow = Shadow(
                         color = neonColor.copy(alpha = 0.8f),
                         offset = Offset(0f, 0f),
-                        blurRadius = 48f
+                        blurRadius = 58f
                     )
                 ),
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-
-            Spacer(modifier = Modifier.height(10.dp))
 
             // Action Button
             Button(
@@ -108,7 +102,7 @@ fun NeonGameModeCard(
                 Text(
                     text = buttonText,
                     fontSize = 24.sp,
-                    color = Color(0xFFFFFFFF),
+                    color = neonColor.copy(alpha = glowAlpha),
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
                         shadow = Shadow(
@@ -116,8 +110,11 @@ fun NeonGameModeCard(
                             offset = Offset(0f, 0f),
                             blurRadius = 58f
                         )
+
+
                     )
                 )
+
             }
         }
     }
