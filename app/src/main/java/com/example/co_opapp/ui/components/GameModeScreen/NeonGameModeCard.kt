@@ -62,14 +62,14 @@ fun NeonGameModeCard(
             // Title
             Text(
                 text = title,
-                fontSize = 26.sp,
+                fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = neonColor,
                 style = TextStyle(
                     shadow = Shadow(
                         color = neonColor.copy(alpha = 0.8f),
                         offset = Offset(0f, 0f),
-                        blurRadius = 10f
+                        blurRadius = 48f
                     )
                 ),
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -78,7 +78,7 @@ fun NeonGameModeCard(
             // Description
             Text(
                 text = description,
-                fontSize = 16.sp,
+                fontSize = 20.sp,
                 color = Color.Black,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(bottom = 16.dp)
@@ -99,7 +99,7 @@ fun NeonGameModeCard(
                         shadow = Shadow(
                             color = neonColor.copy(alpha = 0.8f),
                             offset = Offset(0f, 0f),
-                            blurRadius = 10f
+                            blurRadius = 48f
                         )
                     )
                 )
