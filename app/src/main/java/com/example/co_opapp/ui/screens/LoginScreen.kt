@@ -1,6 +1,12 @@
 package com.example.co_opapp.ui.screens
 
 import android.media.MediaPlayer
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,20 +58,32 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Spacer(modifier = Modifier.height(85.dp))
 
             // Logo circle
+            // Pulsing neon animation
+            val infiniteTransition = rememberInfiniteTransition()
+            val glowAlpha by infiniteTransition.animateFloat(
+                initialValue = 0.5f,
+                targetValue = 1f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 1000, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse
+                )
+            )
+
             Box(
                 modifier = Modifier
-                    .size(250.dp)
+                    .size(240.dp)
                     .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.2f))
-                    .border(4.dp, Color(0xFF00F0FF), CircleShape) // Neon blue border
+                    .border(4.dp, Color(0xFF00F0FF).copy(alpha = glowAlpha), CircleShape) // pulsing border
                     .shadow(
                         elevation = 16.dp,
                         shape = CircleShape,
-                        ambientColor = Color(0xFF00F9FF),
-                        spotColor = Color(0xFF00FFFF)
+                        ambientColor = Color(0xFF00F0FF).copy(alpha = glowAlpha), // ambient glow
+                        spotColor = Color(0xFF00FFFF).copy(alpha = glowAlpha)     // spot glow
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -76,7 +94,6 @@ fun LoginScreen(
                     contentScale = ContentScale.Crop
                 )
             }
-
 
             Spacer(modifier = Modifier.height(24.dp))
 
