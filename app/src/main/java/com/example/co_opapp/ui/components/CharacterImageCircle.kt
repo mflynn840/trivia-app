@@ -39,7 +39,7 @@ fun CharacterImageCircle(
     circleSize: Dp = 150.dp,
     topPadding: Dp = 26.dp,
     endPadding: Dp = 26.dp,
-    neonColor: Color = Color(0xFF00F0FF) // default neon blue
+    neonColor: Color = Color(0xFF00F0FF)
 ) {
     // Pulsing glow animation
     val infiniteTransition = rememberInfiniteTransition()

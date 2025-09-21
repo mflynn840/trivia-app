@@ -70,17 +70,15 @@ fun GameModeScreen(
             profilePicture = profilePicture
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(100.dp))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier
-                .padding(38.dp)
+                .padding(start = 38.dp, end = 38.dp, bottom = 0.dp)
                 .align(Alignment.Center)
         ) {
-
-
 
             NeonGameModeCard(
                 icon = "\uD83C\uDFAF",
