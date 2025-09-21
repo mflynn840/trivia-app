@@ -5,10 +5,13 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -17,7 +20,6 @@ import com.example.co_opapp.Service.Backend.AuthService
 import com.example.co_opapp.Service.Backend.ProfileService
 import com.example.co_opapp.SessionManager
 import com.example.co_opapp.ui.components.*
-import com.example.co_opapp.ui.components.CharacterCustomizationScreen.BackButton
 import com.example.co_opapp.ui.components.CharacterCustomizationScreen.SendToBackendButton
 import com.example.co_opapp.ui.components.CharacterCustomizationScreen.UploadImageButton
 
@@ -42,6 +44,20 @@ fun CharacterCustomizationScreen(
             modifier = Modifier.fillMaxSize()
         )
 
+        // Back button (top-left)
+        IconButton(
+            onClick = onNavigateBack,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -57,11 +73,9 @@ fun CharacterCustomizationScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            UploadImageButton { launcher.launch("image/*") }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            BackButton(onNavigateBack)
+            UploadImageButton(
+                onClick = { launcher.launch("image/*") }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
