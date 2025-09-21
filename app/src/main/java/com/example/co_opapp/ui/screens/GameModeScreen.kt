@@ -90,20 +90,18 @@ fun GameModeScreen(
             )
 
             NeonGameModeCard(
-                icon = "\uD83D\uDCD6",
                 title = "Story Mode",
                 description = "Play alone and test your knowledge",
                 buttonText = "Start Single Player",
-                neonColor = Color(0xFF00F9FF), // Neon Cyan
+                neonColor = Color(0xFF00F0FF),
                 onClick = onNavigateToSinglePlayer
             )
 
             NeonGameModeCard(
-                icon = "\uD83D\uDC65",
                 title = "Co-op Mode",
                 description = "Play with friends on the same network",
                 buttonText = "Start Co-op Game",
-                neonColor = Color(0xFFFF073A), // Neon Pink
+                neonColor = Color(0xFFFF0033),
                 onClick = onNavigateToCoOp
             )
 
