@@ -32,7 +32,7 @@ fun GreetingBox(username: String, neonColor: Color = Color(0xFF00F0FF)) {
         initialValue = 0.6f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(800, easing = LinearEasing),
+            animation = tween(1000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -40,7 +40,7 @@ fun GreetingBox(username: String, neonColor: Color = Color(0xFF00F0FF)) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .border(3.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(12.dp)) // glowing border
+            .border(6.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(12.dp)) // glowing border
             .background(Color(0xFF111111), shape = RoundedCornerShape(12.dp)) // dark background
             .padding(16.dp),
         contentAlignment = Alignment.Center
@@ -54,7 +54,7 @@ fun GreetingBox(username: String, neonColor: Color = Color(0xFF00F0FF)) {
                 shadow = Shadow(
                     color = neonColor.copy(alpha = glowAlpha),
                     offset = Offset(0f, 0f),
-                    blurRadius = 24f
+                    blurRadius = 56f
                 )
             ),
             textAlign = TextAlign.Center
