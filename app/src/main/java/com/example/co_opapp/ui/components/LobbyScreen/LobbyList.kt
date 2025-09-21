@@ -1,8 +1,8 @@
-package com.example.co_opapp.ui.components.LobbyScreen
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -10,9 +10,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.data_model.GameState
 import com.example.co_opapp.data_model.Lobby
-import com.example.co_opapp.data_model.Player
 
-
+// Helper function to get the lobby status
 fun getLobbyStatus(gameState: GameState): String {
     return when (gameState) {
         GameState.WAITING -> "Waiting"
@@ -22,25 +21,19 @@ fun getLobbyStatus(gameState: GameState): String {
     }
 }
 
+// Composable function to display each lobby card
 @Composable
 fun LobbyCard(
-    lobby: Lobby,
+    lobbyName: String,
     isSelected: Boolean,
     onSelect: () -> Unit,
     onJoin: () -> Unit,
-    onLeave: () -> Unit,
-    onToggleReady: () -> Unit
 ) {
-    // Make lobby properties reactive
-    val lobbyName by remember { derivedStateOf { lobby.name } }
-    val numPlayers by remember { derivedStateOf { lobby.players?.size ?: 0 } }
-    val maxPlayers by remember { derivedStateOf { lobby.maxPlayers } }
-    val status by remember { derivedStateOf { getLobbyStatus(lobby.gameState) } }
 
-    // Define a color based on selection status
+    // Define background color based on selection
     val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
 
-    // Column to arrange all the elements
+    // Column to arrange all elements within the card
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,28 +48,37 @@ fun LobbyCard(
             color = Color.Black
         )
 
-        // Number of players
-        Text(
-            text = "Players: $numPlayers/$maxPlayers",
-            style = MaterialTheme.typography.bodySmall,
-            color = Color.Gray
-        )
-
-        // Status
-        Text(
-            text = "Status: $status",
-            style = MaterialTheme.typography.bodySmall,
-            color = Color.Gray
-        )
-
-        // Actions
+        // Action buttons (Join, Leave, Toggle Ready)
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             Button(onClick = onJoin) { Text("Join") }
-            Button(onClick = onLeave) { Text("Leave") }
-            Button(onClick = onToggleReady) { Text("Toggle Ready") }
         }
     }
 }
+
+// Main composable that displays a scrollable list of lobby cards
+@Composable
+fun LobbyList(
+    lobbies: List<Lobby>,
+    selectedLobbyName: String,
+    onLobbySelect: (String) -> Unit,
+    onJoinLobby: (Lobby) -> Unit,
+) {
+    // LazyColumn displays a scrollable list of lobby cards
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(lobbies) { lobby ->
+            LobbyCard(
+                lobbyName = lobby.name,
+                isSelected = selectedLobbyName == lobby.name,
+                onSelect = { onLobbySelect(lobby.name) },
+                onJoin = { onJoinLobby(lobby) },
+            )
+        }
+    }
+}
+

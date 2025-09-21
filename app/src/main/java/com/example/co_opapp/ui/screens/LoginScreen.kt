@@ -32,7 +32,7 @@ import com.example.co_opapp.ui.components.LoginScreen.rememberLoginFormState
 fun LoginScreen(
     authService: AuthService,
     modifier: Modifier = Modifier,
-    onNavigateToLobby: () -> Unit = {}
+    onNavigateToLobby:  () -> Unit = {}
 ) {
     val formState = rememberLoginFormState()
 

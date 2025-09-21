@@ -1,7 +1,5 @@
 package com.example.co_opapp.Service.Coop
 
-
-
 import androidx.compose.runtime.*
 import com.example.co_opapp.Service.Coop.WebSocketClientManager
 import com.example.co_opapp.data_model.Lobby
@@ -21,6 +19,7 @@ class LobbyListService(
             _isConnected.value = true
 
             wsManager.subscribeLobbyAll { map ->
+                // Whenever new lobbies are received, update the state
                 _lobbies.value = map.values.toList()
             }
 
@@ -41,10 +40,7 @@ class LobbyListService(
         wsManager.send("/app/lobby/join/$lobbyName", player)
     }
 
-
     fun toggleReady(lobbyName: String, player: PlayerDTO) {
         wsManager.send("/app/lobby/ready/$lobbyName", player)
     }
 }
-
-
