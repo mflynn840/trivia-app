@@ -7,6 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 
 /**
@@ -29,6 +31,8 @@ public class Player implements UserDetails {
     @Column(nullable = false)
 
     private Role role;
+
+    @JsonProperty("isReady")
     private boolean isReady = false;
     private String sessionId;
 

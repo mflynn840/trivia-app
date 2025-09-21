@@ -23,27 +23,17 @@ public class GameWebSocketController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    // -------------------
-    // All Lobbies Topic
-    // -------------------
     @MessageMapping("/lobby/getAll")
     public void sendAllLobbies() {
         Map<String, Lobby> all = lobbyManager.getAllLobbies();
-        messagingTemplate.convertAndSend("/topic/lobby/all", all);
+        messagingTemplate.convertAndSend("/topic/lobby/all", all);  // Send all lobbies to the client
     }
 
-    // -------------------
-    // Create Lobby
-    // -------------------
     @MessageMapping("/lobby/create")
     public void createLobby(@Payload CreateLobbyRequest request) {
         try {
             Lobby lobby = lobbyManager.createLobby(request.getName());
-            System.out.println("Created lobby: " + lobby.getName());
-
-            // Notify all subscribers about updated list of lobbies
-            sendAllLobbies();
-
+            sendAllLobbies();  // Notify all clients about the updated list of lobbies
         } catch (IllegalArgumentException e) {
             messagingTemplate.convertAndSend("/topic/lobby/errors", Map.of(
                 "error", true,
@@ -52,15 +42,12 @@ public class GameWebSocketController {
         }
     }
 
-    // -------------------
-    // Lobby-specific actions
-    // -------------------
     @MessageMapping("/lobby/join/{lobbyId}")
     public void joinLobby(String lobbyId, Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null && !lobby.isFull()) {
             lobby.getPlayers().put(player.getSessionId(), player);
-            broadcastLobbyState(lobby);
+            broadcastLobbyState(lobby);  // Update clients with the new lobby state
         }
     }
 
@@ -72,7 +59,7 @@ public class GameWebSocketController {
             broadcastLobbyState(lobby);
             if (lobby.isEmpty()) {
                 lobbyManager.removeLobby(lobbyId);
-                sendAllLobbies(); // update all lobbies topic
+                sendAllLobbies();  // If the lobby is empty, send updated lobby list
             }
         }
     }
@@ -83,7 +70,7 @@ public class GameWebSocketController {
         if (lobby != null) {
             Player p = lobby.getPlayers().get(player.getSessionId());
             if (p != null) {
-                p.setReady(!p.isReady());
+                p.setReady(!p.isReady());  // Toggle ready status
                 broadcastLobbyState(lobby);
             }
         }
@@ -94,24 +81,11 @@ public class GameWebSocketController {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
             lobby.getChatMessages().add(msg.getUsername() + ": " + msg.getMessage());
-            broadcastLobbyState(lobby);
+            broadcastLobbyState(lobby);  // Broadcast the new chat message
         }
     }
 
-
-    
-    // -------------------
-    // Helper: Broadcast lobby state to lobby-specific topic
-    // -------------------
     private void broadcastLobbyState(Lobby lobby) {
-        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName(), lobby);
-    }
-
-
-
-    // Optional: ping for connection testing
-    @MessageMapping("/lobby/ping")
-    public void ping() {
-        messagingTemplate.convertAndSend("/topic/lobby/ping", "pong");
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName(), lobby);  // Broadcast specific lobby state
     }
 }

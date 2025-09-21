@@ -28,7 +28,11 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
             _isConnected.value = true // mark connected when ws opens
 
             wsManager.subscribeLobby("/topic/lobby/$lobbyName") { updatedLobby ->
-                _lobby.value = updatedLobby
+                _lobby.value = updatedLobby.copy(
+                    players = mutableStateMapOf<String, PlayerDTO>().apply {putAll(updatedLobby.players)},
+                    chatMessages = mutableStateListOf<ChatMessage>().apply {addAll(updatedLobby.chatMessages)}
+                )
+
 
                 // Update reactive chat list
                 _chatMessages.clear()

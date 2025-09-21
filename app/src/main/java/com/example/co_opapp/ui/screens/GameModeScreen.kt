@@ -1,5 +1,6 @@
 package com.example.co_opapp.ui.screens
 
+import android.graphics.Bitmap
 import android.media.MediaPlayer
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -40,7 +41,7 @@ fun GameModeScreen(
     onNavigateToCoOp: () -> Unit = {},
     onNavigateToCharacterMode: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    profilePictureService: ProfileService
+    profilePicture: Bitmap?
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         Image(
@@ -66,7 +67,7 @@ fun GameModeScreen(
 
         CharacterImageCircle(
             modifier = Modifier.align(Alignment.TopEnd),
-            profilePictureService = profilePictureService
+            profilePicture = profilePicture
         )
 
         Spacer(modifier = Modifier.height(20.dp))

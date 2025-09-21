@@ -28,28 +28,13 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun CharacterImageCircle(
-    profilePictureService: ProfileService,
+    profilePicture: Bitmap?,
     modifier: Modifier = Modifier,
     circleSize: Dp = 125.dp,
     topPadding: Dp = 42.dp,
     endPadding: Dp = 22.dp
 ) {
-    var avatarBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
-    // Load avatar asynchronously
-    LaunchedEffect(profilePictureService) {
-        try {
-            val bytes: ByteArray? = withContext(Dispatchers.IO) {
-                profilePictureService.getProfilePictureBytes()
-            }
-            bytes?.let {
-                val bmp = BitmapFactory.decodeByteArray(it, 0, it.size)
-                avatarBitmap = bmp
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
     Box(
         modifier = modifier
@@ -59,9 +44,9 @@ fun CharacterImageCircle(
             .background(Color.LightGray.copy(alpha = 0.3f), CircleShape),
         contentAlignment = Alignment.Center
     ) {
-        if (avatarBitmap != null) {
+        if (profilePicture != null) {
             Image(
-                bitmap = avatarBitmap!!.asImageBitmap(),
+                bitmap = profilePicture.asImageBitmap(),
                 contentDescription = "User avatar",
                 modifier = Modifier
                     .fillMaxSize()
