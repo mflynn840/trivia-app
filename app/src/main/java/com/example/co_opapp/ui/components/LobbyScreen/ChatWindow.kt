@@ -12,15 +12,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-
-
-// Chat Dialog Composable
+import com.example.co_opapp.data_model.ChatMessage
 @Composable
 fun ChatWindow(
     lobbyId: String,
-    messages: List<String>,
+    messages: SnapshotStateList<ChatMessage>, // reactive list
     chatInput: String,
     onInputChange: (String) -> Unit,
     onSend: () -> Unit,
@@ -33,7 +32,7 @@ fun ChatWindow(
             Column {
                 LazyColumn(modifier = Modifier.weight(1f)) {
                     items(messages) { message ->
-                        Text(message)
+                        Text("${message.username}: ${message.message}")
                     }
                 }
 

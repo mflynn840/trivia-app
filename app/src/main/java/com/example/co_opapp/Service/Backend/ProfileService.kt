@@ -1,8 +1,11 @@
 package com.example.co_opapp.Service.Backend
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import com.example.co_opapp.Repository.ProfileRepository
 
 /**
@@ -27,7 +30,8 @@ class ProfileService(private val authService: AuthService, context: Context) {
         }
     }
 
-    suspend fun getProfilePictureBytes(): ByteArray? {
+
+    private suspend fun getProfilePictureBytes(): ByteArray? {
         val username = authService.getUsername() ?: return null
         val token = authService.getJwtToken() ?: return null
 
@@ -38,4 +42,17 @@ class ProfileService(private val authService: AuthService, context: Context) {
             null
         }
     }
+
+    suspend fun getProfilePicture(): Bitmap? {
+        val profilePicture = mutableStateOf<Bitmap?>(null)
+        getProfilePictureBytes()?.let {
+            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+            profilePicture.value = bitmap
+
+        }
+        return profilePicture.value
+    }
+
+
+
 }
