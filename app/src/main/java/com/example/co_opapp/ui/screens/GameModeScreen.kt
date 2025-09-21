@@ -70,7 +70,7 @@ fun GameModeScreen(
             profilePicture = profilePicture
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -80,8 +80,10 @@ fun GameModeScreen(
                 .align(Alignment.Center)
         ) {
 
+
+
             NeonGameModeCard(
-                icon = "\uD83D\uDC64",
+                icon = "\uD83C\uDFAF",
                 title = "Test Your Knowledge",
                 buttonText = "Story Mode",
                 neonColor = Color(0xFF00F0FF),
@@ -89,7 +91,7 @@ fun GameModeScreen(
             )
 
             NeonGameModeCard(
-                icon = "\uD83D\uDC65",
+                icon = "⚔\uFE0F",
                 title = "Play With Friends",
                 buttonText = "Co-op Mode",
                 neonColor = Color(0xFF00F0FF),

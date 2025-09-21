@@ -3,6 +3,12 @@ package com.example.co_opapp.ui.components
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,17 +36,27 @@ import kotlinx.coroutines.withContext
 fun CharacterImageCircle(
     profilePicture: Bitmap?,
     modifier: Modifier = Modifier,
-    circleSize: Dp = 125.dp,
-    topPadding: Dp = 42.dp,
-    endPadding: Dp = 22.dp
+    circleSize: Dp = 150.dp,
+    topPadding: Dp = 26.dp,
+    endPadding: Dp = 26.dp,
+    neonColor: Color = Color(0xFF00F0FF) // default neon blue
 ) {
-
+    // Pulsing glow animation
+    val infiniteTransition = rememberInfiniteTransition()
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.5f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
 
     Box(
         modifier = modifier
             .padding(top = topPadding, end = endPadding)
             .size(circleSize)
-            .border(2.dp, Color.Gray, CircleShape)
+            .border(6.dp, neonColor.copy(alpha = glowAlpha), CircleShape) // glow border
             .background(Color.LightGray.copy(alpha = 0.3f), CircleShape),
         contentAlignment = Alignment.Center
     ) {
@@ -50,11 +66,16 @@ fun CharacterImageCircle(
                 contentDescription = "User avatar",
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(CircleShape), // clip image to circle
-                contentScale = ContentScale.Crop // scale image to fit the circle
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
             )
         } else {
-            Text("?", color = Color.DarkGray, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = "?",
+                color = Color.DarkGray,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }
+
