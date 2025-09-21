@@ -80,7 +80,7 @@ public class GameWebSocketController {
     public void sendChat(String lobbyId, ChatMessage msg) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
-            lobby.getChatMessages().add(msg.getUsername() + ": " + msg.getMessage());
+            lobby.getChatMessages().add(msg);
             broadcastLobbyState(lobby);  // Broadcast the new chat message
         }
     }

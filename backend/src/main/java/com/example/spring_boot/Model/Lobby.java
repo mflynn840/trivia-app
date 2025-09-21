@@ -10,7 +10,7 @@ public class Lobby {
     private String name;
     private int maxPlayers = 4;
     private Map<String, Player> players = new ConcurrentHashMap<>(); // sessionId -> Player
-    private List<String> chatMessages = new CopyOnWriteArrayList<>();
+    private List<ChatMessage> chatMessages = new CopyOnWriteArrayList<>();
     private GameState gameState = GameState.WAITING;
 
     // --- Getters & Setters ---
@@ -38,11 +38,11 @@ public class Lobby {
         this.players = players;
     }
 
-    public List<String> getChatMessages() {
+    public List<ChatMessage> getChatMessages() {
         return chatMessages;
     }
 
-    public void setChatMessages(List<String> chatMessages) {
+    public void setChatMessages(List<ChatMessage> chatMessages) {
         this.chatMessages = chatMessages;
     }
 

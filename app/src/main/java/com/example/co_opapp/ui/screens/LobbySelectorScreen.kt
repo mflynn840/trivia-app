@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.Service.Coop.CurrentLobbyService
 import com.example.co_opapp.Service.Coop.LobbyListService
@@ -15,7 +16,7 @@ import com.example.co_opapp.data_model.PlayerDTO
 fun LobbySelectorScreen(
     allLobbiesService: LobbyListService,
     modifier: Modifier = Modifier,
-    onNavigateToLobby: () -> Unit,
+    onNavigateToLobby: (String) -> Unit,
     onNavigateBack: () -> Unit
 
 ) {
@@ -33,15 +34,6 @@ fun LobbySelectorScreen(
     LaunchedEffect(Unit) {
         allLobbiesService.connect()
 
-    }
-
-    // Join and subscribe to the selected lobby
-    LaunchedEffect(selectedLobbyName) {
-        selectedLobbyName?.let { lobbyName ->
-            playerDTO?.let { dto ->
-                allLobbiesService.joinLobby(lobbyName, dto)
-            }
-        }
     }
 
     Column(
@@ -64,11 +56,10 @@ fun LobbySelectorScreen(
             selectedLobbyName = selectedLobbyName.orEmpty(),
             onLobbySelect = { lobbyName -> selectedLobbyName = lobbyName },
             onJoinLobby = { lobby ->
-                playerDTO?.let { dto ->
-                    allLobbiesService.joinLobby(lobby.name, dto)
-                }
-                onNavigateToLobby
+                onNavigateToLobby(lobby.name)
+
             },
         )
+
     }
 }

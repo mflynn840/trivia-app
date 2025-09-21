@@ -22,6 +22,7 @@ import com.example.co_opapp.Service.Coop.CurrentLobbyService
 import com.example.co_opapp.Service.Coop.LobbyListService
 import com.example.co_opapp.ui.components.MusicWrapper
 import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
+import com.example.co_opapp.ui.screens.ChatScreen
 import com.example.co_opapp.ui.screens.QuizSetupScreen
 import com.example.co_opapp.ui.screens.LoadingScreen
 import com.example.co_opapp.ui.screens.LoginScreen
@@ -56,6 +57,8 @@ fun TriviaGame() {
                 }
             }
 
+
+            //user selects which game mode they want to play
             composable("gameMode") {
                 // Fetch profile picture asynchronously after login
                 LaunchedEffect(Unit) {
@@ -79,8 +82,6 @@ fun TriviaGame() {
                     )
                 }
             }
-
-
             // Ask the player which category and difficulty
             composable("soloQuizSetup") {
                 val categorySelectorService =
@@ -103,7 +104,6 @@ fun TriviaGame() {
                     )
                 }
             }
-
             // Single player quiz game is a skeleton supplied with the SoloGameService
             composable("singlePlayerQuiz") {
                 val service = soloService
@@ -126,7 +126,6 @@ fun TriviaGame() {
                     }
                 }
             }
-
             // Lobby for co-op
             composable("lobbySelector") {
 
@@ -140,25 +139,28 @@ fun TriviaGame() {
                     LobbySelectorScreen(
                         modifier = Modifier.padding(innerPadding),
                         onNavigateBack = {
-                            navController.navigate("currentLobby") {
-                                popUpTo("currentLobby") { inclusive = true }
+                            navController.navigate("gameMode") {
+                                popUpTo("gameMode") { inclusive = true }
                             }
                         },
                         allLobbiesService = lobbyListService,
-                        onNavigateToLobby = {
-                            navController.navigate("joinLobby") {
+                        onNavigateToLobby = {name ->
+                            navController.navigate("joinLobby/$name") {
                                 popUpTo("joinLobby") { inclusive = true }
                             }
                         },
                     )
                 }
             }
-
-            composable("joinLobby") {
+            composable("joinLobby/{lobbyName}") { backStackEntry ->
                 val currentLobbyService = remember { CurrentLobbyService(wsConnection) }
-
+                val username = SessionManager.currentPlayer?.username!!
+                val lobbyName = backStackEntry.arguments?.getString("lobbyName")!!
+                currentLobbyService.joinLobby(lobbyName=lobbyName, username=username)
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    ChatScreen(currentLobbyService, Modifier.padding(innerPadding))
+                }
             }
-
             // Character customization
             composable("characterCustomization") {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
