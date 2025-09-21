@@ -36,7 +36,7 @@ import kotlinx.coroutines.withContext
 fun CharacterImageCircle(
     profilePicture: Bitmap?,
     modifier: Modifier = Modifier,
-    circleSize: Dp = 150.dp,
+    circleSize: Dp = 140.dp,
     topPadding: Dp = 26.dp,
     endPadding: Dp = 26.dp,
     neonColor: Color = Color(0xFF00F0FF)
