@@ -1,5 +1,6 @@
 package com.example.co_opapp
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -14,7 +15,7 @@ import com.example.co_opapp.Service.Hooks.CategorySelectorService
 import com.example.co_opapp.Service.Backend.ProfileService
 import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.QuizScreen
-import com.example.co_opapp.ui.screens.LobbyScreen
+import com.example.co_opapp.ui.screens.LobbySelectorScreen
 import com.example.co_opapp.Service.Backend.SoloGameService
 import com.example.co_opapp.Service.Coop.WebSocketClientManager
 import com.example.co_opapp.Service.Coop.CurrentLobbyService
@@ -30,9 +31,11 @@ fun TriviaGame() {
     val context = LocalContext.current
     val authService = remember { AuthService(context) }
     var soloService by remember { mutableStateOf<SoloGameService?>(null) }
-    var profilePictureService by remember { mutableStateOf<ProfileService?>(null) }
-
+    var playerService by remember { mutableStateOf<ProfileService?>(null) }
+    val wsConnection = remember { WebSocketClientManager() }
     val navController = rememberNavController()
+    var profilePicture by remember {mutableStateOf<Bitmap?>(null)}
+
 
     MusicWrapper(musicResId = R.raw.login_music) {
         NavHost(
@@ -45,20 +48,25 @@ fun TriviaGame() {
                         authService = authService,
                         modifier = Modifier.padding(innerPadding),
                         onNavigateToLobby = {
-                            profilePictureService = ProfileService(authService, context)
+                            playerService = ProfileService(authService, context)
                             navController.navigate("gameMode")
+
                         }
                     )
                 }
             }
 
             composable("gameMode") {
-                val service = profilePictureService
-                if (service != null) {
+                // Fetch profile picture asynchronously after login
+                LaunchedEffect(Unit) {
+                    val picture = playerService?.getProfilePicture()  // Fetch profile picture
+                    profilePicture = picture  // Store it in state
+                }
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     GameModeScreen(
-                        profilePictureService = service,
+                        modifier = Modifier.padding(innerPadding),
                         onNavigateToSinglePlayer = { navController.navigate("soloQuizSetup") },
-                        onNavigateToCoOp = { navController.navigate("lobby") },
+                        onNavigateToCoOp = { navController.navigate("lobbySelector") },
                         onNavigateToCharacterMode = { navController.navigate("characterCustomization") },
                         onNavigateBack = {
                             navController.navigate("login") {
@@ -66,10 +74,9 @@ fun TriviaGame() {
                                     inclusive = true
                                 }
                             }
-                        }
+                        },
+                        profilePicture = profilePicture
                     )
-                } else {
-                    LoadingScreen()
                 }
             }
 
@@ -121,48 +128,47 @@ fun TriviaGame() {
             }
 
             // Lobby for co-op
-            composable("lobby") {
-                val wsConnection = remember { WebSocketClientManager() }
-                val lobbyListService = remember { LobbyListService(wsConnection) }
-                val currentLobbyService = remember { CurrentLobbyService(wsConnection) }
+            composable("lobbySelector") {
 
+                val lobbyListService = remember { LobbyListService(wsConnection) }
                 // Launch the connection when this composable enters the composition
                 LaunchedEffect(Unit) {
                     wsConnection.connect()
                 }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LobbyScreen(
+                    LobbySelectorScreen(
                         modifier = Modifier.padding(innerPadding),
                         onNavigateBack = {
-                            navController.navigate("gameMode") {
-                                popUpTo("gameMode") { inclusive = true }
+                            navController.navigate("currentLobby") {
+                                popUpTo("currentLobby") { inclusive = true }
                             }
                         },
-                        onNavigateToGame = { navController.navigate("coopQuiz") },
                         allLobbiesService = lobbyListService,
-                        currentLobbyService = currentLobbyService,
+                        onNavigateToLobby = {
+                            navController.navigate("joinLobby") {
+                                popUpTo("joinLobby") { inclusive = true }
+                            }
+                        },
                     )
                 }
             }
 
-            // Character customization
-            composable("characterCustomization") {
-                val service = profilePictureService
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    if (service != null) {
-                        CharacterCustomizationScreen(
-                            modifier = Modifier.padding(innerPadding),
-                            onNavigateBack = { navController.popBackStack() },
-                            profilePictureService = service
-                        )
-                    } else {
-                        LoadingScreen()
-                    }
-                }
+            composable("joinLobby") {
+                val currentLobbyService = remember { CurrentLobbyService(wsConnection) }
+
             }
 
-
+            // Character customization
+            composable("characterCustomization") {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    CharacterCustomizationScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onNavigateBack = { navController.popBackStack() },
+                        profilePictureService = ProfileService(authService, context)
+                    )
+                }
+            }
         }
     }
 }
