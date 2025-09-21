@@ -92,7 +92,7 @@ fun GameModeScreen(
                 title = "Story Mode",
                 description = "Play alone and test your knowledge",
                 buttonText = "Start Single Player",
-                neonColor = Color(0xFF0000FF),
+                neonColor = Color(0xFF00F0FF),
                 onClick = onNavigateToSinglePlayer
             )
 
