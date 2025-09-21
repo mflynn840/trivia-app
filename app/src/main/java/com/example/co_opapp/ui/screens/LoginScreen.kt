@@ -57,15 +57,15 @@ fun LoginScreen(
             // Logo circle
             Box(
                 modifier = Modifier
-                    .size(275.dp)
+                    .size(250.dp)
                     .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.2f))
-                    .border(4.dp, Color(0xFF00F9FF), CircleShape) // Neon blue border
+                    .border(4.dp, Color(0xFF00F0FF), CircleShape) // Neon blue border
                     .shadow(
                         elevation = 16.dp,
                         shape = CircleShape,
                         ambientColor = Color(0xFF00F9FF),
-                        spotColor = Color(0xFF00F9FF)
+                        spotColor = Color(0xFF00FFFF)
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -88,10 +88,10 @@ fun LoginScreen(
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .background(Color.White.copy(alpha = 0.85f), RoundedCornerShape(12.dp))
+                    .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             // Password
             TextField(
@@ -102,7 +102,7 @@ fun LoginScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .background(Color.White.copy(alpha = 0.85f), RoundedCornerShape(12.dp))
+                    .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -120,6 +120,7 @@ fun LoginScreen(
 
             // Feedback
             Text(
+                fontFamily = FontFamily.SansSerif,
                 text = formState.message.value,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,

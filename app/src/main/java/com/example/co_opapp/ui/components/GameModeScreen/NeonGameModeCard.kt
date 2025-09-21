@@ -7,28 +7,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.animation.core.*
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 
 
 @Composable
 fun NeonGameModeCard(
-    icon: String,
+
     title: String,
     description: String,
     buttonText: String,
@@ -42,7 +39,7 @@ fun NeonGameModeCard(
         initialValue = 0.6f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
+            animation = tween(4000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -52,7 +49,7 @@ fun NeonGameModeCard(
             .fillMaxWidth()
             .padding(12.dp)
             .border(3.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp))
-            .background(Color(0xFF111111).copy(alpha = 0.6f), RoundedCornerShape(16.dp)),
+            .background(Color(0xFFFFFFFF).copy(alpha = 0.6f), RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -62,15 +59,50 @@ fun NeonGameModeCard(
 
 
 
+            // Title
+            Text(
+                text = title,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                color = neonColor,
+                style = TextStyle(
+                    shadow = Shadow(
+                        color = neonColor.copy(alpha = 0.8f),
+                        offset = Offset(0f, 0f),
+                        blurRadius = 10f
+                    )
+                ),
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            // Description
+            Text(
+                text = description,
+                fontSize = 16.sp,
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
             // Action Button
             Button(
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(containerColor = neonColor.copy(alpha = 0.2f)),
                 modifier = Modifier.fillMaxWidth()
             ) {
-
-
-
+                Text(
+                    text = buttonText,
+                    fontSize = 26.sp,
+                    color = neonColor,
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(
+                        shadow = Shadow(
+                            color = neonColor.copy(alpha = 0.8f),
+                            offset = Offset(0f, 0f),
+                            blurRadius = 10f
+                        )
+                    )
+                )
             }
         }
     }

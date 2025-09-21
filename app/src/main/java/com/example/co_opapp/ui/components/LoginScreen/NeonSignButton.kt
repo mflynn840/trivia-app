@@ -34,12 +34,12 @@ import androidx.compose.ui.unit.sp
         text: String,
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
-        neonColor: Color = Color(0xFF00F9FF) // Neon cyan by default
+        neonColor: Color = Color(0xFF00F0FF)
     ) {
         // Pulsing glow animation
         val infiniteTransition = rememberInfiniteTransition()
         val glowAlpha by infiniteTransition.animateFloat(
-            initialValue = 0.6f,
+            initialValue = 0.5f,
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
                 animation = tween(1000, easing = LinearEasing),
@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.sp
         Box(
             modifier = modifier
                 .fillMaxWidth(0.9f)
-                .height(56.dp)
+                .height(52.dp)
                 .shadow(
                     elevation = 16.dp,
                     shape = RoundedCornerShape(16.dp),
@@ -68,12 +68,12 @@ import androidx.compose.ui.unit.sp
                 style = TextStyle(
                     color = neonColor.copy(alpha = glowAlpha),
                     fontWeight = FontWeight.ExtraBold,
-                    fontSize = 28.sp,
+                    fontSize = 24.sp,
                     fontFamily = FontFamily.SansSerif,
                     shadow = Shadow(
                         color = neonColor.copy(alpha = glowAlpha),
                         offset = Offset(0f, 0f),
-                        blurRadius = 24f
+                        blurRadius = 58f
                     )
                 )
             )
