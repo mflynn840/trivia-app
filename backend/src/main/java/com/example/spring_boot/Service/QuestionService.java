@@ -56,7 +56,6 @@ public class QuestionService {
             String difficulty = (String) row[1];
             Number countNum = (Number) row[2];
             Long count = countNum.longValue();
-
             counts.computeIfAbsent(category, k -> new HashMap<>())
                   .put(difficulty, count);
         }

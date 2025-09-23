@@ -17,7 +17,7 @@ import com.example.co_opapp.ui.screens.GameModeScreen
 import com.example.co_opapp.ui.screens.QuizScreen
 import com.example.co_opapp.ui.screens.LobbySelectorScreen
 import com.example.co_opapp.Service.Backend.SoloGameService
-import com.example.co_opapp.Service.Coop.WebSocketClientManager
+import com.example.co_opapp.Service.Backend.WebSocketClientManager
 import com.example.co_opapp.Service.Coop.CurrentLobbyService
 import com.example.co_opapp.Service.Coop.LobbyListService
 import com.example.co_opapp.ui.components.MusicWrapper
@@ -128,13 +128,11 @@ fun TriviaGame() {
             }
             // Lobby for co-op
             composable("lobbySelector") {
-
                 val lobbyListService = remember { LobbyListService(wsConnection) }
                 // Launch the connection when this composable enters the composition
                 LaunchedEffect(Unit) {
                     wsConnection.connect()
                 }
-
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     LobbySelectorScreen(
                         modifier = Modifier.padding(innerPadding),
@@ -152,13 +150,33 @@ fun TriviaGame() {
                     )
                 }
             }
+
+
+
             composable("joinLobby/{lobbyName}") { backStackEntry ->
                 val currentLobbyService = remember { CurrentLobbyService(wsConnection) }
                 val username = SessionManager.currentPlayer?.username!!
                 val lobbyName = backStackEntry.arguments?.getString("lobbyName")!!
-                currentLobbyService.joinLobby(lobbyName=lobbyName, username=username)
+
+                //connect to the server when this is launched
+                LaunchedEffect(Unit){
+                    currentLobbyService.subscribeAndJoin(lobbyName=lobbyName, username=username)
+                }
+
+                val lobby by currentLobbyService.lobby
+
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ChatScreen(currentLobbyService, Modifier.padding(innerPadding))
+                    if (lobby==null){
+                        //show a loading screen until the server loads
+                        LoadingScreen()
+                    }else{
+                        ChatScreen(
+                            currentLobbyService=currentLobbyService,
+                            modifier=Modifier.padding(innerPadding)
+                        )
+                    }
+
                 }
             }
             // Character customization

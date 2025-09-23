@@ -2,6 +2,7 @@ package com.example.spring_boot.Model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -13,6 +14,13 @@ public class Lobby {
     private List<ChatMessage> chatMessages = new CopyOnWriteArrayList<>();
     private GameState gameState = GameState.WAITING;
 
+    public Lobby() {
+        // default constructor for Spring/Gson/STOMP deserialization
+        this.name = Integer.toString((new Random(1).nextInt()));
+    }
+    public Lobby(String name){
+        this.name=name;
+    }
     // --- Getters & Setters ---
     public String getName() {
         return name;
