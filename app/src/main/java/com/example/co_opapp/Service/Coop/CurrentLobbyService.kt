@@ -1,15 +1,18 @@
 package com.example.co_opapp.Service.Coop
 
+import android.util.Log
 import androidx.compose.runtime.*
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.example.co_opapp.Service.Backend.WebSocketClientManager
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.Lobby
 import com.example.co_opapp.data_model.PlayerDTO
 
 class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
+
+    companion object {
+        private const val TAG = "CurrentLobbyService"
+    }
 
     private val _lobby = mutableStateOf<Lobby?>(null)
     val lobby: State<Lobby?> get() = _lobby
@@ -24,44 +27,78 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
 
     /** Subscribe to a single lobby by name */
     fun subscribe(lobbyName: String) {
+        Log.d(TAG, "Subscribing to lobby $lobbyName")
         wsManager.connect {
-            _isConnected.value = true // mark connected when ws opens
+            _isConnected.value = true
+            Log.i(TAG, "WebSocket connected for lobby $lobbyName")
 
-            wsManager.subscribeLobby("/topic/lobby/$lobbyName") { updatedLobby ->
-                _lobby.value = updatedLobby.copy(
-                    players = mutableStateMapOf<String, PlayerDTO>().apply {putAll(updatedLobby.players)},
-                    chatMessages = mutableStateListOf<ChatMessage>().apply {addAll(updatedLobby.chatMessages)}
-                )
+            // Subscribe to lobby state updates
+            wsManager.subscribeTopic("/topic/lobby/$lobbyName/state", Lobby::class.java) { lobby ->
+                _lobby.value = lobby
+                Log.d(TAG, "Lobby state updated: $lobby")
+            }
 
-
-                // Update reactive chat list
-                _chatMessages.clear()
-                _chatMessages.addAll(updatedLobby.chatMessages)
+            // Subscribe to chat messages
+            wsManager.subscribeTopic("/topic/lobby/$lobbyName/chat", ChatMessage::class.java) { chatMessage ->
+                Log.d(TAG, "New chat message: $chatMessage")
+                _chatMessages.add(chatMessage)
             }
         }
     }
 
     /** Send a chat message to this lobby */
     fun sendChat(message: ChatMessage) {
-        wsManager.send("/app/lobby/chat/${lobby.value?.name}", message)
+        val lobbyName = lobby.value?.name
+        if (lobbyName == null) {
+            Log.w(TAG, "Cannot send chat, lobby is null")
+            return
+        }
+        Log.d(TAG, "Sending chat message to lobby $lobbyName: $message")
+        wsManager.send("/app/lobby/chat/$lobbyName", message)
     }
 
-    fun leaveLobby(lobbyName: String, player: PlayerDTO) {
-        wsManager.send("/app/lobby/leave/$lobbyName", player)
+    fun leaveLobby(lobbyName: String, username: String) {
+        Log.d(TAG, "Leaving lobby $lobbyName as $username")
+        wsManager.send("/app/lobby/leave/$lobbyName", PlayerDTO(lobbyName, username))
     }
 
-    fun toggleReady(lobbyName: String, player: PlayerDTO) {
-        wsManager.send("/app/lobby/ready/$lobbyName", player)
+    fun toggleReady(lobbyName: String, username: String) {
+        Log.d(TAG, "Toggling ready for $username in lobby $lobbyName")
+        wsManager.send("/app/lobby/ready/$lobbyName", PlayerDTO(lobbyName, username))
     }
-
-    fun joinLobby(lobbyName: String, username: String){
-        wsManager.send("/app/lobby/join/$lobbyName", PlayerDTO(lobbyName, username, false))
-    }
-
 
     /** Disconnect */
     fun disconnect() {
+        Log.d(TAG, "Disconnecting from current lobby")
         wsManager.disconnect()
         _isConnected.value = false
     }
+
+
+    fun subscribeAndJoin(lobbyName: String, username: String) {
+        wsManager.connect {
+            _isConnected.value = true
+
+            // Subscribe to state first
+            wsManager.subscribeTopic("/topic/lobby/$lobbyName/state", Lobby::class.java) { lobby ->
+                _lobby.value = lobby
+            }
+
+            // Subscribe to chat
+            wsManager.subscribeTopic("/topic/lobby/$lobbyName/chat", ChatMessage::class.java) { msg ->
+                _chatMessages.add(msg)
+            }
+
+            // Now actually join
+            joinLobby(lobbyName, username)
+        }
+    }
+
+    /** Private helper: only called after subscribing */
+    private fun joinLobby(lobbyName: String, username: String) {
+        wsManager.send("/app/lobby/join/$lobbyName", PlayerDTO(lobbyName, username))
+    }
+
+
+
 }

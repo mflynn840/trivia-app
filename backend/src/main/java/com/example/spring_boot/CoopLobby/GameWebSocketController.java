@@ -1,9 +1,11 @@
 package com.example.spring_boot.CoopLobby;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import com.example.spring_boot.Managers.LobbyManager;
@@ -23,10 +25,32 @@ public class GameWebSocketController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+
+    /**
+     * Send an initial copy of the lobby to new users
+     * @param lobbyName
+     * @return
+     */ 
+    @SubscribeMapping("/lobby/{lobbyName}/state")
+    public Lobby sendInitialLobbyState(@DestinationVariable String lobbyName) {
+        System.out.println("Sending initial lobbystate");
+        Lobby lobby = lobbyManager.getLobby(lobbyName);
+        return lobby; 
+    }
+
+    /**
+     * Send a list of all lobbies to requester
+     */
     @MessageMapping("/lobby/getAll")
     public void sendAllLobbies() {
         Map<String, Lobby> all = lobbyManager.getAllLobbies();
         messagingTemplate.convertAndSend("/topic/lobby/all", all);  // Send all lobbies to the client
+    }
+
+    @MessageMapping("/lobby/get/{name}")
+    public void sendLobby(@DestinationVariable String lobbyId){
+        Lobby lobby = lobbyManager.getLobby(lobbyId);
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, lobby);
     }
 
     @MessageMapping("/lobby/create")
@@ -43,7 +67,8 @@ public class GameWebSocketController {
     }
 
     @MessageMapping("/lobby/join/{lobbyId}")
-    public void joinLobby(String lobbyId, Player player) {
+    public void joinLobby(@DestinationVariable String lobbyId, @Payload Player player) {
+        System.out.println("request to join server");
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null && !lobby.isFull()) {
             lobby.getPlayers().put(player.getSessionId(), player);
@@ -52,7 +77,7 @@ public class GameWebSocketController {
     }
 
     @MessageMapping("/lobby/leave/{lobbyId}")
-    public void leaveLobby(String lobbyId, Player player) {
+    public void leaveLobby(String lobbyId, @Payload Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
             lobby.getPlayers().remove(player.getSessionId());
@@ -76,16 +101,33 @@ public class GameWebSocketController {
         }
     }
 
+    // Lobby state updates helper
+    private void broadcastLobbyState(Lobby lobby) {
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/state", lobby);
+    }
+
+    // Chat message updates helper
+    private void broadcastChatMessage(Lobby lobby, ChatMessage msg) {
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/chat", msg);
+    }
+
+    /**
+     * Send a chat message to the requested lobby
+     * -broadcast the new message to all other users
+     * 
+     * @param lobbyId
+     * @param msg
+     */
     @MessageMapping("/lobby/chat/{lobbyId}")
-    public void sendChat(String lobbyId, ChatMessage msg) {
+    public void sendChat(@DestinationVariable String lobbyId, @Payload ChatMessage msg) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
             lobby.getChatMessages().add(msg);
-            broadcastLobbyState(lobby);  // Broadcast the new chat message
+            broadcastChatMessage(lobby, msg);  // Only send the new chat message
         }
     }
 
-    private void broadcastLobbyState(Lobby lobby) {
-        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName(), lobby);  // Broadcast specific lobby state
-    }
+
+
+
 }

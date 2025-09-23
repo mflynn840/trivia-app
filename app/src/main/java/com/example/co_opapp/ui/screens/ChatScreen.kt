@@ -13,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +40,7 @@ fun ChatScreen(
 
     //observe reactive list of chat messages through the currentLobbyService
     val messages = remember(lobby) { mutableStateListOf<ChatMessage>()}
+
     //when the lobby changes update the shown messages
     lobby.let {
         messages.clear()
