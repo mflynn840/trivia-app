@@ -3,7 +3,6 @@ package com.example.co_opapp.Service.Backend
 import android.util.Log
 import com.example.co_opapp.RetrofitApi.LobbyListApi
 import com.example.co_opapp.Service.Hooks.AuthInterceptor
-import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.CreateLobbyRequest
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,9 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class AvailableLobbiesService {
-
     private val api: LobbyListApi
-
     init{
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY // Log headers + body
@@ -33,8 +30,6 @@ class AvailableLobbiesService {
             .build()
 
         api = retrofit.create(LobbyListApi::class.java)
-
-
     }
 
     suspend fun getAvailableLobbies(): List<String> {

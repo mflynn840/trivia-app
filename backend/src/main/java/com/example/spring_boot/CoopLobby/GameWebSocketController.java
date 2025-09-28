@@ -98,6 +98,12 @@ public class GameWebSocketController {
         }
     }
 
+    /**
+     * 
+     * 
+     * @param lobbyId
+     * @param player
+     */
     @MessageMapping("/lobby/ready/{lobbyId}")
     public void toggleReady(String lobbyId, Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
@@ -129,6 +135,7 @@ public class GameWebSocketController {
      */
     @MessageMapping("/lobby/chat/{lobbyId}")
     public void sendChat(@DestinationVariable String lobbyId, @Payload ChatMessage msg) {
+        System.out.println("Recieved message: " + msg.getMessage());
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
             lobby.getChatMessages().add(msg);
