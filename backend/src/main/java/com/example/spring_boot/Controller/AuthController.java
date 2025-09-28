@@ -44,7 +44,7 @@ public class AuthController {
             Player player = new Player();
             player.setUsername(username);
             player.setPassword(passwordEncoder.encode(password));
-            player.setRole(com.example.spring_boot.Model.Role.USER);
+            player.setRole(com.example.spring_boot.Model.Role.PLAYER);
 
             playerRepository.save(player);
 

@@ -1,6 +1,8 @@
 package com.example.spring_boot.Model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -44,6 +46,7 @@ public class Player implements UserDetails {
     public Player(String username, String password) {
         this.username = username;
         this.password = password;
+        this.role = Role.PLAYER;
     }
 
     // Getters and setters
@@ -65,7 +68,12 @@ public class Player implements UserDetails {
     // Return a list of the user's privileges
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        if(this.role != null){
+            return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        }else{
+            return Collections.emptyList();
+        }
+        
     }
 
     // Implement other required methods from UserDetails interface

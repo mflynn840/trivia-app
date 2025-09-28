@@ -5,35 +5,62 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.co_opapp.Service.Coop.CurrentLobbyService
-import com.example.co_opapp.Service.Coop.LobbyListService
+import com.example.co_opapp.Service.Backend.AvailableLobbiesService
 import com.example.co_opapp.SessionManager
 import com.example.co_opapp.ui.components.LobbyScreen.*
-import com.example.co_opapp.data_model.PlayerDTO
+
+
+/**
+ * Allow the user to select a lobby to join
+ */
 @Composable
 fun LobbySelectorScreen(
-    allLobbiesService: LobbyListService,
+    availableLobbiesService: AvailableLobbiesService,
     modifier: Modifier = Modifier,
     onNavigateToLobby: (String) -> Unit,
     onNavigateBack: () -> Unit
-
 ) {
     val player = SessionManager.currentPlayer
-    // Reactive state for lobbies and connection status
-    val lobbies by remember { derivedStateOf { allLobbiesService.lobbies.value } }
-    val isConnected by remember { derivedStateOf { allLobbiesService.isConnected } }
 
+    // Lobbies state
+    var lobbies by remember { mutableStateOf<List<String>>(emptyList()) }
     var selectedLobbyName by remember { mutableStateOf<String?>(null) }
 
-    // Ensure we have a valid player
-    val playerDTO = player?.let { PlayerDTO(it.sessionId, it.username) }
+    // Listen for user create lobby and refresh lobbies
+    var shouldRefreshLobbies by remember { mutableStateOf(true) }
+    var lobbyToCreate by remember { mutableStateOf<String?>(null) }
 
-    // Connect to WebSocket on initial composition
-    LaunchedEffect(Unit) {
-        allLobbiesService.connect()
+    // Fetch lobbies when requested
+    LaunchedEffect(shouldRefreshLobbies) {
+        if (shouldRefreshLobbies) {
+            try {
+                val fetchedLobbies = availableLobbiesService.getAvailableLobbies()
+                lobbies = fetchedLobbies
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                shouldRefreshLobbies = false
+            }
+        }
+    }
 
+    // Create a lobby when requested
+    LaunchedEffect(lobbyToCreate) {
+        lobbyToCreate?.let { name ->
+            try {
+                val success = availableLobbiesService.createLobby(name)
+                if (success) {
+                    shouldRefreshLobbies = true // trigger reload
+                } else {
+                    println("Failed to create lobby.")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                lobbyToCreate = null // reset
+            }
+        }
     }
 
     Column(
@@ -41,25 +68,32 @@ fun LobbySelectorScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Header with back button and connection status
         BackButton(onNavigateBack = onNavigateBack)
+
         Text("Select/Create a Lobby", style = MaterialTheme.typography.headlineMedium)
-        LobbyNameSelector(
-            onCreateLobby = { lobbyName -> allLobbiesService.createLobby(lobbyName) },
+
+        // Create a lobby button and name selector component
+        CreateLobbyUi(
+            onCreateLobby = { name ->
+                lobbyToCreate = name // trigger lobby creation
+            },
             modifier = Modifier.padding(top = 8.dp)
         )
-        ConnectionStatusIndicator(connected = isConnected)
 
-        // Display the list of lobbies
-        LobbyList(
-            lobbies = lobbies,
-            selectedLobbyName = selectedLobbyName.orEmpty(),
-            onLobbySelect = { lobbyName -> selectedLobbyName = lobbyName },
-            onJoinLobby = { lobby ->
-                onNavigateToLobby(lobby.name)
-
-            },
+        //Refresh lobbies button
+        RefreshButton(
+            onNavigateBack = {
+                shouldRefreshLobbies = true
+            }
         )
 
+        LobbyList(
+            lobbyNames = lobbies,
+            selectedLobbyName = selectedLobbyName.orEmpty(),
+            onLobbySelect = { lobbyName -> selectedLobbyName = lobbyName },
+            onJoinLobby = { lobbyName ->
+                onNavigateToLobby(lobbyName)
+            },
+        )
     }
 }

@@ -8,18 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.co_opapp.data_model.GameState
-import com.example.co_opapp.data_model.Lobby
 
-// Helper function to get the lobby status
-fun getLobbyStatus(gameState: GameState): String {
-    return when (gameState) {
-        GameState.WAITING -> "Waiting"
-        GameState.IN_PROGRESS -> "In Progress"
-        GameState.FINISHED -> "Finished"
-        GameState.WAITING_FOR_PLAYERS -> "Waiting for Players"
-    }
-}
+
 
 // Composable function to display each lobby card
 @Composable
@@ -61,22 +51,22 @@ fun LobbyCard(
 // Main composable that displays a scrollable list of lobby cards
 @Composable
 fun LobbyList(
-    lobbies: List<Lobby>,
+    lobbyNames: List<String>,
     selectedLobbyName: String,
     onLobbySelect: (String) -> Unit,
-    onJoinLobby: (Lobby) -> Unit,
+    onJoinLobby: (String) -> Unit,
 ) {
     // LazyColumn displays a scrollable list of lobby cards
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-        items(lobbies) { lobby ->
+        items(lobbyNames) { name ->
             LobbyCard(
-                lobbyName = lobby.name,
-                isSelected = selectedLobbyName == lobby.name,
-                onSelect = { onLobbySelect(lobby.name) },
-                onJoin = { onJoinLobby(lobby) },
+                lobbyName = name,
+                isSelected = selectedLobbyName == name,
+                onSelect = { onLobbySelect(name) },
+                onJoin = { onJoinLobby(name) },
             )
         }
     }

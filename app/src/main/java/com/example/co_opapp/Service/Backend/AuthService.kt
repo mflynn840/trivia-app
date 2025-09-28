@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.example.co_opapp.Repository.AuthRepository
-import com.example.co_opapp.Service.api.AuthApiService
+import com.example.co_opapp.Service.api.AuthApi
 import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.LoginResponse
 import com.example.co_opapp.data_model.Player
@@ -13,11 +13,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class AuthService(context: Context) {
 
-    private val api: AuthApiService = Retrofit.Builder()
+    private val api: AuthApi = Retrofit.Builder()
         .baseUrl("http://192.168.4.21:8080/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-        .create(AuthApiService::class.java)
+        .create(AuthApi::class.java)
 
     private val repository = AuthRepository(api)
 
@@ -52,6 +52,7 @@ class AuthService(context: Context) {
 
             // Sync the SessionManager with the updated player data
             SessionManager.currentPlayer = player  // Set the player in the SessionManager
+            SessionManager.jwtToken = authToken!!
 
             true
         } else {

@@ -9,21 +9,7 @@ import java.util.Set;
  * 
  */
 public enum Role {
-    USER(Set.of(Permission.READ_SELF)),
-    EMPLOYEE(Set.of(Permission.READ_SELF)),
-    ADMIN(Set.of(
-        Permission.READ_SELF,
-        Permission.READ_ALL_EMPLOYEES,
-        Permission.EDIT_ALL_TIMECARDS,
-        Permission.VALIDATE_ALL_TIMECARDS,
-        Permission.SET_ALL_WAGES
-    )),
-    MANAGER(Set.of(
-        Permission.READ_SELF,
-        Permission.EDIT_EMPLOYEE_TIMECARDS,
-        Permission.VALIDATE_TIMECARDS,
-        Permission.SET_EMPLOYEE_WAGES
-    ));
+    PLAYER(Set.of(Permission.READ_SELF));
 
     private final Set<Permission> permissions;
 

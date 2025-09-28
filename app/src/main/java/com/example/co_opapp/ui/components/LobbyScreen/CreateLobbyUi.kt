@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LobbyNameSelector(
+fun CreateLobbyUi(
     onCreateLobby: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
