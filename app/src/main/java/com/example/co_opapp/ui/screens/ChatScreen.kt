@@ -8,13 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -24,12 +21,15 @@ import androidx.compose.ui.unit.dp
 import com.example.co_opapp.Service.Coop.CurrentLobbyService
 import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.ChatMessage
+import com.example.co_opapp.ui.components.ChatScreen.ChatInput
+import com.example.co_opapp.ui.components.ChatScreen.BackButton
 
 
 @Composable
 fun ChatScreen(
     currentLobbyService: CurrentLobbyService,
-    modifier : Modifier
+    modifier : Modifier,
+    onNavigateBack: () -> Unit = {}
 
 ) {
     val context = LocalContext.current
@@ -58,6 +58,8 @@ fun ChatScreen(
     Column(
         modifier = modifier.fillMaxSize()
     ){
+
+        BackButton(onNavigateBack = onNavigateBack)
         // Title for the Chat Screen
         Text(
             text = "Chat for Lobby #${lobby?.name}",
@@ -82,34 +84,5 @@ fun ChatScreen(
             onInputChange = { chatInput = it },
             onSend = { sendMessage() }
         )
-    }
-}
-
-@Composable
-fun ChatInput(
-    chatInput: String,
-    onInputChange: (String) -> Unit,
-    onSend: () -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        // OutlinedTextField for the message input
-        OutlinedTextField(
-            value = chatInput,
-            onValueChange = onInputChange,
-            label = { Text("Type a message") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp) // Padding below the text field
-        )
-
-        // Send button
-        Button(
-            onClick = onSend,
-            modifier = Modifier.fillMaxWidth() // Take up full width
-        ) {
-            Text("Send")
-        }
     }
 }

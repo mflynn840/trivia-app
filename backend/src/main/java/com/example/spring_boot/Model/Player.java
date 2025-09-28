@@ -47,6 +47,7 @@ public class Player implements UserDetails {
         this.username = username;
         this.password = password;
         this.role = Role.PLAYER;
+        
     }
 
     // Getters and setters

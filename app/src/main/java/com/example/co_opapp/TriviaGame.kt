@@ -148,7 +148,6 @@ fun TriviaGame() {
                 }
             }
 
-
             composable("joinLobby/{lobbyName}") { backStackEntry ->
                 val currentLobbyConnection = remember {WebSocketClientManager()}
                 val currentLobbyService = remember { CurrentLobbyService(currentLobbyConnection) }
@@ -162,8 +161,6 @@ fun TriviaGame() {
                 }
 
                 val lobby by currentLobbyService.lobby
-
-
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     if (lobby==null){
                         //show a loading screen until the server loads
@@ -171,7 +168,13 @@ fun TriviaGame() {
                     }else{
                         ChatScreen(
                             currentLobbyService=currentLobbyService,
-                            modifier=Modifier.padding(innerPadding)
+                            modifier=Modifier.padding(innerPadding),
+                            onNavigateBack = {
+                                currentLobbyConnection.disconnect()
+                                navController.navigate("gameMode") {
+                                    popUpTo("gameMode") { inclusive = true }
+                                }
+                            }
                         )
                     }
 
