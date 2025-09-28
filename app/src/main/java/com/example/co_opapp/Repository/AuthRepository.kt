@@ -1,14 +1,14 @@
 package com.example.co_opapp.Repository
 
 import android.util.Log
-import com.example.co_opapp.Service.api.AuthApiService
+import com.example.co_opapp.Service.api.AuthApi
 import com.example.co_opapp.data_model.LoginResponse
 import com.example.co_opapp.data_model.UserCredentials
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 
-class AuthRepository(private val api: AuthApiService) {
+class AuthRepository(private val api: AuthApi) {
 
     suspend fun register(username: String, password: String): Boolean {
         return try {

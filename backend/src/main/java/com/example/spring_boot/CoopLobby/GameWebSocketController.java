@@ -5,7 +5,6 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import com.example.spring_boot.Managers.LobbyManager;
@@ -27,18 +26,6 @@ public class GameWebSocketController {
 
 
     /**
-     * Send an initial copy of the lobby to new users
-     * @param lobbyName
-     * @return
-     */ 
-    @SubscribeMapping("/lobby/{lobbyName}/state")
-    public Lobby sendInitialLobbyState(@DestinationVariable String lobbyName) {
-        System.out.println("Sending initial lobbystate");
-        Lobby lobby = lobbyManager.getLobby(lobbyName);
-        return lobby; 
-    }
-
-    /**
      * Send a list of all lobbies to requester
      */
     @MessageMapping("/lobby/getAll")
@@ -47,16 +34,24 @@ public class GameWebSocketController {
         messagingTemplate.convertAndSend("/topic/lobby/all", all);  // Send all lobbies to the client
     }
 
-    @MessageMapping("/lobby/get/{name}")
+    /**
+     * 
+     * @param lobbyId
+     */
+    @MessageMapping("/lobby/get/{lobbyId}")
     public void sendLobby(@DestinationVariable String lobbyId){
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, lobby);
     }
 
+    /**
+     * 
+     * @param request
+     */
     @MessageMapping("/lobby/create")
     public void createLobby(@Payload CreateLobbyRequest request) {
         try {
-            Lobby lobby = lobbyManager.createLobby(request.getName());
+            lobbyManager.createLobby(request.getName());
             sendAllLobbies();  // Notify all clients about the updated list of lobbies
         } catch (IllegalArgumentException e) {
             messagingTemplate.convertAndSend("/topic/lobby/errors", Map.of(
@@ -66,16 +61,30 @@ public class GameWebSocketController {
         }
     }
 
+    /**
+     * Add a user to the lobby object
+     * Notify all other users that they joined
+     * send the player who just joined a coppy of the old lobby state
+     * @param lobbyId
+     * @param player
+     */
     @MessageMapping("/lobby/join/{lobbyId}")
     public void joinLobby(@DestinationVariable String lobbyId, @Payload Player player) {
         System.out.println("request to join server");
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null && !lobby.isFull()) {
             lobby.getPlayers().put(player.getSessionId(), player);
-            broadcastLobbyState(lobby);  // Update clients with the new lobby state
+            broadcastLobbyState(lobby);  // Update all lobby users with the new lobby state
+        }else{
+            System.out.println("Failed to join lobby: lobby is full of null");
         }
     }
 
+    /**
+     * 
+     * @param lobbyId
+     * @param player
+     */
     @MessageMapping("/lobby/leave/{lobbyId}")
     public void leaveLobby(String lobbyId, @Payload Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);

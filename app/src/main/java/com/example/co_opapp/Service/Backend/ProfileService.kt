@@ -30,7 +30,6 @@ class ProfileService(private val authService: AuthService, context: Context) {
         }
     }
 
-
     private suspend fun getProfilePictureBytes(): ByteArray? {
         val username = authService.getUsername() ?: return null
         val token = authService.getJwtToken() ?: return null

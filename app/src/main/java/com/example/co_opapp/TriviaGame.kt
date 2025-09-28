@@ -19,7 +19,7 @@ import com.example.co_opapp.ui.screens.LobbySelectorScreen
 import com.example.co_opapp.Service.Backend.SoloGameService
 import com.example.co_opapp.Service.Backend.WebSocketClientManager
 import com.example.co_opapp.Service.Coop.CurrentLobbyService
-import com.example.co_opapp.Service.Coop.LobbyListService
+import com.example.co_opapp.Service.Backend.AvailableLobbiesService
 import com.example.co_opapp.ui.components.MusicWrapper
 import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
 import com.example.co_opapp.ui.screens.ChatScreen
@@ -33,7 +33,6 @@ fun TriviaGame() {
     val authService = remember { AuthService(context) }
     var soloService by remember { mutableStateOf<SoloGameService?>(null) }
     var playerService by remember { mutableStateOf<ProfileService?>(null) }
-    val wsConnection = remember { WebSocketClientManager() }
     val navController = rememberNavController()
     var profilePicture by remember {mutableStateOf<Bitmap?>(null)}
 
@@ -56,7 +55,6 @@ fun TriviaGame() {
                     )
                 }
             }
-
 
             //user selects which game mode they want to play
             composable("gameMode") {
@@ -82,6 +80,7 @@ fun TriviaGame() {
                     )
                 }
             }
+
             // Ask the player which category and difficulty
             composable("soloQuizSetup") {
                 val categorySelectorService =
@@ -104,6 +103,7 @@ fun TriviaGame() {
                     )
                 }
             }
+
             // Single player quiz game is a skeleton supplied with the SoloGameService
             composable("singlePlayerQuiz") {
                 val service = soloService
@@ -126,13 +126,10 @@ fun TriviaGame() {
                     }
                 }
             }
+
             // Lobby for co-op
             composable("lobbySelector") {
-                val lobbyListService = remember { LobbyListService(wsConnection) }
-                // Launch the connection when this composable enters the composition
-                LaunchedEffect(Unit) {
-                    wsConnection.connect()
-                }
+                val availableLobbiesService=remember{AvailableLobbiesService()}
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     LobbySelectorScreen(
                         modifier = Modifier.padding(innerPadding),
@@ -141,25 +138,26 @@ fun TriviaGame() {
                                 popUpTo("gameMode") { inclusive = true }
                             }
                         },
-                        allLobbiesService = lobbyListService,
-                        onNavigateToLobby = {name ->
+                        onNavigateToLobby = { name ->
                             navController.navigate("joinLobby/$name") {
                                 popUpTo("joinLobby") { inclusive = true }
                             }
                         },
+                        availableLobbiesService = availableLobbiesService
                     )
                 }
             }
 
 
-
             composable("joinLobby/{lobbyName}") { backStackEntry ->
-                val currentLobbyService = remember { CurrentLobbyService(wsConnection) }
+                val currentLobbyConnection = remember {WebSocketClientManager()}
+                val currentLobbyService = remember { CurrentLobbyService(currentLobbyConnection) }
                 val username = SessionManager.currentPlayer?.username!!
                 val lobbyName = backStackEntry.arguments?.getString("lobbyName")!!
 
                 //connect to the server when this is launched
                 LaunchedEffect(Unit){
+                    currentLobbyConnection.connect()
                     currentLobbyService.subscribeAndJoin(lobbyName=lobbyName, username=username)
                 }
 
@@ -179,6 +177,8 @@ fun TriviaGame() {
 
                 }
             }
+
+
             // Character customization
             composable("characterCustomization") {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

@@ -28,11 +28,9 @@ public class LobbyManager {
             throw new IllegalArgumentException("A lobby with the name '" + name + "' already exists.");
         }
 
-        String id = "lobby-" + lobbyCounter.getAndIncrement();
         Lobby lobby = new Lobby();
-        lobby.setName(id);
         lobby.setName(name);
-        lobbies.put(id, lobby);
+        lobbies.put(name, lobby);
         return lobby;
     }
 
