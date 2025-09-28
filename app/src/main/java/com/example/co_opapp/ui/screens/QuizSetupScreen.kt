@@ -1,6 +1,7 @@
 package com.example.co_opapp.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -8,9 +9,15 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -81,14 +88,7 @@ fun QuizSetupScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
-                }
-                
+
                 Text(
                     text = "Quiz Setup",
                     style = MaterialTheme.typography.titleLarge.copy(color = Color.White),
@@ -138,6 +138,7 @@ fun QuizSetupScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetupCard(title: String, content: @Composable () -> Unit) {
     Card(
@@ -157,5 +158,52 @@ fun SetupCard(title: String, content: @Composable () -> Unit) {
             content()
         }
     }
-}
 
+    @Composable
+    fun CategoryDropdown(
+        categories: List<String>,
+        selectedCategory: String?,
+        onCategorySelected: (String) -> Unit
+    ) {
+        var expanded by remember { mutableStateOf(false) }
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            OutlinedTextField(
+                value = selectedCategory ?: "",
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Category") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                modifier = Modifier
+                    .menuAnchor() // attaches dropdown to this field
+                    .fillMaxWidth(),
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.White,
+                    unfocusedIndicatorColor = Color.White
+                )
+            )
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .background(Color.Black.copy(alpha = 0.8f))
+                    .heightIn(max = 250.dp) // ensures scrolling if list is long
+            ) {
+                categories.forEach { category ->
+                    DropdownMenuItem(
+                        text = { Text(category, color = Color.White) },
+                        onClick = {
+                            onCategorySelected(category)
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
