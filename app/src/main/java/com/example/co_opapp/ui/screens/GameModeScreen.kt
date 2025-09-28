@@ -1,14 +1,12 @@
 package com.example.co_opapp.ui.screens
 
 import android.graphics.Bitmap
-import android.media.MediaPlayer
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.ui.components.CharacterImageCircle
 import com.example.co_opapp.ui.components.GameModeScreen.NeonGameModeCard
@@ -16,23 +14,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.sp
 import com.example.co_opapp.R
-import com.example.co_opapp.Service.Backend.AuthService
-import com.example.co_opapp.Service.Backend.ProfileService
 import com.example.co_opapp.ui.components.LoginScreen.NeonSignButton
+
 
 @Composable
 fun GameModeScreen(
@@ -100,7 +87,6 @@ fun GameModeScreen(
 
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
-
 
                 modifier = Modifier
                     .fillMaxWidth()
