@@ -38,14 +38,7 @@ fun ChatScreen(
     val lobby by currentLobbyService.lobby
     val username = SessionManager.currentPlayer?.username!!
 
-    //observe reactive list of chat messages through the currentLobbyService
-    val messages = remember(lobby) { mutableStateListOf<ChatMessage>()}
-
-    //when the lobby changes update the shown messages
-    lobby.let {
-        messages.clear()
-        messages.addAll(it?.chatMessages ?: emptyList())
-    }
+    val messages = currentLobbyService.chatMessages
 
     //manage the state of the users chat input
     var chatInput by remember {mutableStateOf("")}
