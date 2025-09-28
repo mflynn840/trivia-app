@@ -2,8 +2,21 @@ package com.example.co_opapp.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -50,9 +63,9 @@ fun QuizSetupScreen(
     ) {
         // Background image
         Image(
-            painter = painterResource(id = R.drawable.quiz_background), // your drawable resource
+            painter = painterResource(id = R.drawable.quiz_background),
             contentDescription = null,
-            contentScale = ContentScale.Crop, // scales the image to fill the screen
+            contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
 
@@ -61,27 +74,55 @@ fun QuizSetupScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Category Dropdown
-            CategoryDropdown(
-                categories = categories,
-                selectedCategory = selectedCategory,
-                onCategorySelected = { selectedCategory = it }
-            )
+            // Back button at top-left
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
+                }
+                
+                Text(
+                    text = "Quiz Setup",
+                    style = MaterialTheme.typography.titleLarge.copy(color = Color.White),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
 
-            // Difficulty Dropdown
-            DifficultyDropdown(
-                difficulties = difficulties,
-                selectedDifficulty = selectedDifficulty,
-                onDifficultySelected = { selectedDifficulty = it }
-            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // Number of Questions Input
-            NumQuestionsInput(
-                numQuestionsText = numQuestionsText,
-                onNumQuestionsChanged = { newValue -> numQuestionsText = newValue }
-            )
+            // Category Dropdown Card
+            SetupCard(title = "Select Category") {
+                CategoryDropdown(
+                    categories = categories,
+                    selectedCategory = selectedCategory,
+                    onCategorySelected = { selectedCategory = it }
+                )
+            }
+
+            // Difficulty Dropdown Card
+            SetupCard(title = "Select Difficulty") {
+                DifficultyDropdown(
+                    difficulties = difficulties,
+                    selectedDifficulty = selectedDifficulty,
+                    onDifficultySelected = { selectedDifficulty = it }
+                )
+            }
+
+            // Number of Questions Card
+            SetupCard(title = "Number of Questions") {
+                NumQuestionsInput(
+                    numQuestionsText = numQuestionsText,
+                    onNumQuestionsChanged = { newValue -> numQuestionsText = newValue }
+                )
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -96,3 +137,25 @@ fun QuizSetupScreen(
         }
     }
 }
+
+@Composable
+fun SetupCard(title: String, content: @Composable () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.5f)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
+            )
+            content()
+        }
+    }
+}
+
