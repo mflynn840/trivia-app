@@ -1,9 +1,13 @@
 package com.example.co_opapp.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.co_opapp.R
 import com.example.co_opapp.Service.Hooks.CategorySelectorService
 import com.example.co_opapp.ui.components.QuizSetupScreen.ActionButtons
 import com.example.co_opapp.ui.components.QuizSetupScreen.CategoryDropdown
@@ -30,10 +34,7 @@ fun QuizSetupScreen(
     // Fetch categories and counts from the backend on first composition
     LaunchedEffect(Unit) {
         try {
-            // Get the counts of each category/difficulty combination from the backend
             counts = catSelService.fetchCounts()
-
-            // Compute the lists of categories and difficulties present in db
             categories = counts.keys.toList()
             difficulties = counts.values.flatMap { it.keys }.distinct()
             selectedCategory = categories.firstOrNull()
@@ -43,41 +44,55 @@ fun QuizSetupScreen(
         }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+    // Use a Box so the background image sits behind the content
+    Box(
+        modifier = modifier.fillMaxSize()
     ) {
-        // Category Dropdown
-        CategoryDropdown(
-            categories = categories,
-            selectedCategory = selectedCategory,
-            onCategorySelected = { selectedCategory = it }
+        // Background image
+        Image(
+            painter = painterResource(id = R.drawable.quiz_background), // your drawable resource
+            contentDescription = null,
+            contentScale = ContentScale.Crop, // scales the image to fill the screen
+            modifier = Modifier.fillMaxSize()
         )
 
-        // Difficulty Dropdown
-        DifficultyDropdown(
-            difficulties = difficulties,
-            selectedDifficulty = selectedDifficulty,
-            onDifficultySelected = { selectedDifficulty = it }
-        )
+        // Foreground content
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            // Category Dropdown
+            CategoryDropdown(
+                categories = categories,
+                selectedCategory = selectedCategory,
+                onCategorySelected = { selectedCategory = it }
+            )
 
-        // Number of Questions Input
-        NumQuestionsInput(
-            numQuestionsText = numQuestionsText,
-            onNumQuestionsChanged = { newValue -> numQuestionsText = newValue }
-        )
+            // Difficulty Dropdown
+            DifficultyDropdown(
+                difficulties = difficulties,
+                selectedDifficulty = selectedDifficulty,
+                onDifficultySelected = { selectedDifficulty = it }
+            )
 
-        Spacer(modifier = Modifier.weight(1f))
+            // Number of Questions Input
+            NumQuestionsInput(
+                numQuestionsText = numQuestionsText,
+                onNumQuestionsChanged = { newValue -> numQuestionsText = newValue }
+            )
 
-        // Action Buttons
-        ActionButtons(
-            onNavigateBack = onNavigateBack,
-            onStartQuiz = {
-                val numQuestions = numQuestionsText.toIntOrNull() ?: 5
-                onStartQuiz(selectedCategory ?: "", selectedDifficulty ?: "", numQuestions)
-            }
-        )
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Action Buttons
+            ActionButtons(
+                onNavigateBack = onNavigateBack,
+                onStartQuiz = {
+                    val numQuestions = numQuestionsText.toIntOrNull() ?: 5
+                    onStartQuiz(selectedCategory ?: "", selectedDifficulty ?: "", numQuestions)
+                }
+            )
+        }
     }
 }
