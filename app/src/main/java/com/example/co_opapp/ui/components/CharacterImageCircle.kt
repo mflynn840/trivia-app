@@ -1,4 +1,4 @@
-package com.example.co_opapp.ui.components67
+package com.example.co_opapp.ui.components
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
