@@ -68,7 +68,6 @@ fun LobbySelectorScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        BackButton(onNavigateBack = onNavigateBack)
 
         Text("Select/Create a Lobby", style = MaterialTheme.typography.headlineMedium)
 
