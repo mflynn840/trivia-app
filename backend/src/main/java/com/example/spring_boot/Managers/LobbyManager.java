@@ -2,17 +2,13 @@ package com.example.spring_boot.Managers;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.springframework.stereotype.Component;
-
 import com.example.spring_boot.Model.Lobby;
 import com.example.spring_boot.Model.PlayerDTO;
 
 @Component
 public class LobbyManager {
     private final Map<String, Lobby> lobbies = new ConcurrentHashMap<>();
-    private final AtomicInteger lobbyCounter = new AtomicInteger(1);
 
     public Lobby createLobby(String name) {
         
@@ -35,12 +31,12 @@ public class LobbyManager {
         return lobby;
     }
 
-    public Lobby getLobby(String id) {
-        return lobbies.get(id);
+    public Lobby getLobby(String name) {
+        return lobbies.get(name);
     }
 
-    public void removeLobby(String id) {
-        lobbies.remove(id);
+    public void removeLobby(String name) {
+        lobbies.remove(name);
     }
 
     public Map<String, Lobby> getAllLobbies() {
@@ -55,6 +51,15 @@ public class LobbyManager {
         }
 
         return removedAny;
+    }
+
+    // Toggle ready for a specific user
+    public void toggleReady(String lobbyName, String username) {
+        Lobby lobby = lobbies.get(lobbyName);
+        if (lobby == null) throw new IllegalArgumentException("Lobby does not exist");
+        PlayerDTO p = lobby.getPlayers().get(username);
+        if (p == null) throw new IllegalArgumentException("User does not exist in that lobby");
+        p.setReady(!p.isReady());
     }
 }
 

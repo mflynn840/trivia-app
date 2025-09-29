@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PlayerDTO {
-    
-    private String sessionId;
 
     
     //@JsonFormat(shape = JsonFormat.Shape.ARRAY)
@@ -45,7 +43,6 @@ public class PlayerDTO {
     }
 
     public PlayerDTO(Player p){
-        this.sessionId = p.getSessionId();
         //this.profilePicture = p.getProfilePicture();
         this.username = p.getUsername();
         this.isReady = p.isReady();

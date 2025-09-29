@@ -91,7 +91,7 @@ public class GameWebSocketController {
     public void leaveLobby(String lobbyId, @Payload Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
-            lobby.getPlayers().remove(player.getSessionId());
+            lobby.getPlayers().remove(player.getUsername());
             broadcastLobbyState(lobby);
             if (lobby.isEmpty()) {
                 lobbyManager.removeLobby(lobbyId);
@@ -105,15 +105,15 @@ public class GameWebSocketController {
      * @param lobbyId
      * @param player
      */
-    @MessageMapping("/lobby/ready/{lobbyId}")
-    public void toggleReady(String lobbyId, Player player) {
-        Lobby lobby = lobbyManager.getLobby(lobbyId);
-        if (lobby != null) {
-            PlayerDTO p = lobby.getPlayers().get(player.getSessionId());
-            if (p != null) {
-                p.setReady(!p.isReady());  // Toggle ready status
-                broadcastLobbyState(lobby);
-            }
+    @MessageMapping("/lobby/ready/{lobbyName}")
+    public void toggleReady(@DestinationVariable("lobbyName") String lobbyName, Map<String, String> payload) {        
+        String username = payload.get("username");
+
+        try{
+            lobbyManager.toggleReady(lobbyName, username);
+            broadcastLobbyState(lobbyManager.getLobby(lobbyName));
+        }catch(IllegalArgumentException e){
+            System.out.println(e.getStackTrace());
         }
     }
 
