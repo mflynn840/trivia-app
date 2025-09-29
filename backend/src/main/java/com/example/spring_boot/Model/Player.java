@@ -37,7 +37,6 @@ public class Player implements UserDetails {
 
     @JsonProperty("isReady")
     private boolean isReady = false;
-    private String sessionId;
 
     byte[] profilePicture;
 
@@ -66,9 +65,6 @@ public class Player implements UserDetails {
 
     public String getPassword() { return this.password; }
     public void setPassword(String password) { this.password = password; }
-
-    public String getSessionId(){return this.sessionId;}
-    public void setSessionId(String sessionId){this.sessionId=sessionId;}
 
     public Long getScore(){return this.score;}
     public void setScore(Long score){this.score = score;}

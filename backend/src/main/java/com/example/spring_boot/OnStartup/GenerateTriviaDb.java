@@ -1,6 +1,8 @@
 package com.example.spring_boot.OnStartup;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,8 +14,12 @@ import org.springframework.stereotype.Component;
 import com.example.spring_boot.Repository.QuestionRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.io.IOException;
+
 import com.example.spring_boot.Model.Question;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
 
 /**
  * This script fills in the Question repository with json loaded trivia question data
@@ -33,52 +39,53 @@ public class GenerateTriviaDb {
      * JSONS are assumed to be returned from 
      *
      */
-    public void populate(String folderName){
-        File folder = new File("./questions");
+    public void populate(String folderName) {
+        try {
+            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            // load all resources inside "resources/folderName"
+            Resource[] resources = resolver.getResources("classpath:" + folderName + "/*");
 
-        if(folder.exists() && folder.isDirectory()){
-            File[] files = folder.listFiles();
-            if(files != null){
-                Arrays.stream(files)
-                    .filter(file -> file.isFile()) // only process files
-                    .forEach(file -> {
-                        System.out.println("Adding contents of file" + file.getName());
-                        try {
-                            saveTriviaQuestions(file);
-                        } catch (java.io.IOException e) {
+            Arrays.stream(resources)
+                    .filter(Resource::exists)
+                    .forEach(resource -> {
+                        System.out.println("Adding contents of file " + resource.getFilename());
+                        try (InputStream in = resource.getInputStream()) {
+                            saveTriviaQuestions(in); // rewrite saveTriviaQuestions to accept InputStream
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
-            }
-            
+
+            this.questionRepository.flush();
+            System.out.println("Trivia Data populated");
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        this.questionRepository.flush();
-        System.out.println("Trivia Data populated");
     }
 
-    public void saveTriviaQuestions(File jsonFile) throws java.io.IOException {
-
-
-        // Load the trivia questions JSON file
+    public void saveTriviaQuestions(InputStream jsonInput) {
         try {
-            JsonNode rootNode = objectMapper.readTree(jsonFile);
+            // Load the trivia questions JSON file from the InputStream
+            JsonNode rootNode = objectMapper.readTree(jsonInput);
             JsonNode resultsNode = rootNode.path("results");
 
-            //parse the JSON to get the question data
+            // Parse the JSON to get the question data
             for (JsonNode questionNode : resultsNode) {
-                //collect the data for a single Question object from the json
-                //be  careful to not store escaped html (&quot insttead of ')
-                
-                String questionText = StringEscapeUtils.unescapeHtml4(questionNode.path("question").asText(""));
-                String correctAnswer = StringEscapeUtils.unescapeHtml4(questionNode.path("correct_answer").asText(""));
-                String category = StringEscapeUtils.unescapeHtml4(questionNode.path("category").asText(""));
-                String difficulty = StringEscapeUtils.unescapeHtml4(questionNode.path("difficulty").asText(""));
-                String type = StringEscapeUtils.unescapeHtml4(questionNode.path("type").asText(""));
+                String questionText = StringEscapeUtils.unescapeHtml4(
+                        questionNode.path("question").asText(""));
+                String correctAnswer = StringEscapeUtils.unescapeHtml4(
+                        questionNode.path("correct_answer").asText(""));
+                String category = StringEscapeUtils.unescapeHtml4(
+                        questionNode.path("category").asText(""));
+                String difficulty = StringEscapeUtils.unescapeHtml4(
+                        questionNode.path("difficulty").asText(""));
+                String type = StringEscapeUtils.unescapeHtml4(
+                        questionNode.path("type").asText(""));
 
                 List<String> incorrectAnswers = new ArrayList<>();
                 questionNode.path("incorrect_answers").forEach(answer -> {
-                    String ans = StringEscapeUtils.unescapeHtml4(answer.asText(""));
-                    incorrectAnswers.add(ans);
+                    incorrectAnswers.add(StringEscapeUtils.unescapeHtml4(answer.asText("")));
                 });
 
                 List<String> allAnswers = new ArrayList<>(incorrectAnswers);
@@ -87,7 +94,7 @@ public class GenerateTriviaDb {
                 // Ensure at least 4 options
                 while (allAnswers.size() < 4) allAnswers.add("");
 
-                //randomize which option is correct
+                // Randomize option order
                 Collections.shuffle(allAnswers);
 
                 String optionA = allAnswers.get(0);
@@ -96,24 +103,21 @@ public class GenerateTriviaDb {
                 String optionD = allAnswers.get(3);
 
                 Question question = new Question(
-                        questionText, 
-                        correctAnswer, 
-                        optionA, 
-                        optionB, 
-                        optionC, 
-                        optionD, 
-                        category, 
-                        difficulty, 
+                        questionText,
+                        correctAnswer,
+                        optionA,
+                        optionB,
+                        optionC,
+                        optionD,
+                        category,
+                        difficulty,
                         type
                 );
-                // Save the question to the repository
                 questionRepository.save(question);
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Error reading the questions JSON file: " + e.getMessage());
-        }
+            System.err.println("Error reading the questions JSON: " + e.getMessage());
+        } 
     }
-
-
 }

@@ -14,8 +14,10 @@ public class UpdateQuestionDb implements CommandLineRunner {
 
     }
     public void run(String... args) throws Exception {
-        //gen.populate("./questions");
-        
+
+        System.out.println("Populating Trivia DB from resources/foo...");
+        gen.populate("questions"); // This will handle loading all JSONs from resources/foo
+        System.out.println("Trivia DB population complete.");
     }
 
 }

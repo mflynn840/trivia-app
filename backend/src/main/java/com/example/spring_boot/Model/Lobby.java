@@ -13,7 +13,8 @@ public class Lobby {
     private Map<String, PlayerDTO> players = new ConcurrentHashMap<>(); // sessionId -> Player
     private List<ChatMessage> chatMessages = new CopyOnWriteArrayList<>();
     private GameStatus lobbyStatus = GameStatus.WAITING;
-
+    private GameState gameState;
+    
     public Lobby() {
         // default constructor for Spring/Gson/STOMP deserialization
         this.name = Integer.toString((new Random(1).nextInt()));
@@ -59,7 +60,7 @@ public class Lobby {
     }
 
     public void setLobbyStatus(GameState gameState) {
-        this.lobbyStatus = lobbyStatus;
+        this.gameState = gameState;
     }
 
     // --- Convenience Methods ---

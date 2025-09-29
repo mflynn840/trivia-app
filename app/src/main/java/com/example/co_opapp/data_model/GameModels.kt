@@ -30,12 +30,12 @@ data class Player(
     val username: String,
     val score: Long = 0,
     var ready: Boolean = false,
-    var sessionId: String,
+    //var sessionId: String,
     //var profilePicture: ByteArray,
 )
 
 data class PlayerDTO(
-    val sessionId: String,
+    //val sessionId: String,
     val username: String,
     val isReady: Boolean = false,
     val id: Long,
@@ -79,7 +79,7 @@ data class LoginResponse(
 
 fun Player.toDTO(): PlayerDTO {
     return PlayerDTO(
-        sessionId = this.sessionId,
+        //sessionId = this.sessionId,
         username = this.username,
         isReady = this.ready,
         id = this.id,
