@@ -82,6 +82,8 @@ fun GameModeScreen(
                 onClick = onNavigateToCoOp
             )
 
+            Spacer(modifier = Modifier.height(5.dp))
+
             Secondary_NeonSignButton(
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
