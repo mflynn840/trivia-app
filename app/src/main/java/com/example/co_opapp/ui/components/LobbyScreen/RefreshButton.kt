@@ -1,23 +1,29 @@
 package com.example.co_opapp.ui.components.LobbyScreen
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.co_opapp.ui.components.LoginScreen.NeonSignButton
 
 @Composable
-fun RefreshButton(onNavigateBack: () -> Unit) {
-    Button(
-        onClick = onNavigateBack,
+fun NeonRefreshButton(onClick: () -> Unit) {
+    NeonSignButton(
+        text = "Refresh",
+        onClick = onClick,
+        neonColor = Color(0xFF00F0FF),
         modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
-    ) {
-        Text("Refresh")
-    }
+            .fillMaxWidth(0.6f) // narrower
+            .height(56.dp)      // shorter
+    )
 }
+
