@@ -149,14 +149,12 @@ fun TriviaGame() {
             }
 
             composable("joinLobby/{lobbyName}") { backStackEntry ->
-                val currentLobbyConnection = remember {WebSocketClientManager()}
-                val currentLobbyService = remember { CurrentLobbyService(currentLobbyConnection) }
+                val currentLobbyService = remember { CurrentLobbyService() }
                 val username = SessionManager.currentPlayer?.username!!
                 val lobbyName = backStackEntry.arguments?.getString("lobbyName")!!
 
                 //connect to the server when this is launched
                 LaunchedEffect(Unit){
-                    currentLobbyConnection.connect()
                     currentLobbyService.subscribeAndJoin(lobbyName=lobbyName, player=SessionManager.currentPlayer!!)
                 }
 
@@ -170,7 +168,6 @@ fun TriviaGame() {
                             currentLobbyService=currentLobbyService,
                             modifier=Modifier.padding(innerPadding),
                             onNavigateBack = {
-                                currentLobbyConnection.disconnect()
                                 navController.navigate("gameMode") {
                                     popUpTo("gameMode") { inclusive = true }
                                 }
@@ -180,7 +177,6 @@ fun TriviaGame() {
 
                 }
             }
-
 
             // Character customization
             composable("characterCustomization") {

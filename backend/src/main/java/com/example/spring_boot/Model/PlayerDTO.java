@@ -1,23 +1,26 @@
 package com.example.spring_boot.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PlayerDTO {
     
     private String sessionId;
 
     
-    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
-    private byte[] profilePicture;
+    //@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+    //private byte[] profilePicture;
     private String username;
+
+    @JsonProperty("isReady")
     private boolean isReady;
     private Long id;
     private Long score;
 
     public String getSessionId(){return this.sessionId;}
     public void setSessionId(String sessionId){this.sessionId = sessionId;}
-    public byte[] getProfilePicture(){return this.profilePicture;}
-    public void setProfilePicture(byte[] profilePicture){this.profilePicture = profilePicture;}
+    //public byte[] getProfilePicture(){return this.profilePicture;}
+    //public void setProfilePicture(byte[] profilePicture){this.profilePicture = profilePicture;}
 
     public String getUsername(){return this.username;}
     public void setUsername(String username){this.username = username;}
@@ -28,10 +31,22 @@ public class PlayerDTO {
     public Long getScore(){return this.score;}
     public void setScore(Long score){this.score = score;}
 
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public PlayerDTO(){
+        
+    }
 
     public PlayerDTO(Player p){
         this.sessionId = p.getSessionId();
-        this.profilePicture = p.getProfilePicture();
+        //this.profilePicture = p.getProfilePicture();
         this.username = p.getUsername();
         this.isReady = p.isReady();
         this.id = p.getId();
