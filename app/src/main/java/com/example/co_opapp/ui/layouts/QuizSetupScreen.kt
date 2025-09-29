@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.Hooks.CategorySelectorService
-import com.example.co_opapp.ui.components.LoginScreen.NeonSignButton
+import com.example.co_opapp.ui.components.LoginScreen.Secondary_NeonSignButton
 import com.example.co_opapp.ui.components.QuizSetupScreen.ActionButtons
 import com.example.co_opapp.ui.components.QuizSetupScreen.CategoryDropdown
 import com.example.co_opapp.ui.components.QuizSetupScreen.DifficultyDropdown
@@ -133,7 +133,7 @@ fun QuizSetupScreen(
                 }
             }
 
-            NeonSignButton(
+            Secondary_NeonSignButton(
                 text = "Start Quiz",
                 onClick = {
                     val numQuestions = numQuestionsText.toIntOrNull() ?: 5

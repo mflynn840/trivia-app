@@ -13,11 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.co_opapp.ui.components.LoginScreen.NeonSignButton
+import com.example.co_opapp.ui.components.LoginScreen.Secondary_NeonSignButton
 
 @Composable
 fun NeonRefreshButton(onClick: () -> Unit) {
-    NeonSignButton(
+    Secondary_NeonSignButton(
         text = "Refresh",
         onClick = onClick,
         neonColor = Color(0xFF00F0FF),

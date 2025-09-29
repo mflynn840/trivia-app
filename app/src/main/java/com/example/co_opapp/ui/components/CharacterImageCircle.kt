@@ -35,27 +35,15 @@ import kotlinx.coroutines.withContext
 fun CharacterImageCircle(
     profilePicture: Bitmap?,
     modifier: Modifier = Modifier,
-    circleSize: Dp = 140.dp,
-    topPadding: Dp = 26.dp,
-    endPadding: Dp = 26.dp,
-    neonColor: Color = Color(0xFF00F0FF)
+    circleSize: Dp = 125.dp,
+    topPadding: Dp = 45.dp,
+    endPadding: Dp = 45.dp,
 ) {
-    // Pulsing glow animation
-    val infiniteTransition = rememberInfiniteTransition()
-    val glowAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.5f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
 
     Box(
         modifier = modifier
             .padding(top = topPadding, end = endPadding)
             .size(circleSize)
-            .border(6.dp, neonColor.copy(alpha = glowAlpha), CircleShape) // glow border
             .background(Color.LightGray.copy(alpha = 0.3f), CircleShape),
         contentAlignment = Alignment.Center
     ) {
