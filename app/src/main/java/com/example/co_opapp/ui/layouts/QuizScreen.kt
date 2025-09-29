@@ -5,6 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -59,19 +62,19 @@ fun QuizScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // --- BACK BUTTON AT TOP LEFT ---
-        Button(
-            onClick = onNavigateBack,
+        // 🔙 Back Button
+
+        IconButton(onClick = onNavigateBack,
             modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.TopStart),
-            shape = RoundedCornerShape(16.dp),                // same rounded corners
-            border = BorderStroke(2.dp, Color.Black),         // border that follows the shape
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White.copy(alpha = 0.6f)
-            )
+                .align(Alignment.TopStart)
+                .padding(32.dp)
+            
         ) {
-            Text("Back", color = Color.Black)
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White
+            )
         }
 
         // --- MAIN CONTENT CENTERED ---
