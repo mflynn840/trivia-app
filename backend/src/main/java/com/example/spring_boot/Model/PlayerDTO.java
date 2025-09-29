@@ -17,8 +17,8 @@ public class PlayerDTO {
     private Long id;
     private Long score;
 
-    public String getSessionId(){return this.sessionId;}
-    public void setSessionId(String sessionId){this.sessionId = sessionId;}
+    //public String getSessionId(){return this.sessionId;}
+    //public void setSessionId(String sessionId){this.sessionId = sessionId;}
     //public byte[] getProfilePicture(){return this.profilePicture;}
     //public void setProfilePicture(byte[] profilePicture){this.profilePicture = profilePicture;}
 

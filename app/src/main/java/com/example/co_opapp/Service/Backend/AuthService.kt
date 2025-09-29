@@ -67,7 +67,7 @@ class AuthService(context: Context) {
                 username = userDTO.username,
                 score = userDTO.score,
                 ready = userDTO.isReady,
-                sessionId = "",  // You might want to get this from backend or session
+                //sessionId = "",  // You might want to get this from backend or session
                 //profilePicture = profilePicture
             )
             _currentPlayer.value = player

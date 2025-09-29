@@ -75,7 +75,7 @@ public class GameWebSocketController {
         System.out.println("request to join server");
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null && !lobby.isFull()) {
-            lobby.getPlayers().put(player.getSessionId(), player);
+            lobby.getPlayers().put(player.getUsername(), player);
             broadcastLobbyState(lobby);  // Update all lobby users with the new lobby state
         }else{
             System.out.println("Failed to join lobby: lobby is full of null");
@@ -153,6 +153,24 @@ public class GameWebSocketController {
             broadcastChatMessage(lobby, msg);  // Only send the new chat message
         }
     }
+
+    /**
+ * Removes a user from all lobbies and broadcasts the updated states
+ * @param username the username of the user to remove
+ */
+public void removeUserFromAllLobbies(String username) {
+    boolean removedAny = false;
+    for (Lobby lobby : lobbyManager.getAllLobbies().values()) {
+        boolean removed = lobby.getPlayers().values().removeIf(p -> p.getUsername().equals(username));
+        if (removed) {
+            removedAny = true;
+            broadcastLobbyState(lobby); // update all clients in this lobby
+        }
+    }
+    if (removedAny) {
+        sendAllLobbies(); // also broadcast the updated list of lobbies
+    }
+}
 
 
 
