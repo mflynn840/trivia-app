@@ -1,9 +1,11 @@
 package com.example.co_opapp.ui.components.QuizSetupScreen
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -14,10 +16,9 @@ fun CategoryDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    // Exposed Dropdown
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = it },  // Manage dropdown expanded state
+        onExpandedChange = { expanded = !expanded }
     ) {
         // Display the selected category in the TextField
         TextField(
@@ -25,22 +26,23 @@ fun CategoryDropdown(
             onValueChange = {},
             readOnly = true,
             label = { Text("Category") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor()  // Link the dropdown to the TextField
         )
 
-        // DropdownMenu
+        // Dropdown menu with scroll
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false } // Close dropdown when clicked outside
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
         ) {
             categories.forEach { category ->
                 DropdownMenuItem(
                     text = { Text(category) },
                     onClick = {
-                        onCategorySelected(category)  // Notify the parent when a category is selected
-                        expanded = false  // Close the dropdown after selection
+                        onCategorySelected(category)
+                        expanded = false
                     }
                 )
             }
