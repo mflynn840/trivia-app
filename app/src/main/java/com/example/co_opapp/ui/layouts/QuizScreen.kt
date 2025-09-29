@@ -68,7 +68,7 @@ fun QuizScreen(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(32.dp)
-            
+
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,

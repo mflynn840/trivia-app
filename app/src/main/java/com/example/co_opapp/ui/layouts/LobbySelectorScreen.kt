@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -72,52 +73,62 @@ fun LobbySelectorScreen(
 
     // Background image
     Image(
-        painter = painterResource(id = R.drawable.coop_background),
+        painter = painterResource(id = R.drawable.chat_background),
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxSize()
     )
 
-    // 🔙 Back Button
-
-    IconButton(onClick = onNavigateBack) {
-        Icon(
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Back",
-            tint = Color.White
-        )
-    }
-
+    // Foreground content
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(32.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
 
-        Text("Select/Create a Lobby", style = MaterialTheme.typography.headlineMedium)
+        IconButton(
+            onClick = onNavigateBack,
+            modifier = Modifier
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White
+            )
+        }
 
-        // Create a lobby button and name selector component
-        CreateLobbyUi(
-            onCreateLobby = { name ->
-                lobbyToCreate = name // trigger lobby creation
-            },
-            modifier = Modifier.padding(top = 8.dp)
-        )
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
 
-        //Refresh lobbies button
-        RefreshButton(
-            onNavigateBack = {
-                shouldRefreshLobbies = true
-            }
-        )
+            Text("Select/Create a Lobby", style = MaterialTheme.typography.headlineMedium)
 
-        LobbyList(
-            lobbyNames = lobbies,
-            selectedLobbyName = selectedLobbyName.orEmpty(),
-            onLobbySelect = { lobbyName -> selectedLobbyName = lobbyName },
-            onJoinLobby = { lobbyName ->
-                onNavigateToLobby(lobbyName)
-            },
-        )
+            // Create a lobby button and name selector component
+            CreateLobbyUi(
+                onCreateLobby = { name ->
+                    lobbyToCreate = name // trigger lobby creation
+                },
+                modifier = Modifier.padding(top = 8.dp)
+            )
+
+            //Refresh lobbies button
+            RefreshButton(
+                onNavigateBack = {
+                    shouldRefreshLobbies = true
+                }
+            )
+
+            LobbyList(
+                lobbyNames = lobbies,
+                selectedLobbyName = selectedLobbyName.orEmpty(),
+                onLobbySelect = { lobbyName -> selectedLobbyName = lobbyName },
+                onJoinLobby = { lobbyName ->
+                    onNavigateToLobby(lobbyName)
+                },
+            )
+        }
     }
 }

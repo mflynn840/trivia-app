@@ -87,15 +87,17 @@ fun QuizSetupScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
-            // 🔙 Back Button + Title Row
-
-            IconButton(onClick = onNavigateBack) {
+            IconButton(
+                onClick = onNavigateBack,
+                modifier = Modifier
+            ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Back",
                     tint = Color.White
                 )
             }
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
