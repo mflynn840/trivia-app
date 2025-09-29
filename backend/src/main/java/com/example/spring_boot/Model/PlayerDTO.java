@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PlayerDTO {
-    
-    private String sessionId;
 
     
     //@JsonFormat(shape = JsonFormat.Shape.ARRAY)
@@ -17,8 +15,8 @@ public class PlayerDTO {
     private Long id;
     private Long score;
 
-    public String getSessionId(){return this.sessionId;}
-    public void setSessionId(String sessionId){this.sessionId = sessionId;}
+    //public String getSessionId(){return this.sessionId;}
+    //public void setSessionId(String sessionId){this.sessionId = sessionId;}
     //public byte[] getProfilePicture(){return this.profilePicture;}
     //public void setProfilePicture(byte[] profilePicture){this.profilePicture = profilePicture;}
 
@@ -45,7 +43,6 @@ public class PlayerDTO {
     }
 
     public PlayerDTO(Player p){
-        this.sessionId = p.getSessionId();
         //this.profilePicture = p.getProfilePicture();
         this.username = p.getUsername();
         this.isReady = p.isReady();
