@@ -4,13 +4,16 @@ import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.co_opapp.Service.Backend.WebSocketClientManager
+import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.Lobby
 import com.example.co_opapp.data_model.Player
 import com.example.co_opapp.data_model.PlayerDTO
 import com.example.co_opapp.data_model.toDTO
 
-class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
+class CurrentLobbyService() {
+
+    private val wsManager = WebSocketClientManager()
 
     companion object {
         private const val TAG = "CurrentLobbyService"
@@ -35,29 +38,6 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
     val isConnected: State<Boolean> get() = _isConnected
 
 
-
-
-    /** Subscribe to a single lobby by name */
-    fun subscribe(lobbyName: String) {
-        Log.d(TAG, "Subscribing to lobby $lobbyName")
-        wsManager.connect {
-            _isConnected.value = true
-            Log.i(TAG, "WebSocket connected for lobby $lobbyName")
-
-            // Subscribe to lobby state updates
-            wsManager.subscribeTopic("/topic/lobby/$lobbyName/state", Lobby::class.java) { lobby ->
-                _lobby.value = lobby
-                Log.d(TAG, "Lobby state updated: $lobby")
-            }
-
-            // Subscribe to chat messages
-            wsManager.subscribeTopic("/topic/lobby/$lobbyName/chat", ChatMessage::class.java) { chatMessage ->
-                Log.d(TAG, "New chat message: $chatMessage")
-                _chatMessages.add(chatMessage)
-            }
-        }
-    }
-
     /** Send a chat message to this lobby */
     fun sendChat(message: ChatMessage) {
         val lobbyName = lobby.value?.name
@@ -69,7 +49,7 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
         wsManager.send("/app/lobby/chat/$lobbyName", message)
     }
 
-    fun leaveLobby(lobbyName: String, player: Player) {
+    private fun leaveLobby(lobbyName: String, player: Player) {
         Log.d(TAG, "Leaving lobby $lobbyName as ${player.username}")
         wsManager.send("/app/lobby/leave/$lobbyName", player.toDTO())
     }
@@ -82,6 +62,7 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
     /** Disconnect */
     fun disconnect() {
         Log.d(TAG, "Disconnecting from current lobby")
+        leaveLobby(lobby.value?.name ?: "", SessionManager.currentPlayer!!)
         wsManager.disconnect()
         _isConnected.value = false
     }

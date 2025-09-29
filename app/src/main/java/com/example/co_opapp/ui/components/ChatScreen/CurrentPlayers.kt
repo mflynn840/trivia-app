@@ -37,6 +37,7 @@ fun CurrentPlayers(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     // Load profile picture with Coil (or your image loader)
+                    /**
                     Image(
                         painter = rememberAsyncImagePainter(player.profilePicture),
                         contentDescription = "${player.username}'s profile picture",
@@ -44,7 +45,7 @@ fun CurrentPlayers(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape)
-                    )
+                    )*/
 
                     Spacer(modifier = Modifier.width(12.dp))
 
