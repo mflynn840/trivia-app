@@ -10,10 +10,12 @@ import org.springframework.stereotype.Controller;
 import com.example.spring_boot.Managers.LobbyManager;
 import com.example.spring_boot.Model.ChatMessage;
 import com.example.spring_boot.Model.GameState;
+import com.example.spring_boot.Model.GameStatus;
 import com.example.spring_boot.Model.Lobby;
 import com.example.spring_boot.Model.Player;
 import com.example.spring_boot.Model.PlayerDTO;
 import com.example.spring_boot.dto.CreateLobbyRequest;
+
 
 import java.util.Map;
 
@@ -74,9 +76,15 @@ public class GameWebSocketController {
     public void joinLobby(@DestinationVariable String lobbyId, @Payload PlayerDTO player) {
         System.out.println("request to join server");
         Lobby lobby = lobbyManager.getLobby(lobbyId);
+
         if (lobby != null && !lobby.isFull()) {
             lobby.getPlayers().put(player.getUsername(), player);
             broadcastLobbyState(lobby);  // Update all lobby users with the new lobby state
+
+            //if the lobby has >= 2 players then wait for players to be ready
+            if(lobby.getPlayers().size() >= 2){
+                lobby.setGameStatus(GameStatus.WAITING_FOR_READY);
+            }
         }else{
             System.out.println("Failed to join lobby: lobby is full of null");
         }
@@ -93,9 +101,8 @@ public class GameWebSocketController {
         if (lobby != null) {
             lobby.getPlayers().remove(player.getUsername());
             broadcastLobbyState(lobby);
-            if (lobby.isEmpty()) {
-                lobbyManager.removeLobby(lobbyId);
-                sendAllLobbies();  // If the lobby is empty, send updated lobby list
+            if(lobby.getPlayers().size() < 2){
+                lobby.setGameStatus(GameStatus.WAITING_FOR_PLAYERS);
             }
         }
     }
@@ -111,32 +118,21 @@ public class GameWebSocketController {
 
         try{
             lobbyManager.toggleReady(lobbyName, username);
-            broadcastLobbyState(lobbyManager.getLobby(lobbyName));
+            Lobby currentLobby = lobbyManager.getLobby(lobbyName);
+            broadcastLobbyState(currentLobby);
+
+            //if the whole lobby is ready start the game
+            if(currentLobby.isReady()){
+                startGame(currentLobby);
+            }
         }catch(IllegalArgumentException e){
-            System.out.println(e.getStackTrace());
+            e.printStackTrace();
         }
+
+        
     }
 
-    @MessageMapping("/lobby/submit/{lobbyId}")
-    public void submitAnswer(){
-
-    }
-
-    // Lobby state updates helper
-    private void broadcastLobbyState(Lobby lobby) {
-        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/state", lobby);
-    }
-
-    // Chat message updates helper
-    private void broadcastChatMessage(Lobby lobby, ChatMessage msg) {
-        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/chat", msg);
-    }
-
-    // Game state updates helper
-    private void broadcastGameState(Lobby lobby, GameState g){
-        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/chat", g);
-    }
-
+    
     /**
      * Send a chat message to the requested lobby
      * -broadcast the new message to all other users
@@ -154,23 +150,54 @@ public class GameWebSocketController {
         }
     }
 
-    /**
- * Removes a user from all lobbies and broadcasts the updated states
- * @param username the username of the user to remove
- */
-public void removeUserFromAllLobbies(String username) {
-    boolean removedAny = false;
-    for (Lobby lobby : lobbyManager.getAllLobbies().values()) {
-        boolean removed = lobby.getPlayers().values().removeIf(p -> p.getUsername().equals(username));
-        if (removed) {
-            removedAny = true;
-            broadcastLobbyState(lobby); // update all clients in this lobby
+        /**
+     * Removes a user from all lobbies and broadcasts the updated states
+     * @param username the username of the user to remove
+     */
+    public void removeUserFromAllLobbies(String username) {
+        boolean removedAny = false;
+        for (Lobby lobby : lobbyManager.getAllLobbies().values()) {
+            boolean removed = lobby.getPlayers().values().removeIf(p -> p.getUsername().equals(username));
+            if (removed) {
+                removedAny = true;
+                broadcastLobbyState(lobby); // update all clients in this lobby
+            }
+        }
+        if (removedAny) {
+            sendAllLobbies(); // also broadcast the updated list of lobbies
         }
     }
-    if (removedAny) {
-        sendAllLobbies(); // also broadcast the updated list of lobbies
+
+
+    @MessageMapping("/lobby/submit/{lobbyId}")
+    public void submitAnswer(){
+
     }
-}
+
+    //Private helper methods
+
+    private void startGame(Lobby currentLobby){
+        currentLobby.setGameStatus(GameStatus.IN_PROGRESS);
+
+    }
+
+
+    // Lobby state updates helper
+    private void broadcastLobbyState(Lobby lobby) {
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/state", lobby);
+    }
+
+    // Chat message updates helper
+    private void broadcastChatMessage(Lobby lobby, ChatMessage msg) {
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/chat", msg);
+    }
+
+    // Game state updates helper
+    private void broadcastGameState(Lobby lobby, GameState g){
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/chat", g);
+    }
+
+
 
 
 

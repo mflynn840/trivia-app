@@ -12,63 +12,36 @@ public class Lobby {
     private int maxPlayers = 4;
     private Map<String, PlayerDTO> players = new ConcurrentHashMap<>(); // sessionId -> Player
     private List<ChatMessage> chatMessages = new CopyOnWriteArrayList<>();
-    private GameStatus lobbyStatus = GameStatus.WAITING;
-    private GameState gameState;
-    
-    public Lobby() {
-        // default constructor for Spring/Gson/STOMP deserialization
-        this.name = Integer.toString((new Random(1).nextInt()));
-    }
-    public Lobby(String name){
-        this.name=name;
-    }
-    // --- Getters & Setters ---
-    public String getName() {
-        return name;
-    }
+    private GameState gameState = new GameState();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    // --- Constructors ----
+    public Lobby() { this.name = Integer.toString((new Random(1).nextInt())); }
+    public Lobby(String name) { this.name = name; }
 
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }
+    // --- Getters/Setters ---
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setMaxPlayers(int maxPlayers) {
-        this.maxPlayers = maxPlayers;
-    }
+    public int getMaxPlayers() { return maxPlayers; }
+    public void setMaxPlayers(int maxPlayers) { this.maxPlayers = maxPlayers; }
 
-    public Map<String, PlayerDTO> getPlayers() {
-        return players;
-    }
+    public Map<String, PlayerDTO> getPlayers() { return players; }
+    public void setPlayers(Map<String, PlayerDTO> players) { this.players = players; }
 
-    public void setPlayers(Map<String, PlayerDTO> players) {
-        this.players = players;
-    }
+    public List<ChatMessage> getChatMessages() { return chatMessages; }
+    public void setChatMessages(List<ChatMessage> chatMessages) { this.chatMessages = chatMessages; }
 
-    public List<ChatMessage> getChatMessages() {
-        return chatMessages;
-    }
+    public GameStatus getGameStatus() { return this.gameState.getGameStatus(); }
+    public void setGameStatus(GameStatus gameStatus) { this.gameState.setGameStatus(gameStatus); }
 
-    public void setChatMessages(List<ChatMessage> chatMessages) {
-        this.chatMessages = chatMessages;
-    }
+    public GameState getGameState(){return this.gameState;}
+    public void setGameState(GameState gameState){this.gameState = gameState;}
 
-    public GameStatus getLobbyStatus() {
-        return this.lobbyStatus;
-    }
-
-    public void setLobbyStatus(GameState gameState) {
-        this.gameState = gameState;
-    }
 
     // --- Convenience Methods ---
-    public boolean isFull() {
-        return players.size() >= maxPlayers;
-    }
+    public boolean isFull() { return players.size() >= maxPlayers; }
+    public boolean isEmpty() { return players.isEmpty(); }
+    public boolean isReady() { return this.getPlayers().values().stream().allMatch(PlayerDTO::isReady); }
 
-    public boolean isEmpty() {
-        return players.isEmpty();
-    }
+
 }
