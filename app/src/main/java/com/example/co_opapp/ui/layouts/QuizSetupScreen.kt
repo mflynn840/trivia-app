@@ -1,12 +1,25 @@
 package com.example.co_opapp.ui.layouts
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -18,13 +31,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.Hooks.CategorySelectorService
+import com.example.co_opapp.ui.components.LoginScreen.NeonSignButton
 import com.example.co_opapp.ui.components.QuizSetupScreen.ActionButtons
 import com.example.co_opapp.ui.components.QuizSetupScreen.CategoryDropdown
 import com.example.co_opapp.ui.components.QuizSetupScreen.DifficultyDropdown
 import com.example.co_opapp.ui.components.QuizSetupScreen.NumQuestionsInput
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizSetupScreen(
     modifier: Modifier = Modifier,
@@ -32,17 +48,16 @@ fun QuizSetupScreen(
     onNavigateBack: () -> Unit,
     catSelService: CategorySelectorService
 ) {
-    // State for selections
+    // State
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var selectedDifficulty by remember { mutableStateOf<String?>(null) }
     var numQuestionsText by remember { mutableStateOf("5") }
 
-    // State for question type contents in the backend
     var counts by remember { mutableStateOf<Map<String, Map<String, Long>>>(emptyMap()) }
     var categories by remember { mutableStateOf(listOf<String>()) }
     var difficulties by remember { mutableStateOf(listOf<String>()) }
 
-    // Fetch categories and counts from the backend on first composition
+    // Fetch from backend
     LaunchedEffect(Unit) {
         try {
             counts = catSelService.fetchCounts()
@@ -55,10 +70,8 @@ fun QuizSetupScreen(
         }
     }
 
-    // Use a Box so the background image sits behind the content
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
+    Box(modifier = modifier.fillMaxSize()) {
+
         // Background image
         Image(
             painter = painterResource(id = R.drawable.quiz_background),
@@ -66,94 +79,72 @@ fun QuizSetupScreen(
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-
         // Foreground content
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(32.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Back button at top-left
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+
+            // 🔙 Back Button + Title Row
+
+            IconButton(onClick = onNavigateBack) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White
+                )
+            }
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.8f),
+                shape = RoundedCornerShape(32.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.5f))
             ) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
+                Column(
+                    modifier = Modifier
+                        .padding(32.dp)
+                        .verticalScroll(rememberScrollState()), // this enables scrolling
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // Category dropdown
+                    CategoryDropdown(
+                        categories = categories,
+                        selectedCategory = selectedCategory,
+                        onCategorySelected = { selectedCategory = it }
+                    )
+
+                    // Difficulty dropdown
+                    DifficultyDropdown(
+                        difficulties = difficulties,
+                        selectedDifficulty = selectedDifficulty,
+                        onDifficultySelected = { selectedDifficulty = it }
+                    )
+
+                    // Number of questions input
+                    NumQuestionsInput(
+                        numQuestionsText = numQuestionsText,
+                        onNumQuestionsChanged = { numQuestionsText = it }
                     )
                 }
-                
-                Text(
-                    text = "Quiz Setup",
-                    style = MaterialTheme.typography.titleLarge.copy(color = Color.White),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Category Dropdown Card
-            SetupCard(title = "Select Category") {
-                CategoryDropdown(
-                    categories = categories,
-                    selectedCategory = selectedCategory,
-                    onCategorySelected = { selectedCategory = it }
-                )
-            }
-
-            // Difficulty Dropdown Card
-            SetupCard(title = "Select Difficulty") {
-                DifficultyDropdown(
-                    difficulties = difficulties,
-                    selectedDifficulty = selectedDifficulty,
-                    onDifficultySelected = { selectedDifficulty = it }
-                )
-            }
-
-            // Number of Questions Card
-            SetupCard(title = "Number of Questions") {
-                NumQuestionsInput(
-                    numQuestionsText = numQuestionsText,
-                    onNumQuestionsChanged = { newValue -> numQuestionsText = newValue }
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Action Buttons
-            ActionButtons(
-                onNavigateBack = onNavigateBack,
-                onStartQuiz = {
+            NeonSignButton(
+                text = "Start Quiz",
+                onClick = {
                     val numQuestions = numQuestionsText.toIntOrNull() ?: 5
-                    onStartQuiz(selectedCategory ?: "", selectedDifficulty ?: "", numQuestions)
-                }
+                    onStartQuiz(
+                        selectedCategory ?: "",
+                        selectedDifficulty ?: "",
+                        numQuestions
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                neonColor = Color(0xFF00F0FF)
             )
+
         }
     }
 }
-
-@Composable
-fun SetupCard(title: String, content: @Composable () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.5f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
-            )
-            content()
-        }
-    }
-}
-
