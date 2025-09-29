@@ -74,7 +74,7 @@ fun NeonGameModeCard(
             Text(
                 text = icon,
                 fontSize = 36.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 18.dp, top = 4.dp)
             )
 
             // Title
@@ -90,7 +90,7 @@ fun NeonGameModeCard(
                         blurRadius = 58f
                     )
                 ),
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 18.dp)
             )
 
             // Action Button
