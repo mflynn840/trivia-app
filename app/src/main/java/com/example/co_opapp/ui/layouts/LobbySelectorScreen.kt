@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.Backend.AvailableLobbiesService
@@ -104,7 +106,15 @@ fun LobbySelectorScreen(
                 .padding(16.dp)
         ) {
 
-            Text("Create a Lobby", style = MaterialTheme.typography.headlineMedium)
+            Text(text = "Create a Lobby",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold, // make bold
+                color = Color.Black, // high-contrast text
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(28.dp))
 
             // Create a lobby button and name selector component
             CreateLobbyUi(
@@ -114,12 +124,15 @@ fun LobbySelectorScreen(
                 modifier = Modifier.padding(top = 8.dp)
             )
 
-            //Refresh lobbies button
-            RefreshButton(
-                onNavigateBack = {
+
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                NeonRefreshButton {
                     shouldRefreshLobbies = true
                 }
-            )
+            }
 
             LobbyList(
                 lobbyNames = lobbies,
