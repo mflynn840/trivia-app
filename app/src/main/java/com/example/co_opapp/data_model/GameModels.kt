@@ -31,7 +31,7 @@ data class Player(
     val score: Long = 0,
     var ready: Boolean = false,
     var sessionId: String,
-    var profilePicture: ByteArray,
+    //var profilePicture: ByteArray,
 )
 
 data class PlayerDTO(
@@ -40,7 +40,7 @@ data class PlayerDTO(
     val isReady: Boolean = false,
     val id: Long,
     val score: Long,
-    val profilePicture: ByteArray
+    //val profilePicture: ByteArray
 )
 
 data class ChatMessage(
@@ -84,7 +84,7 @@ fun Player.toDTO(): PlayerDTO {
         isReady = this.ready,
         id = this.id,
         score = this.score,
-        profilePicture = this.profilePicture
+        //profilePicture = this.profilePicture
     )
 }
 
