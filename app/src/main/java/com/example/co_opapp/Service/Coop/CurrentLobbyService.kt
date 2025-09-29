@@ -57,9 +57,10 @@ class CurrentLobbyService() {
         wsManager.send("/app/lobby/leave/$lobbyName", player.toDTO())
     }
 
-    fun toggleReady(lobbyName: String, player: Player) {
-        Log.d(TAG, "Toggling ready for ${player.username} in lobby $lobbyName")
-        wsManager.send("/app/lobby/ready/$lobbyName", player.toDTO())
+    fun toggleReady(lobbyName: String, username: String) {
+        Log.d(TAG, "Toggling ready for ${username} in lobby $lobbyName")
+        val payload = mapOf("username" to username)
+        wsManager.send("/app/lobby/ready/$lobbyName", payload)
     }
 
     /** Disconnect */

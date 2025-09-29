@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import com.example.co_opapp.Service.Coop.CurrentLobbyService
 import com.example.co_opapp.ui.components.ChatScreen.BackButton
 import com.example.co_opapp.ui.components.ChatScreen.ChatBox
 import androidx.compose.ui.graphics.Color
+import com.example.co_opapp.ui.components.ChatScreen.ReadyButton
 
 
 @Composable
@@ -49,18 +51,23 @@ fun ChatScreen(
 
         )
 
-        Divider(
-            color = Color.Gray, // or MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
             thickness = 1.dp,
-            modifier = Modifier.fillMaxWidth()
+            color = Color.Gray // or MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
         )
 
 
         // Display chat
         ChatBox(
             currentLobbyService = currentLobbyService,
-            modifier = Modifier.weight(0.8f)
+            modifier = Modifier.weight(0.7f)
                 .fillMaxWidth()
+        )
+
+        ReadyButton(
+            currentLobbyService = currentLobbyService,
+            modifier = Modifier.weight(0.1f)
         )
 
     }

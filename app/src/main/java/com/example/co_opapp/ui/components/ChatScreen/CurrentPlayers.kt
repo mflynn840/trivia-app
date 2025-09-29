@@ -1,4 +1,5 @@
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -49,7 +51,15 @@ fun CurrentPlayers(
 
                     Spacer(modifier = Modifier.width(12.dp))
 
-                    Text(text = player.username)
+                    Text(text = player.username, modifier = Modifier.weight(1f))
+
+                    //Ready status indicator
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .clip(CircleShape)
+                            .background(if (player.isReady) Color(0xFF4CAF50) else Color(0xFFF44336))
+                    )
                 }
             }
         }
