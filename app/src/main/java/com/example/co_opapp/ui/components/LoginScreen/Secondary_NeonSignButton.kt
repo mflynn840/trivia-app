@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.TextStyle
@@ -30,7 +29,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-    fun NeonSignButton(
+    fun Secondary_NeonSignButton(
         text: String,
         onClick: () -> Unit,
         modifier: Modifier = Modifier,

@@ -96,24 +96,21 @@ fun NeonGameModeCard(
             // Action Button
             Button(
                 onClick = onClick,
-                colors = ButtonDefaults.buttonColors(containerColor = neonColor.copy(alpha = 0.2f)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = neonColor.copy(alpha = 0.8f)),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = buttonText,
                     fontSize = 24.sp,
-                    color = neonColor.copy(alpha = glowAlpha),
+                    color = Color(0xFF000000),
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
-                        shadow = Shadow(
-                            color = Color(0xFF00F0FF),
-                            offset = Offset(0f, 0f),
-                            blurRadius = 58f
+
                         )
 
 
                     )
-                )
 
             }
         }

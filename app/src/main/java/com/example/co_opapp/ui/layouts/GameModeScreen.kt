@@ -18,7 +18,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import com.example.co_opapp.R
-import com.example.co_opapp.ui.components.LoginScreen.NeonSignButton
+import com.example.co_opapp.ui.components.LoginScreen.Primary_NeonSignButton
+import com.example.co_opapp.ui.components.LoginScreen.Secondary_NeonSignButton
 
 
 @Composable
@@ -57,13 +58,11 @@ fun GameModeScreen(
             profilePicture = profilePicture
         )
 
-        Spacer(modifier = Modifier.height(100.dp))
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier
-                .padding(start = 38.dp, end = 38.dp, bottom = 0.dp)
+                .padding(start = 48.dp, end = 48.dp, top = 50.dp)
                 .align(Alignment.Center)
         ) {
 
@@ -71,7 +70,7 @@ fun GameModeScreen(
                 icon = "\uD83C\uDFAF",
                 title = "Test Your Knowledge",
                 buttonText = "Story Mode",
-                neonColor = Color(0xFF00F0FF),
+                neonColor = Color(0xFFFF073A),
                 onClick = onNavigateToSinglePlayer
             )
 
@@ -79,12 +78,11 @@ fun GameModeScreen(
                 icon = "⚔\uFE0F",
                 title = "Play With Friends",
                 buttonText = "Co-op Mode",
-                neonColor = Color(0xFF00F0FF),
+                neonColor = Color(0xFFFF073A),
                 onClick = onNavigateToCoOp
             )
 
-            NeonSignButton(
-
+            Secondary_NeonSignButton(
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
 
