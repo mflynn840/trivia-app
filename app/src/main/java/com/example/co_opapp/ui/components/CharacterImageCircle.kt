@@ -36,8 +36,8 @@ fun CharacterImageCircle(
     profilePicture: Bitmap?,
     modifier: Modifier = Modifier,
     circleSize: Dp = 125.dp,
-    topPadding: Dp = 45.dp,
-    endPadding: Dp = 45.dp,
+    topPadding: Dp = 55.dp,
+    endPadding: Dp = 55.dp,
 ) {
 
     Box(

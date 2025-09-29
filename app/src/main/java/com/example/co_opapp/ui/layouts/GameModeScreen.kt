@@ -60,9 +60,9 @@ fun GameModeScreen(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(15.dp),
             modifier = Modifier
-                .padding(start = 48.dp, end = 48.dp, top = 50.dp)
+                .padding(start = 48.dp, end = 48.dp, top = 70.dp)
                 .align(Alignment.Center)
         ) {
 
@@ -82,13 +82,14 @@ fun GameModeScreen(
                 onClick = onNavigateToCoOp
             )
 
+
             Secondary_NeonSignButton(
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
 
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(66.dp),
+                    .height(55.dp),
             )
 
         }

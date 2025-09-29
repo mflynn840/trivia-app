@@ -38,10 +38,10 @@ import androidx.compose.ui.unit.sp
         // Pulsing glow animation
         val infiniteTransition = rememberInfiniteTransition()
         val glowAlpha by infiniteTransition.animateFloat(
-            initialValue = 0.5f,
+            initialValue = 0.3f,
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
-                animation = tween(1000, easing = LinearEasing),
+                animation = tween(2000, easing = LinearEasing),
                 repeatMode = RepeatMode.Reverse
             )
         )
