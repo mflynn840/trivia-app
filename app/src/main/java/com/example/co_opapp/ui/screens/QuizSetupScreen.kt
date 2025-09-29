@@ -118,16 +118,12 @@ fun QuizSetupScreen(
                         onCategorySelected = { selectedCategory = it }
                     )
 
-                    Spacer(modifier = Modifier.height(24.dp))
-
                     // Difficulty dropdown
                     DifficultyDropdown(
                         difficulties = difficulties,
                         selectedDifficulty = selectedDifficulty,
                         onDifficultySelected = { selectedDifficulty = it }
                     )
-
-                    Spacer(modifier = Modifier.height(24.dp))
 
                     // Number of questions input
                     NumQuestionsInput(
