@@ -1,11 +1,15 @@
 package com.example.co_opapp.ui.screens
 
 import LobbyList
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.co_opapp.R
 import com.example.co_opapp.Service.Backend.AvailableLobbiesService
 import com.example.co_opapp.SessionManager
 import com.example.co_opapp.ui.components.LobbyScreen.*
@@ -62,6 +66,14 @@ fun LobbySelectorScreen(
             }
         }
     }
+
+    // Background image
+    Image(
+        painter = painterResource(id = R.drawable.coop_background),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize()
+    )
 
     Column(
         modifier = modifier
