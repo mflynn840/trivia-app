@@ -62,7 +62,7 @@ fun GameModeScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(15.dp),
             modifier = Modifier
-                .padding(start = 48.dp, end = 48.dp, top = 70.dp)
+                .padding(start = 38.dp, end = 38.dp, top = 70.dp)
                 .align(Alignment.Center)
         ) {
 
