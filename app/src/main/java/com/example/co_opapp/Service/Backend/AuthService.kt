@@ -10,12 +10,20 @@ import com.example.co_opapp.data_model.LoginResponse
 import com.example.co_opapp.data_model.Player
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import android.util.Log
+import com.google.gson.*
+import java.lang.reflect.Type
+import android.util.Base64
 
 class AuthService(context: Context) {
 
+
+    val gson = GsonBuilder()
+        .registerTypeAdapter(ByteArray::class.java, Base64ByteArrayAdapter())
+        .create()
     private val api: AuthApi = Retrofit.Builder()
         .baseUrl("http://192.168.4.21:8080/")
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
         .create(AuthApi::class.java)
 
@@ -30,46 +38,78 @@ class AuthService(context: Context) {
     fun getJwtToken(): String? = sharedPrefs.getString("jwt_token", null)
     fun getUsername(): String? = _currentPlayer.value?.username
 
+
     suspend fun register(username: String, password: String): Boolean {
         return repository.register(username, password)
     }
 
     suspend fun login(username: String, password: String): Boolean {
         val loginResp: LoginResponse? = repository.login(username, password)
-        return if (loginResp != null) {
-            authToken = loginResp.token
-            saveJwtToken(authToken!!, username)
 
-            // Update _currentPlayer state
+        Log.d("AuthService", "Login response: $loginResp")
+
+        if (loginResp == null) {
+            Log.e("AuthService", "Login failed: login response is null")
+            return false
+        }
+
+        val userDTO = loginResp.user
+
+        Log.d("AuthService", "UserDTO received: $userDTO")
+
+        try {
+            // Defensive check for profilePicture (if it's nullable or empty)
+            val profilePicture = userDTO.profilePicture ?: ByteArray(0)
+
+
             val player = Player(
-                username = username,
-                id = loginResp.id,
-                score = 0,
-                ready = false,
-                sessionId = ""
+                id = userDTO.id,
+                username = userDTO.username,
+                score = userDTO.score,
+                ready = userDTO.isReady,
+                sessionId = "",  // You might want to get this from backend or session
+                profilePicture = profilePicture
             )
             _currentPlayer.value = player
 
-            // Sync the SessionManager with the updated player data
-            SessionManager.currentPlayer = player  // Set the player in the SessionManager
+            SessionManager.currentPlayer = player
+            authToken = loginResp.token
             SessionManager.jwtToken = authToken!!
 
-            true
-        } else {
-            false
+            // Save token and username
+            saveJwtToken(authToken!!, username)
+
+            Log.d("AuthService", "Login successful for user: $username")
+
+            return true
+        } catch (e: Exception) {
+            Log.e("AuthService", "Error mapping PlayerDTO to Player", e)
+            return false
         }
-    }
 
-    suspend fun validateToken(): Boolean {
-        val token = authToken ?: return false
-        return repository.validateToken(token)
-    }
 
+    }
     private fun saveJwtToken(token: String, username: String) {
         with(sharedPrefs.edit()) {
             putString("jwt_token", token)
             putString("username", username)
             apply()
+        }
+    }
+}
+
+
+
+class Base64ByteArrayAdapter : JsonDeserializer<ByteArray> {
+    override fun deserialize(
+        json: JsonElement?,
+        typeOfT: Type?,
+        context: JsonDeserializationContext?
+    ): ByteArray {
+        return if (json != null && json.isJsonPrimitive && json.asJsonPrimitive.isString) {
+            Base64.decode(json.asString, Base64.DEFAULT)
+        } else {
+            ByteArray(0)
         }
     }
 }

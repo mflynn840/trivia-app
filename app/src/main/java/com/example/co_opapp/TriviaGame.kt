@@ -13,19 +13,19 @@ import androidx.navigation.compose.rememberNavController
 import com.example.co_opapp.Service.Backend.AuthService
 import com.example.co_opapp.Service.Hooks.CategorySelectorService
 import com.example.co_opapp.Service.Backend.ProfileService
-import com.example.co_opapp.ui.screens.GameModeScreen
-import com.example.co_opapp.ui.screens.QuizScreen
-import com.example.co_opapp.ui.screens.LobbySelectorScreen
+import com.example.co_opapp.ui.layouts.GameModeScreen
+import com.example.co_opapp.ui.layouts.QuizScreen
+import com.example.co_opapp.ui.layouts.LobbySelectorScreen
 import com.example.co_opapp.Service.Backend.SoloGameService
 import com.example.co_opapp.Service.Backend.WebSocketClientManager
 import com.example.co_opapp.Service.Coop.CurrentLobbyService
 import com.example.co_opapp.Service.Backend.AvailableLobbiesService
 import com.example.co_opapp.ui.components.MusicWrapper
-import com.example.co_opapp.ui.screens.CharacterCustomizationScreen
-import com.example.co_opapp.ui.screens.ChatScreen
-import com.example.co_opapp.ui.screens.QuizSetupScreen
-import com.example.co_opapp.ui.screens.LoadingScreen
-import com.example.co_opapp.ui.screens.LoginScreen
+import com.example.co_opapp.ui.layouts.CharacterCustomizationScreen
+import com.example.co_opapp.ui.layouts.ChatScreen
+import com.example.co_opapp.ui.layouts.QuizSetupScreen
+import com.example.co_opapp.ui.layouts.LoadingScreen
+import com.example.co_opapp.ui.layouts.LoginScreen
 
 @Composable
 fun TriviaGame() {
@@ -157,7 +157,7 @@ fun TriviaGame() {
                 //connect to the server when this is launched
                 LaunchedEffect(Unit){
                     currentLobbyConnection.connect()
-                    currentLobbyService.subscribeAndJoin(lobbyName=lobbyName, username=username)
+                    currentLobbyService.subscribeAndJoin(lobbyName=lobbyName, player=SessionManager.currentPlayer!!)
                 }
 
                 val lobby by currentLobbyService.lobby

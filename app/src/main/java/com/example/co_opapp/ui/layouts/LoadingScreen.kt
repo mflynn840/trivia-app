@@ -1,4 +1,4 @@
-package com.example.co_opapp.ui.screens
+package com.example.co_opapp.ui.layouts
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

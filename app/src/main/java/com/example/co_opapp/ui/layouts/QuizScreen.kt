@@ -1,4 +1,4 @@
-package com.example.co_opapp.ui.screens
+package com.example.co_opapp.ui.layouts
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

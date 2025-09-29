@@ -40,14 +40,23 @@ public class AuthController {
             String password = request.get("password");
 
             Map<String, Object> responseBody = authService.login(username, password);
+            System.out.println("sucessful login");
             return ResponseEntity.ok(responseBody);
         } catch(IllegalArgumentException e){
+            System.out.println("login failed: invalid credentials");
             return ResponseEntity.badRequest().body(Map.of("error", "Invalid credentials"));
         }catch(IllegalStateException e){
+            System.out.println("login failed: invalid credentials");
             return ResponseEntity.badRequest().body(Map.of("error", "Invalid credentials"));
+            
         }
     }
 
+    /**
+     * 
+     * @param authHeader
+     * @return
+     */
     @PostMapping("/validate")
     public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authHeader) {
         try {

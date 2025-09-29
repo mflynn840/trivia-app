@@ -6,7 +6,9 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.co_opapp.Service.Backend.WebSocketClientManager
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.Lobby
+import com.example.co_opapp.data_model.Player
 import com.example.co_opapp.data_model.PlayerDTO
+import com.example.co_opapp.data_model.toDTO
 
 class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
 
@@ -17,6 +19,13 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
     private val _lobby = mutableStateOf<Lobby?>(null)
     val lobby: State<Lobby?> get() = _lobby
 
+
+    //reactive lobby members list
+    val players: State<List<PlayerDTO>> = derivedStateOf {
+        _lobby.value?.players?.values?.toList() ?: emptyList()
+    }
+
+
     // Reactive chat messages for the current lobby
     private val _chatMessages = mutableStateListOf<ChatMessage>()
     val chatMessages: SnapshotStateList<ChatMessage> get() = _chatMessages
@@ -24,6 +33,9 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
     // Track connection status
     private val _isConnected = mutableStateOf(false)
     val isConnected: State<Boolean> get() = _isConnected
+
+
+
 
     /** Subscribe to a single lobby by name */
     fun subscribe(lobbyName: String) {
@@ -57,14 +69,14 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
         wsManager.send("/app/lobby/chat/$lobbyName", message)
     }
 
-    fun leaveLobby(lobbyName: String, username: String) {
-        Log.d(TAG, "Leaving lobby $lobbyName as $username")
-        wsManager.send("/app/lobby/leave/$lobbyName", PlayerDTO(lobbyName, username))
+    fun leaveLobby(lobbyName: String, player: Player) {
+        Log.d(TAG, "Leaving lobby $lobbyName as ${player.username}")
+        wsManager.send("/app/lobby/leave/$lobbyName", player.toDTO())
     }
 
-    fun toggleReady(lobbyName: String, username: String) {
-        Log.d(TAG, "Toggling ready for $username in lobby $lobbyName")
-        wsManager.send("/app/lobby/ready/$lobbyName", PlayerDTO(lobbyName, username))
+    fun toggleReady(lobbyName: String, player: Player) {
+        Log.d(TAG, "Toggling ready for ${player.username} in lobby $lobbyName")
+        wsManager.send("/app/lobby/ready/$lobbyName", player.toDTO())
     }
 
     /** Disconnect */
@@ -75,7 +87,7 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
     }
 
 
-    fun subscribeAndJoin(lobbyName: String, username: String) {
+    fun subscribeAndJoin(lobbyName: String, player: Player) {
         wsManager.connect {
             _isConnected.value = true
 
@@ -90,13 +102,13 @@ class CurrentLobbyService(private val wsManager: WebSocketClientManager) {
             }
 
             // Now actually join
-            joinLobby(lobbyName, username)
+            joinLobby(lobbyName, player)
         }
     }
 
     /** Private helper: only called after subscribing */
-    private fun joinLobby(lobbyName: String, username: String) {
-        wsManager.send("/app/lobby/join/$lobbyName", PlayerDTO(lobbyName, username))
+    private fun joinLobby(lobbyName: String, player: Player) {
+        wsManager.send("/app/lobby/join/$lobbyName", player.toDTO())
     }
 
 
