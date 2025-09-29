@@ -59,7 +59,7 @@ class AuthService(context: Context) {
 
         try {
             // Defensive check for profilePicture (if it's nullable or empty)
-            val profilePicture = userDTO.profilePicture ?: ByteArray(0)
+            //val profilePicture = userDTO.profilePicture ?: ByteArray(0)
 
 
             val player = Player(
@@ -68,7 +68,7 @@ class AuthService(context: Context) {
                 score = userDTO.score,
                 ready = userDTO.isReady,
                 sessionId = "",  // You might want to get this from backend or session
-                profilePicture = profilePicture
+                //profilePicture = profilePicture
             )
             _currentPlayer.value = player
 
