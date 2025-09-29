@@ -80,6 +80,9 @@ public class GenerateTriviaDb {
                         questionNode.path("category").asText(""));
                 String difficulty = StringEscapeUtils.unescapeHtml4(
                         questionNode.path("difficulty").asText(""));
+                if (!difficulty.isEmpty()) {
+                    difficulty = difficulty.substring(0, 1).toUpperCase() + difficulty.substring(1);
+                }
                 String type = StringEscapeUtils.unescapeHtml4(
                         questionNode.path("type").asText(""));
 

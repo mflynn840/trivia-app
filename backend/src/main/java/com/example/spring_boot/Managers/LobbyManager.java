@@ -3,6 +3,9 @@ package com.example.spring_boot.Managers;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
+
+import com.example.spring_boot.Model.GameState;
+import com.example.spring_boot.Model.GameStatus;
 import com.example.spring_boot.Model.Lobby;
 import com.example.spring_boot.Model.PlayerDTO;
 
@@ -10,6 +13,13 @@ import com.example.spring_boot.Model.PlayerDTO;
 public class LobbyManager {
     private final Map<String, Lobby> lobbies = new ConcurrentHashMap<>();
 
+    /**
+     * 
+     * Create a new empty lobby with the desired name 
+     *  The lobby will contain a gamestate in the WAITING_FOR_PLAYERS state
+     * @param name
+     * @return
+     */
     public Lobby createLobby(String name) {
         
         // Enforce non-null and non-empty names
@@ -25,8 +35,12 @@ public class LobbyManager {
             throw new IllegalArgumentException("A lobby with the name '" + name + "' already exists.");
         }
 
+        //Create a new lobby and gamestate
         Lobby lobby = new Lobby();
+        GameState gameState = new GameState();
+        gameState.setGameStatus(GameStatus.WAITING_FOR_PLAYERS);
         lobby.setName(name);
+        lobby.setGameState(gameState);
         lobbies.put(name, lobby);
         return lobby;
     }
