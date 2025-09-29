@@ -2,14 +2,18 @@ package com.example.spring_boot.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.spring_boot.Model.Player;
+import com.example.spring_boot.Model.PlayerDTO;
 import com.example.spring_boot.Repository.PlayerRepository;
 import com.example.spring_boot.config.JwtUtil;
 
@@ -49,6 +53,12 @@ public class AuthService {
         playerRepository.save(player);
     }
 
+    /**
+     * Process a login, if successful, generate and return a playerDTO and jwt token
+     * @param username
+     * @param password
+     * @return Map.of("jwtToken" : String, "player" : PlayerDTO)
+     */
     public Map<String, Object> login(String username, String password){
 
         // malformed request
@@ -71,15 +81,10 @@ public class AuthService {
             throw new IllegalStateException("Invalid credentials");
         }
 
-        // Generate and return JWT token
-        String jwtToken = jwtUtil.generateToken(player.getUsername());
-
+        //return JWT token and user
         Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("token", jwtToken);
-        responseBody.put("username", player.getUsername());
-        responseBody.put("role", player.getRole().name());
-        responseBody.put("id", player.getId());
-
+        responseBody.put("token", jwtUtil.generateToken(player.getUsername()));
+        responseBody.put("user", new PlayerDTO(player));
         return responseBody;
     }
 

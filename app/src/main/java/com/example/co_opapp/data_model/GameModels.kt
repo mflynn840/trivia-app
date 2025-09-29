@@ -1,34 +1,14 @@
 package com.example.co_opapp.data_model
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 
-// --- User/Auth ---
-data class UserCredentials(val username: String, val password: String)
-data class LoginResponse(
-    val token: String,
-    val username: String,
-    val role: String,
-    val id : Long,
-)
-
-
-enum class GameState {
+enum class GameStatus {
     WAITING,
-    IN_PROGRESS,
-    FINISHED,
-    WAITING_FOR_PLAYERS
 }
-
-// Simple GameRoom model
-data class GameRoom(
-    val players: MutableList<Player>,
-    val maxPlayers: Int = 4,
-    var gameState: GameState = GameState.WAITING_FOR_PLAYERS,
-    var id: Long
-)
 
 
 // --- Trivia ---
@@ -45,21 +25,23 @@ data class TriviaQuestion(
     val type: String,
 )
 
-// LAN-friendly player model
 data class Player(
     val id: Long,
     val username: String,
-    val score: Int = 0,
+    val score: Long = 0,
     var ready: Boolean = false,
-    var sessionId: String
+    var sessionId: String,
+    var profilePicture: ByteArray,
 )
 
 data class PlayerDTO(
     val sessionId: String,
     val username: String,
-    val isReady: Boolean = false
+    val isReady: Boolean = false,
+    val id: Long,
+    val score: Long,
+    val profilePicture: ByteArray
 )
-
 
 data class ChatMessage(
     val username: String,
@@ -67,20 +49,43 @@ data class ChatMessage(
 )
 
 data class Lobby(
+    val name: String,
     val maxPlayers: Int = 4,
     val players: SnapshotStateMap<String, PlayerDTO> = mutableStateMapOf(),
     val chatMessages: SnapshotStateList<ChatMessage> = mutableStateListOf(),
-    val gameState: GameState = GameState.WAITING,
-    val name: String,
+    val gameStatus: GameStatus = GameStatus.WAITING,
+    val gameState: MutableState<GameState>,
 )
 
 data class CreateLobbyRequest(
     val name: String
 )
 
+data class GameState(
+    val questions: SnapshotStateList<TriviaQuestion>,
+    val currentQuestion: MutableState<Int>
+)
+
 data class AnswersRequest(val questionIds: List<Long>, val answers: List<String>)
 data class AnswersResponse(val corrects: List<Boolean>, val correctAnswers: List<String>)
 
 
+// --- User/Auth ---
+data class UserCredentials(val username: String, val password: String)
+data class LoginResponse(
+    val token: String,
+    val user: PlayerDTO
+)
+
+fun Player.toDTO(): PlayerDTO {
+    return PlayerDTO(
+        sessionId = this.sessionId,
+        username = this.username,
+        isReady = this.ready,
+        id = this.id,
+        score = this.score,
+        profilePicture = this.profilePicture
+    )
+}
 
 

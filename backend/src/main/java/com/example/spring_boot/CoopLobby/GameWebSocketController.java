@@ -9,8 +9,10 @@ import org.springframework.stereotype.Controller;
 
 import com.example.spring_boot.Managers.LobbyManager;
 import com.example.spring_boot.Model.ChatMessage;
+import com.example.spring_boot.Model.GameState;
 import com.example.spring_boot.Model.Lobby;
 import com.example.spring_boot.Model.Player;
+import com.example.spring_boot.Model.PlayerDTO;
 import com.example.spring_boot.dto.CreateLobbyRequest;
 
 import java.util.Map;
@@ -35,7 +37,7 @@ public class GameWebSocketController {
     }
 
     /**
-     * 
+     * Broadcast a copy of the requested lobby object
      * @param lobbyId
      */
     @MessageMapping("/lobby/get/{lobbyId}")
@@ -45,7 +47,7 @@ public class GameWebSocketController {
     }
 
     /**
-     * 
+     * Create a new lobby using DTO
      * @param request
      */
     @MessageMapping("/lobby/create")
@@ -69,7 +71,7 @@ public class GameWebSocketController {
      * @param player
      */
     @MessageMapping("/lobby/join/{lobbyId}")
-    public void joinLobby(@DestinationVariable String lobbyId, @Payload Player player) {
+    public void joinLobby(@DestinationVariable String lobbyId, @Payload PlayerDTO player) {
         System.out.println("request to join server");
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null && !lobby.isFull()) {
@@ -81,7 +83,7 @@ public class GameWebSocketController {
     }
 
     /**
-     * 
+     * Leave this current lobby
      * @param lobbyId
      * @param player
      */
@@ -99,8 +101,7 @@ public class GameWebSocketController {
     }
 
     /**
-     * 
-     * 
+     * Set the given players status to ready in this given lobby
      * @param lobbyId
      * @param player
      */
@@ -108,12 +109,17 @@ public class GameWebSocketController {
     public void toggleReady(String lobbyId, Player player) {
         Lobby lobby = lobbyManager.getLobby(lobbyId);
         if (lobby != null) {
-            Player p = lobby.getPlayers().get(player.getSessionId());
+            PlayerDTO p = lobby.getPlayers().get(player.getSessionId());
             if (p != null) {
                 p.setReady(!p.isReady());  // Toggle ready status
                 broadcastLobbyState(lobby);
             }
         }
+    }
+
+    @MessageMapping("/lobby/submit/{lobbyId}")
+    public void submitAnswer(){
+
     }
 
     // Lobby state updates helper
@@ -124,6 +130,11 @@ public class GameWebSocketController {
     // Chat message updates helper
     private void broadcastChatMessage(Lobby lobby, ChatMessage msg) {
         messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/chat", msg);
+    }
+
+    // Game state updates helper
+    private void broadcastGameState(Lobby lobby, GameState g){
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/chat", g);
     }
 
     /**

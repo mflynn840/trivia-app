@@ -1,4 +1,4 @@
-package com.example.co_opapp.ui.screens
+package com.example.co_opapp.ui.layouts
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.*

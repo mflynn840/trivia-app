@@ -1,5 +1,6 @@
 # Stage 1: Build the application
-FROM maven:3.9.2-eclipse-temurin-24 AS build
+FROM maven:3.9.2 AS build
+
 
 # Set working directory
 WORKDIR /app
@@ -15,7 +16,8 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Run the application
-FROM eclipse-temurin:24-jdk-jammy
+FROM eclipse-temurin:17-jdk-jammy
+
 
 # Set working directory
 WORKDIR /app

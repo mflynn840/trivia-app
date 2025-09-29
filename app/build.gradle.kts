@@ -53,7 +53,6 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.androidx.compose.animation.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,4 +78,7 @@ dependencies {
 
     // Stomp client
     implementation("com.github.NaikSoftware:StompProtocolAndroid:1.6.6")
+
+    //
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }

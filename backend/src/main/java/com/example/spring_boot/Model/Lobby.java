@@ -10,9 +10,9 @@ public class Lobby {
 
     private String name;
     private int maxPlayers = 4;
-    private Map<String, Player> players = new ConcurrentHashMap<>(); // sessionId -> Player
+    private Map<String, PlayerDTO> players = new ConcurrentHashMap<>(); // sessionId -> Player
     private List<ChatMessage> chatMessages = new CopyOnWriteArrayList<>();
-    private GameState gameState = GameState.WAITING;
+    private GameStatus lobbyStatus = GameStatus.WAITING;
 
     public Lobby() {
         // default constructor for Spring/Gson/STOMP deserialization
@@ -38,11 +38,11 @@ public class Lobby {
         this.maxPlayers = maxPlayers;
     }
 
-    public Map<String, Player> getPlayers() {
+    public Map<String, PlayerDTO> getPlayers() {
         return players;
     }
 
-    public void setPlayers(Map<String, Player> players) {
+    public void setPlayers(Map<String, PlayerDTO> players) {
         this.players = players;
     }
 
@@ -54,12 +54,12 @@ public class Lobby {
         this.chatMessages = chatMessages;
     }
 
-    public GameState getGameState() {
-        return gameState;
+    public GameStatus getLobbyStatus() {
+        return this.lobbyStatus;
     }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
+    public void setLobbyStatus(GameState gameState) {
+        this.lobbyStatus = lobbyStatus;
     }
 
     // --- Convenience Methods ---

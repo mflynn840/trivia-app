@@ -1,6 +1,5 @@
 package com.example.spring_boot.Model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +25,8 @@ public class Player implements UserDetails {
     private Long id;
     
     // Attributes
+
+    @Column(nullable=false, unique=true)
     private String username;
     private String password;
 
@@ -39,6 +40,9 @@ public class Player implements UserDetails {
     private String sessionId;
 
     byte[] profilePicture;
+
+
+    private Long score = (long) 0;
 
     // Constructors
     public Player() {}
@@ -65,6 +69,14 @@ public class Player implements UserDetails {
 
     public String getSessionId(){return this.sessionId;}
     public void setSessionId(String sessionId){this.sessionId=sessionId;}
+
+    public Long getScore(){return this.score;}
+    public void setScore(Long score){this.score = score;}
+
+    public byte[] getProfilePicture(){return this.profilePicture;}
+    public void setProfilePicture(byte[] profilePicture){this.profilePicture = profilePicture;}
+
+
 
     // Return a list of the user's privileges
     @Override
@@ -102,8 +114,6 @@ public class Player implements UserDetails {
     public boolean isReady(){return this.isReady;}
 
 
-    public byte[] getProfilePicture(){return this.profilePicture;}
-    public void setProfilePicture(byte[] profilePicture){this.profilePicture = profilePicture;}
 
 
 }
