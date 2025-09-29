@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Component;
 
 import com.example.spring_boot.Model.Lobby;
+import com.example.spring_boot.Model.PlayerDTO;
 
 @Component
 public class LobbyManager {
@@ -45,4 +46,15 @@ public class LobbyManager {
     public Map<String, Lobby> getAllLobbies() {
         return lobbies;
     }
+
+    public boolean removeUserFromAllLobbies(String username) {
+        boolean removedAny = false;
+        for (Lobby lobby : getAllLobbies().values()) {
+            boolean removed = lobby.getPlayers().values().removeIf(p -> p.getUsername().equals(username));
+            if(removed) removedAny=true;
+        }
+
+        return removedAny;
+    }
 }
+

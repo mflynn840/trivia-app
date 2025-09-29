@@ -6,6 +6,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.co_opapp.Service.Backend.WebSocketClientManager
 import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.ChatMessage
+import com.example.co_opapp.data_model.GameState
 import com.example.co_opapp.data_model.Lobby
 import com.example.co_opapp.data_model.Player
 import com.example.co_opapp.data_model.PlayerDTO
@@ -27,6 +28,8 @@ class CurrentLobbyService() {
     val players: State<List<PlayerDTO>> = derivedStateOf {
         _lobby.value?.players?.values?.toList() ?: emptyList()
     }
+
+    // expose a reactive game state
 
 
     // Reactive chat messages for the current lobby
