@@ -8,9 +8,11 @@ import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.GameState
 import com.example.co_opapp.data_model.Lobby
+import com.example.co_opapp.data_model.LobbyDTO
 import com.example.co_opapp.data_model.Player
 import com.example.co_opapp.data_model.PlayerDTO
 import com.example.co_opapp.data_model.toDTO
+import com.example.co_opapp.data_model.toLobby
 
 class CurrentLobbyService() {
 
@@ -77,8 +79,8 @@ class CurrentLobbyService() {
             _isConnected.value = true
 
             // Subscribe to state first
-            wsManager.subscribeTopic("/topic/lobby/$lobbyName/state", Lobby::class.java) { lobby ->
-                _lobby.value = lobby
+            wsManager.subscribeTopic("/topic/lobby/$lobbyName/state", LobbyDTO::class.java) { lobbyDto ->
+                _lobby.value = lobbyDto.toLobby()
             }
 
             // Subscribe to chat

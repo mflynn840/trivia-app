@@ -1,13 +1,17 @@
 package com.example.co_opapp.data_model
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 
 enum class GameStatus {
-    WAITING,
+    WAITING_FOR_PLAYERS,
+    WAITING_FOR_READY,
+    GAME_IN_PROGRESS
 }
 
 
@@ -53,8 +57,17 @@ data class Lobby(
     val maxPlayers: Int = 4,
     val players: SnapshotStateMap<String, PlayerDTO> = mutableStateMapOf(),
     val chatMessages: SnapshotStateList<ChatMessage> = mutableStateListOf(),
-    val gameStatus: GameStatus = GameStatus.WAITING,
+    val gameStatus: GameStatus = GameStatus.WAITING_FOR_PLAYERS,
     val gameState: MutableState<GameState>,
+)
+
+data class LobbyDTO(
+    val name: String,
+    val maxPlayers: Int=4,
+    val players: Map<String, PlayerDTO> = emptyMap(),
+    val chatMessages: List<ChatMessage> = emptyList(),
+    val gameStatus: GameStatus = GameStatus.WAITING_FOR_PLAYERS,
+    val gameState: GameStateDTO
 )
 
 data class CreateLobbyRequest(
@@ -63,7 +76,15 @@ data class CreateLobbyRequest(
 
 data class GameState(
     val questions: SnapshotStateList<TriviaQuestion>,
-    val currentQuestion: MutableState<Int>
+    val questionIdx: MutableState<Int>,
+    val gameStatus: GameStatus = GameStatus.WAITING_FOR_PLAYERS
+)
+
+data class GameStateDTO(
+    val questions: List<TriviaQuestion> = emptyList(),
+    val questionIdx: Int = 0,
+    val gameStatus: GameStatus = GameStatus.WAITING_FOR_PLAYERS
+
 )
 
 data class AnswersRequest(val questionIds: List<Long>, val answers: List<String>)
@@ -87,5 +108,28 @@ fun Player.toDTO(): PlayerDTO {
         //profilePicture = this.profilePicture
     )
 }
+
+
+//reactive wrappers
+fun LobbyDTO.toLobby(): Lobby {
+    val lobby = Lobby(
+        name = name,
+        maxPlayers = maxPlayers,
+        players = mutableStateMapOf<String, PlayerDTO>().apply { putAll(players) },
+        chatMessages = mutableStateListOf<ChatMessage>().apply { addAll(chatMessages) },
+        gameState = mutableStateOf( gameState.toGameState()) // fallback
+    )
+    return lobby
+}
+
+fun GameStateDTO.toGameState(): GameState {
+    return GameState(
+        questions = mutableStateListOf<TriviaQuestion>().apply { addAll(questions) },
+        questionIdx = mutableIntStateOf(questionIdx),
+        gameStatus = gameStatus
+    )
+}
+
+
 
 
