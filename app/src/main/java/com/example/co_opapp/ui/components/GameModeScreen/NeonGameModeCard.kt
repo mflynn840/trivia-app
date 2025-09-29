@@ -46,10 +46,10 @@ fun NeonGameModeCard(
     // Pulsing glow animation
     val infiniteTransition = rememberInfiniteTransition()
     val glowAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.5f,
+        initialValue = 0.3f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
+            animation = tween(2000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -57,8 +57,8 @@ fun NeonGameModeCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(12.dp)
-            .border(6.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp)),
+            .padding(16.dp)
+            .border(4.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF0D0D0D)
@@ -74,7 +74,7 @@ fun NeonGameModeCard(
             Text(
                 text = icon,
                 fontSize = 36.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 18.dp, top = 4.dp)
             )
 
             // Title
@@ -85,25 +85,25 @@ fun NeonGameModeCard(
                 color = neonColor.copy(alpha = glowAlpha),
                 style = TextStyle(
                     shadow = Shadow(
-                        color = neonColor.copy(alpha = 0.8f),
+                        color = neonColor.copy(alpha = 0.6f),
                         offset = Offset(0f, 0f),
                         blurRadius = 58f
                     )
                 ),
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 18.dp)
             )
 
             // Action Button
             Button(
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = neonColor.copy(alpha = 0.8f)),
+                    containerColor = neonColor.copy(alpha = 0.3f)),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = buttonText,
                     fontSize = 24.sp,
-                    color = Color(0xFF000000),
+                    color = Color.White,
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
 
