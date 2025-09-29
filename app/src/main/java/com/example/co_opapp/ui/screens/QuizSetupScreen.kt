@@ -5,7 +5,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -13,10 +20,14 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -25,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.Hooks.CategorySelectorService
+import com.example.co_opapp.ui.components.LoginScreen.NeonSignButton
 import com.example.co_opapp.ui.components.QuizSetupScreen.ActionButtons
 import com.example.co_opapp.ui.components.QuizSetupScreen.CategoryDropdown
 import com.example.co_opapp.ui.components.QuizSetupScreen.DifficultyDropdown
@@ -61,6 +73,7 @@ fun QuizSetupScreen(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
+
         // Background image
         Image(
             painter = painterResource(id = R.drawable.quiz_background),
@@ -68,7 +81,6 @@ fun QuizSetupScreen(
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-
         // Foreground content
         Column(
             modifier = Modifier
@@ -76,14 +88,16 @@ fun QuizSetupScreen(
                 .padding(32.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Text(
-                text = "Quiz Setup",
-                style = MaterialTheme.typography.titleLarge.copy(color = Color.White)
-            )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            // 🔙 Back Button + Title Row
 
-            // Single Card containing all inputs
+            IconButton(onClick = onNavigateBack) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White
+                )
+            }
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -92,7 +106,9 @@ fun QuizSetupScreen(
                 colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.5f))
             ) {
                 Column(
-                    modifier = Modifier.padding(32.dp),
+                    modifier = Modifier
+                        .padding(32.dp)
+                        .verticalScroll(rememberScrollState()), // this enables scrolling
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     // Category dropdown
@@ -113,7 +129,6 @@ fun QuizSetupScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-
                     // Number of questions input
                     NumQuestionsInput(
                         numQuestionsText = numQuestionsText,
@@ -122,69 +137,20 @@ fun QuizSetupScreen(
                 }
             }
 
-            // Action buttons
-            ActionButtons(
-                onNavigateBack = onNavigateBack,
-                onStartQuiz = {
+            NeonSignButton(
+                text = "Start Quiz",
+                onClick = {
                     val numQuestions = numQuestionsText.toIntOrNull() ?: 5
                     onStartQuiz(
                         selectedCategory ?: "",
                         selectedDifficulty ?: "",
                         numQuestions
                     )
-                }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                neonColor = Color(0xFF00F0FF)
             )
+
         }
     }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CategoryDropdown(
-    categories: List<String>,
-    selectedCategory: String?,
-    onCategorySelected: (String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-    val displayText =
-        selectedCategory ?: if (categories.isEmpty()) "Loading..." else "Select category"
-
-    Box(modifier = Modifier.fillMaxWidth().zIndex(1f)) {
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = it },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = displayText,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Category") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth()
-                    .clickable(enabled = categories.isNotEmpty()) { expanded = true },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White,
-                    focusedIndicatorColor = Color.White,
-                    unfocusedIndicatorColor = Color.White
-                )
-            )
-
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = true },
-                modifier = Modifier
-                    .background(Color.Black.copy(alpha = 0.9f))
-                    .heightIn(max = 500.dp) // fixed dropdown size
-            ) {
-
-                    }
-                }
-            }
-        }
-
