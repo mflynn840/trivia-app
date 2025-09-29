@@ -83,7 +83,7 @@ fun LobbySelectorScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp),
+            .padding(38.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
 
@@ -104,7 +104,7 @@ fun LobbySelectorScreen(
                 .padding(16.dp)
         ) {
 
-            Text("Select/Create a Lobby", style = MaterialTheme.typography.headlineMedium)
+            Text("Create a Lobby", style = MaterialTheme.typography.headlineMedium)
 
             // Create a lobby button and name selector component
             CreateLobbyUi(
