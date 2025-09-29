@@ -43,19 +43,16 @@ fun CharacterCustomizationScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Back button (top-left)
-        IconButton(
-            onClick = onNavigateBack,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(32.dp)
-        ) {
+        // 🔙 Back Button
+
+        IconButton(onClick = onNavigateBack) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Back",
                 tint = Color.White
             )
         }
+
 
         Column(
             modifier = Modifier
