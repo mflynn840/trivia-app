@@ -17,6 +17,7 @@ import com.example.co_opapp.Service.Coop.CurrentLobbyService
 import com.example.co_opapp.ui.components.ChatScreen.BackButton
 import com.example.co_opapp.ui.components.ChatScreen.ChatBox
 import androidx.compose.ui.graphics.Color
+import com.example.co_opapp.ui.components.ChatScreen.GameStatusIndicator
 import com.example.co_opapp.ui.components.ChatScreen.ReadyButton
 
 
@@ -43,6 +44,12 @@ fun ChatScreen(
             style = MaterialTheme.typography.titleMedium
         )
 
+        // Game Status Indicator
+        GameStatusIndicator(
+            currentLobbyService = currentLobbyService,
+            modifier = Modifier.weight(0.1f)
+        )
+
         //Show players in the lobby
         CurrentPlayers(
             currentLobbyService = currentLobbyService,
@@ -61,7 +68,7 @@ fun ChatScreen(
         // Display chat
         ChatBox(
             currentLobbyService = currentLobbyService,
-            modifier = Modifier.weight(0.7f)
+            modifier = Modifier.weight(0.6f)
                 .fillMaxWidth()
         )
 

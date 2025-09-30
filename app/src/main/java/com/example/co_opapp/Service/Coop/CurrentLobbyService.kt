@@ -7,6 +7,7 @@ import com.example.co_opapp.Service.Backend.WebSocketClientManager
 import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.ChatMessage
 import com.example.co_opapp.data_model.GameState
+import com.example.co_opapp.data_model.GameStatus
 import com.example.co_opapp.data_model.Lobby
 import com.example.co_opapp.data_model.LobbyDTO
 import com.example.co_opapp.data_model.Player
@@ -32,6 +33,13 @@ class CurrentLobbyService() {
     }
 
     // expose a reactive game state
+    val gameState: State<GameState?> = derivedStateOf {
+        _lobby.value?.gameState?.value
+    }
+
+    val gameStatus: State<GameStatus?> = derivedStateOf {
+        _lobby.value?.gameState?.value?.gameStatus
+    }
 
 
     // Reactive chat messages for the current lobby

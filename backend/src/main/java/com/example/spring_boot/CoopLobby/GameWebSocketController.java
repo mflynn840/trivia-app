@@ -89,7 +89,6 @@ public class GameWebSocketController {
             System.out.println("Failed to join lobby: lobby is full of null");
         }
     }
-
     /**
      * Leave this current lobby
      * @param lobbyId
@@ -106,7 +105,6 @@ public class GameWebSocketController {
             }
         }
     }
-
     /**
      * Set the given players status to ready in this given lobby
      * @param lobbyId
@@ -115,24 +113,20 @@ public class GameWebSocketController {
     @MessageMapping("/lobby/ready/{lobbyName}")
     public void toggleReady(@DestinationVariable("lobbyName") String lobbyName, Map<String, String> payload) {        
         String username = payload.get("username");
-
         try{
             lobbyManager.toggleReady(lobbyName, username);
             Lobby currentLobby = lobbyManager.getLobby(lobbyName);
-            broadcastLobbyState(currentLobby);
-
             //if the whole lobby is ready start the game
-            if(currentLobby.isReady()){
+            if(currentLobby.getGameStatus().equals(GameStatus.WAITING_FOR_READY)
+                && currentLobby.isReady() 
+            ){
                 startGame(currentLobby);
             }
+            broadcastLobbyState(currentLobby);
         }catch(IllegalArgumentException e){
             e.printStackTrace();
         }
-
-        
     }
-
-    
     /**
      * Send a chat message to the requested lobby
      * -broadcast the new message to all other users
@@ -149,7 +143,6 @@ public class GameWebSocketController {
             broadcastChatMessage(lobby, msg);  // Only send the new chat message
         }
     }
-
         /**
      * Removes a user from all lobbies and broadcasts the updated states
      * @param username the username of the user to remove
