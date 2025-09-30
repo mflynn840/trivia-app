@@ -20,6 +20,7 @@ import com.example.co_opapp.Service.Backend.SoloGameService
 import com.example.co_opapp.Service.Backend.WebSocketClientManager
 import com.example.co_opapp.Service.Coop.CurrentLobbyService
 import com.example.co_opapp.Service.Backend.AvailableLobbiesService
+import com.example.co_opapp.data_model.GameStatus
 import com.example.co_opapp.ui.components.MusicWrapper
 import com.example.co_opapp.ui.layouts.CharacterCustomizationScreen
 import com.example.co_opapp.ui.layouts.ChatScreen
@@ -36,6 +37,7 @@ fun TriviaGame() {
     val navController = rememberNavController()
     var profilePicture by remember {mutableStateOf<Bitmap?>(null)}
 
+    val currentLobbyService = remember { CurrentLobbyService() }
 
     MusicWrapper(musicResId = R.raw.login_music) {
         NavHost(
@@ -148,14 +150,25 @@ fun TriviaGame() {
                 }
             }
 
+            //Coop ready up / chat lobby
             composable("joinLobby/{lobbyName}") { backStackEntry ->
-                val currentLobbyService = remember { CurrentLobbyService() }
+
                 val username = SessionManager.currentPlayer?.username!!
                 val lobbyName = backStackEntry.arguments?.getString("lobbyName")!!
+                val gameStatus = currentLobbyService.gameStatus.value
 
                 //connect to the server when this is launched
                 LaunchedEffect(Unit){
                     currentLobbyService.subscribeAndJoin(lobbyName=lobbyName, player=SessionManager.currentPlayer!!)
+                }
+
+                //switch to the game loop if the game status changes to IN_PROGRESS
+                LaunchedEffect(gameStatus) {
+                    if (gameStatus == GameStatus.IN_PROGRESS) {
+                        navController.navigate("coopQuiz") {
+                            popUpTo("joinLobby/{lobbyName}") { inclusive = true }
+                        }
+                    }
                 }
 
                 val lobby by currentLobbyService.lobby
@@ -177,9 +190,29 @@ fun TriviaGame() {
 
                 }
             }
+            composable("coopGame/{lobbyName}") {backStackEntry ->
+                val lobby by currentLobbyService.lobby
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    if(lobby == null){
+                        LoadingScreen()
+                    }else{
+                        CoopGameScreen(
+                            currentLobbyService = currentLobbyService,
+                            modifier = Modifier.padding(innerPadding),
+                            onNavigateBack = {
+                                navController.navigate("lobbySelector") {
+                                    popUpTo("lobbySelector")
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+
 
             // Character customization
             composable("characterCustomization") {
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     CharacterCustomizationScreen(
                         modifier = Modifier.padding(innerPadding),

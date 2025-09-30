@@ -9,9 +9,11 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 
 enum class GameStatus {
+    WAITING,
+    IN_PROGRESS,
+    FINISHED,
     WAITING_FOR_PLAYERS,
-    WAITING_FOR_READY,
-    GAME_IN_PROGRESS
+    WAITING_FOR_READY
 }
 
 
@@ -129,6 +131,8 @@ fun GameStateDTO.toGameState(): GameState {
         gameStatus = gameStatus
     )
 }
+
+
 
 
 

@@ -62,8 +62,7 @@ fun QuizScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // 🔙 Back Button
-
+        // Back Button
         IconButton(onClick = onNavigateBack,
             modifier = Modifier
                 .align(Alignment.TopStart)
