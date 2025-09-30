@@ -14,12 +14,6 @@ fun NumQuestionsInput(
     numQuestionsText: String,
     onNumQuestionsChanged: (String) -> Unit
 ) {
-    // Title above the field
-    Text(
-        "Number of Questions",
-        style = MaterialTheme.typography.titleMedium,
-        color = Color.White // match dropdown titles
-    )
 
     TextField(
         value = numQuestionsText,
