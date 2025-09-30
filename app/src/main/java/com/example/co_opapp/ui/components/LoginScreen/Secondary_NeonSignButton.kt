@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.sp
         Box(
             modifier = modifier
                 .fillMaxWidth(0.9f)
-                .height(80.dp)
+                .height(60.dp)
                 .shadow(
                     elevation = 16.dp,
                     shape = RoundedCornerShape(16.dp),
