@@ -17,7 +17,6 @@ import com.example.co_opapp.ui.layouts.GameModeScreen
 import com.example.co_opapp.ui.layouts.QuizScreen
 import com.example.co_opapp.ui.layouts.LobbySelectorScreen
 import com.example.co_opapp.Service.Backend.SoloGameService
-import com.example.co_opapp.Service.Backend.WebSocketClientManager
 import com.example.co_opapp.Service.Coop.CurrentLobbyService
 import com.example.co_opapp.Service.Backend.AvailableLobbiesService
 import com.example.co_opapp.data_model.GameStatus
@@ -166,8 +165,8 @@ fun TriviaGame() {
                 //switch to the game loop if the game status changes to IN_PROGRESS
                 LaunchedEffect(gameStatus) {
                     if (gameStatus == GameStatus.IN_PROGRESS) {
-                        navController.navigate("coopQuiz") {
-                            popUpTo("joinLobby/{lobbyName}") { inclusive = true }
+                        navController.navigate("coopGame/${lobbyName}") {
+                            popUpTo("coopGame/${lobbyName}") { inclusive = true }
                         }
                     }
                 }
@@ -213,7 +212,6 @@ fun TriviaGame() {
 
             // Character customization
             composable("characterCustomization") {
-
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     CharacterCustomizationScreen(
                         modifier = Modifier.padding(innerPadding),
