@@ -1,4 +1,4 @@
-package com.example.spring_boot.Model;
+package com.example.spring_boot.Model.coop;
 
 import java.util.List;
 import java.util.Map;
@@ -6,6 +6,12 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.example.spring_boot.Model.http.ChatMessage;
+import com.example.spring_boot.Model.http.PlayerDTO;
+
+/**
+ * A Trivia Coop game lobby
+ */
 public class Lobby {
 
     private String name;
@@ -26,7 +32,16 @@ public class Lobby {
     public void setMaxPlayers(int maxPlayers) { this.maxPlayers = maxPlayers; }
 
     public Map<String, PlayerDTO> getPlayers() { return players; }
-    public void setPlayers(Map<String, PlayerDTO> players) { this.players = players; }
+    
+    public void addPlayer(PlayerDTO p){
+        this.players.put(p.getUsername(), p);
+        this.gameState.addUser(p.getUsername());
+    }
+
+    public void setPlayers(Map<String, PlayerDTO> players) { 
+        this.players = players; 
+    }
+
 
     public List<ChatMessage> getChatMessages() { return chatMessages; }
     public void setChatMessages(List<ChatMessage> chatMessages) { this.chatMessages = chatMessages; }
@@ -42,6 +57,7 @@ public class Lobby {
     public boolean isFull() { return players.size() >= maxPlayers; }
     public boolean isEmpty() { return players.isEmpty(); }
     public boolean isReady() { return this.getPlayers().values().stream().allMatch(PlayerDTO::isReady); }
-
-
+    public void advanceQuestion(){gameState.setQuestionIdx(gameState.getQuestionIdx()+1);}
+    
 }
+

@@ -1,4 +1,4 @@
-package com.example.spring_boot.CoopLobby;
+package com.example.spring_boot.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -6,16 +6,15 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-
 import com.example.spring_boot.Managers.LobbyManager;
-import com.example.spring_boot.Model.ChatMessage;
-import com.example.spring_boot.Model.GameState;
-import com.example.spring_boot.Model.GameStatus;
-import com.example.spring_boot.Model.Lobby;
-import com.example.spring_boot.Model.Player;
-import com.example.spring_boot.Model.PlayerDTO;
-import com.example.spring_boot.dto.CreateLobbyRequest;
-
+import com.example.spring_boot.Model.coop.GameStatus;
+import com.example.spring_boot.Model.coop.Lobby;
+import com.example.spring_boot.Model.http.AnswerRequest;
+import com.example.spring_boot.Model.http.ChatMessage;
+import com.example.spring_boot.Model.http.CreateLobbyRequest;
+import com.example.spring_boot.Model.http.PlayerDTO;
+import com.example.spring_boot.Model.http.TimerRequest;
+import com.example.spring_boot.Model.user.Player;
 
 import java.util.Map;
 
@@ -72,21 +71,19 @@ public class GameWebSocketController {
      * @param lobbyId
      * @param player
      */
-    @MessageMapping("/lobby/join/{lobbyId}")
-    public void joinLobby(@DestinationVariable String lobbyId, @Payload PlayerDTO player) {
+    @MessageMapping("/lobby/join/{lobbyName}")
+    public void joinLobby(@DestinationVariable String lobbyName, @Payload PlayerDTO player) {
         System.out.println("request to join server");
-        Lobby lobby = lobbyManager.getLobby(lobbyId);
+        try{
+            lobbyManager.addUser(lobbyName, player);
+            Lobby lobby = lobbyManager.getLobby(lobbyName);
+            broadcastLobbyState(lobby); //update for other users
 
-        if (lobby != null && !lobby.isFull()) {
-            lobby.getPlayers().put(player.getUsername(), player);
-            broadcastLobbyState(lobby);  // Update all lobby users with the new lobby state
-
-            //if the lobby has >= 2 players then wait for players to be ready
             if(lobby.getPlayers().size() >= 2){
                 lobby.setGameStatus(GameStatus.WAITING_FOR_READY);
             }
-        }else{
-            System.out.println("Failed to join lobby: lobby is full of null");
+        }catch(IllegalArgumentException ex){
+            ex.printStackTrace();
         }
     }
     /**
@@ -143,7 +140,9 @@ public class GameWebSocketController {
             broadcastChatMessage(lobby, msg);  // Only send the new chat message
         }
     }
-        /**
+
+
+    /**
      * Removes a user from all lobbies and broadcasts the updated states
      * @param username the username of the user to remove
      */
@@ -161,19 +160,44 @@ public class GameWebSocketController {
         }
     }
 
+    //to start a timer, send the start time, and duration to the frontend
+    public void startTimer60(Long questionId){
+        TimerRequest t = new TimerRequest();
+        t.setStartEpochTime(System.currentTimeMillis());
+        t.setDurationMs(Long.valueOf(60000));
+        t.setQuestionId(questionId);
+        
+        
+    }
 
     @MessageMapping("/lobby/submit/{lobbyId}")
-    public void submitAnswer(){
+    public void submitAnswer(@DestinationVariable String lobbyId, 
+                            @Payload AnswerRequest answerRequest){
 
+        System.out.println("answerRequest: " + answerRequest.toString());
+        Lobby lobby = lobbyManager.getLobby(lobbyId);
+        if (lobby != null) {
+            //1. lock the resource so nobody else can answer
+                //TODO i dont know if i need to do this
+            //2. assign points for the submitted answer
+            lobbyManager.scoreResponse(lobby, answerRequest);
+            //3. check if this was the last question
+            if(lobbyManager.isLastQuestion(lobby)){
+                lobby.setGameStatus(GameStatus.FINISHED);
+            }
+            //4. advance question for the lobby
+            lobby.advanceQuestion();
+
+            //5.broadcast the new lobby to all users
+            broadcastLobbyState(lobby); 
+        }
     }
 
     //Private helper methods
-
     private void startGame(Lobby currentLobby){
         currentLobby.setGameStatus(GameStatus.IN_PROGRESS);
 
     }
-
 
     // Lobby state updates helper
     private void broadcastLobbyState(Lobby lobby) {
@@ -184,15 +208,6 @@ public class GameWebSocketController {
     private void broadcastChatMessage(Lobby lobby, ChatMessage msg) {
         messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/chat", msg);
     }
-
-    // Game state updates helper
-    private void broadcastGameState(Lobby lobby, GameState g){
-        messagingTemplate.convertAndSend("/topic/lobby/" + lobby.getName() + "/chat", g);
-    }
-
-
-
-
 
 
 }

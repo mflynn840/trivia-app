@@ -13,21 +13,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
 @Composable
-fun GameCompleteScreen(
-    score: Int,
-    totalQuestions: Int,
-    onRetry: () -> Unit
-) {
+fun GameCompleteScreen(score: Int, totalQuestions: Int, onRetry: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth(0.85f)
-                .padding(vertical = 16.dp)
-                .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
+                .padding(vertical = 16.dp),
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(8.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.6f))
@@ -46,6 +43,18 @@ fun GameCompleteScreen(
             }
         }
 
-        PrimaryButton(text = "Retry", onClick = onRetry)
+        Button(
+            onClick = onRetry,
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .height(56.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF4CAF50),
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Text("Retry", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        }
     }
 }

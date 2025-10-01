@@ -1,9 +1,11 @@
 package com.example.co_opapp.Service.Backend
 
+import androidx.compose.ui.platform.LocalContext
 import com.example.co_opapp.Interfaces.GameDriver
 import com.example.co_opapp.Repository.TriviaRepository
-import com.example.co_opapp.data_model.AnswersRequest
+import com.example.co_opapp.data_model.AnswerRequest
 import com.example.co_opapp.data_model.TriviaQuestion
+import com.example.co_opapp.SessionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -69,10 +71,19 @@ class SoloGameService(
     }
 
     override suspend fun submitAnswers(answers: List<String>): List<Boolean> {
-        val token = authService.getJwtToken() ?: return List(answers.size) { false }
         return try {
             val questionIds = _allQuestions.value.map { it.id }
-            val response = repository.checkAnswers(AnswersRequest(questionIds, answers), "Bearer $token")
+            // Map IDs and answers to AnswerRequest objects
+            val answerRequests = questionIds.zip(answers) { qId, ans ->
+                AnswerRequest(
+                    roomName = "solo",
+                    username = SessionManager.currentPlayer!!.username,
+                    questionId = qId,
+                    selectedAnswer = ans
+                )
+            }
+
+            val response = repository.checkAnswers(answerRequests, "Bearer ${SessionManager.jwtToken}")
             if (response.isSuccessful) {
                 val results = response.body()!!
                 _score.value = results.corrects.count { it }

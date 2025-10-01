@@ -1,4 +1,4 @@
-package com.example.spring_boot.CoopLobby;
+package com.example.spring_boot.Controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.spring_boot.Managers.LobbyManager;
-import com.example.spring_boot.Model.Lobby;
-import com.example.spring_boot.dto.CreateLobbyRequest;
+import com.example.spring_boot.Model.coop.Lobby;
+import com.example.spring_boot.Model.http.CreateLobbyRequest;
 
 @RestController
 @RequestMapping("/api/lobbies")

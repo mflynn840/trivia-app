@@ -1,6 +1,6 @@
 package com.example.spring_boot.Service;
 
-import com.example.spring_boot.Model.Player;
+import com.example.spring_boot.Model.user.Player;
 import com.example.spring_boot.Repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

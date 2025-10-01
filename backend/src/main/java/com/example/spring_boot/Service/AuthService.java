@@ -2,18 +2,14 @@ package com.example.spring_boot.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.spring_boot.Model.Player;
-import com.example.spring_boot.Model.PlayerDTO;
+import com.example.spring_boot.Model.http.PlayerDTO;
+import com.example.spring_boot.Model.user.Player;
 import com.example.spring_boot.Repository.PlayerRepository;
 import com.example.spring_boot.config.JwtUtil;
 
@@ -48,7 +44,7 @@ public class AuthService {
         Player player = new Player();
         player.setUsername(username);
         player.setPassword(passwordEncoder.encode(password));
-        player.setRole(com.example.spring_boot.Model.Role.PLAYER);
+        player.setRole(com.example.spring_boot.Model.user.Role.PLAYER);
         player.setProfilePicture(loadDefaultPicture());
         playerRepository.save(player);
     }

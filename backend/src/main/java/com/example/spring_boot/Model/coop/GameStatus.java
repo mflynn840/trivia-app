@@ -1,4 +1,4 @@
-package com.example.spring_boot.Model;
+package com.example.spring_boot.Model.coop;
 
 public enum GameStatus {
     WAITING,
