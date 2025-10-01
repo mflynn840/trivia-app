@@ -1,6 +1,6 @@
-package com.example.spring_boot.Model;
+package com.example.spring_boot.Model.http;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.example.spring_boot.Model.user.Player;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PlayerDTO {

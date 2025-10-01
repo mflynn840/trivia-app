@@ -12,8 +12,14 @@ import com.example.co_opapp.data_model.Lobby
 import com.example.co_opapp.data_model.LobbyDTO
 import com.example.co_opapp.data_model.Player
 import com.example.co_opapp.data_model.PlayerDTO
+import com.example.co_opapp.data_model.TriviaQuestion
 import com.example.co_opapp.data_model.toDTO
 import com.example.co_opapp.data_model.toLobby
+import kotlinx.coroutines.flow.*
+import androidx.compose.runtime.snapshotFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 class CurrentLobbyService() {
 
@@ -25,6 +31,7 @@ class CurrentLobbyService() {
 
     private val _lobby = mutableStateOf<Lobby?>(null)
     val lobby: State<Lobby?> get() = _lobby
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
 
     //reactive lobby members list
@@ -37,10 +44,15 @@ class CurrentLobbyService() {
         _lobby.value?.gameState?.value
     }
 
+    //expose a reactive game status
     val gameStatus: State<GameStatus?> = derivedStateOf {
         _lobby.value?.gameState?.value?.gameStatus
     }
 
+    // Backing flow from the lobby's reactive gameState
+    private val gameStateFlow: Flow<GameState?> = snapshotFlow {
+        _lobby.value?.gameState?.value
+    }
 
     // Reactive chat messages for the current lobby
     private val _chatMessages = mutableStateListOf<ChatMessage>()
@@ -50,6 +62,23 @@ class CurrentLobbyService() {
     private val _isConnected = mutableStateOf(false)
     val isConnected: State<Boolean> get() = _isConnected
 
+
+    //Reactive current question flow to update current question
+    // update ONLY when questions or current index change
+    val currentQuestion: State<TriviaQuestion?> = derivedStateOf {
+        val gs = gameState.value
+        val index = gs?.questionIdx?.value ?: return@derivedStateOf null
+        val questions = gs.questions
+        questions.getOrNull(index)
+    }
+
+
+    fun submitAnswer(answer: String){
+        val lobbyName = lobby.value?.name
+        if(lobbyName == null){
+            Log.w(TAG, "Cannot submit answer, lobby is null")
+        }
+    }
 
     /** Send a chat message to this lobby */
     fun sendChat(message: ChatMessage) {
@@ -62,10 +91,7 @@ class CurrentLobbyService() {
         wsManager.send("/app/lobby/chat/$lobbyName", message)
     }
 
-    private fun leaveLobby(lobbyName: String, player: Player) {
-        Log.d(TAG, "Leaving lobby $lobbyName as ${player.username}")
-        wsManager.send("/app/lobby/leave/$lobbyName", player.toDTO())
-    }
+
 
     fun toggleReady(lobbyName: String, username: String) {
         Log.d(TAG, "Toggling ready for ${username} in lobby $lobbyName")
@@ -80,6 +106,9 @@ class CurrentLobbyService() {
         wsManager.disconnect()
         _isConnected.value = false
     }
+
+
+
 
 
     fun subscribeAndJoin(lobbyName: String, player: Player) {
@@ -101,10 +130,17 @@ class CurrentLobbyService() {
         }
     }
 
-    /** Private helper: only called after subscribing */
+    /** Private helpers */
     private fun joinLobby(lobbyName: String, player: Player) {
         wsManager.send("/app/lobby/join/$lobbyName", player.toDTO())
     }
+
+    private fun leaveLobby(lobbyName: String, player: Player) {
+        Log.d(TAG, "Leaving lobby $lobbyName as ${player.username}")
+        wsManager.send("/app/lobby/leave/$lobbyName", player.toDTO())
+    }
+
+
 
 
 

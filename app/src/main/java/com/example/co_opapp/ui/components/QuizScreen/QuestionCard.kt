@@ -21,8 +21,6 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun QuestionCard(
     question: String,
-    questionIndex: Int,
-    totalQuestions: Int,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
     backgroundColor: Color = Color.White.copy(alpha = 0.6f)
@@ -41,14 +39,6 @@ fun QuestionCard(
             modifier = Modifier.padding(16.dp)
         ) {
 
-            Text(
-                text = "Question ${questionIndex + 1} of $totalQuestions",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth() // <-- important
-            )
 
             Spacer(modifier = Modifier.height(10.dp))
 

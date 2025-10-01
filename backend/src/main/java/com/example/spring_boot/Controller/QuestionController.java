@@ -3,10 +3,11 @@ package com.example.spring_boot.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.example.spring_boot.Service.QuestionService;
 import com.example.spring_boot.Model.Question;
-
+import com.example.spring_boot.Model.http.AnswerListResponse;
+import com.example.spring_boot.Model.http.AnswerRequest;
+import com.example.spring_boot.Model.http.AnswerResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +108,27 @@ public class QuestionController {
         return questionService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+
+    @PostMapping("/check-answer")
+    public ResponseEntity<?> checkAnswer(@RequestBody AnswerRequest request) {
+        try {
+            AnswerResponse response = this.questionService.checkAnswer(request);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to check answer: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/check-answers")
+    public ResponseEntity<?> checkAnswers(@RequestBody List<AnswerRequest> request) {
+        try{
+            AnswerListResponse response = this.questionService.checkAnswers(request);
+            return ResponseEntity.ok(response);
+        }catch(IllegalArgumentException e){
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to check answer: " + e.getMessage()));
+        }
     }
 
 

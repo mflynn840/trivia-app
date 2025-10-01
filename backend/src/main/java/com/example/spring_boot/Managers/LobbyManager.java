@@ -2,16 +2,26 @@ package com.example.spring_boot.Managers;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.example.spring_boot.Model.GameState;
-import com.example.spring_boot.Model.GameStatus;
-import com.example.spring_boot.Model.Lobby;
-import com.example.spring_boot.Model.PlayerDTO;
+import com.example.spring_boot.Model.http.PlayerDTO;
+import com.example.spring_boot.Model.http.AnswerRequest;
+import com.example.spring_boot.Repository.QuestionRepository;
+import com.example.spring_boot.Model.Question;
+import com.example.spring_boot.Model.coop.GameStatus;
+import com.example.spring_boot.Model.coop.Lobby;
 
 @Component
 public class LobbyManager {
+
+
     private final Map<String, Lobby> lobbies = new ConcurrentHashMap<>();
+
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     /**
      * 
@@ -37,10 +47,7 @@ public class LobbyManager {
 
         //Create a new lobby and gamestate
         Lobby lobby = new Lobby();
-        GameState gameState = new GameState();
-        gameState.setGameStatus(GameStatus.WAITING_FOR_PLAYERS);
         lobby.setName(name);
-        lobby.setGameState(gameState);
         lobbies.put(name, lobby);
         return lobby;
     }
@@ -74,6 +81,43 @@ public class LobbyManager {
         PlayerDTO p = lobby.getPlayers().get(username);
         if (p == null) throw new IllegalArgumentException("User does not exist in that lobby");
         p.setReady(!p.isReady());
+    }
+
+    public Lobby safeGetLobby(String lobbyName) throws IllegalArgumentException{
+        Lobby lobby = lobbies.get(lobbyName);
+        if(lobby == null){
+            throw new IllegalArgumentException("lobby doesnt exist");
+        }
+        return lobby;
+    }
+
+    public boolean isLastQuestion(Lobby lobby){;
+        return lobby.getGameState().getQuestionIdx() >= 
+                lobby.getGameState().getNumQuestions();
+    }
+
+    public void scoreResponse(Lobby lobby, AnswerRequest answerRequest) {
+
+        Long questionId = answerRequest.getQuestionId();
+        Question answered = questionRepository.findById(questionId)
+                .orElseThrow(() -> new IllegalArgumentException("Question not found"));
+        
+
+        //if the answer is correct +1 points
+        if(answered.getCorrectAnswer().equals(answerRequest.getSelectedAnswer())){
+            lobby.getGameState().addPoints(answerRequest.getUsername(), 1);
+
+        //-1 points
+        }else{
+            lobby.getGameState().addPoints(answerRequest.getUsername(), -1);
+        }
+
+    }
+
+    public void addUser(String lobbyName, PlayerDTO player) {
+        Lobby lobby = this.lobbies.get(lobbyName);
+        if (lobby == null || lobby.isFull()) { throw new IllegalArgumentException("Invalid lobby");}
+        lobby.addPlayer(player);
     }
 }
 

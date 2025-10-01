@@ -1,8 +1,10 @@
 package com.example.co_opapp.RetrofitApi
 
+import com.example.co_opapp.data_model.AnswerListResponse
+import com.example.co_opapp.data_model.AnswerRequest
+import com.example.co_opapp.data_model.AnswerResponse
 import com.example.co_opapp.data_model.TriviaQuestion
-import com.example.co_opapp.data_model.AnswersRequest
-import com.example.co_opapp.data_model.AnswersResponse
+
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -15,9 +17,16 @@ interface QuestionApi {
         @Header("Authorization") token: String
     ): Response<List<TriviaQuestion>>
 
-    @POST("api/game/check-answers")
+    @POST("api/questions/check-answers")
     suspend fun checkAnswers(
-        @Body answersRequest: AnswersRequest,
+        @Body answersRequest: List<AnswerRequest>,
         @Header("Authorization") token: String
-    ): Response<AnswersResponse>
+    ): Response<AnswerListResponse>
+
+    @POST("api/questions/check-answer")
+    suspend fun checkAnswer(
+        @Body answerRequest: AnswerRequest,
+        @Header("Authorization") token: String
+    ): Response<AnswerResponse>
+
 }

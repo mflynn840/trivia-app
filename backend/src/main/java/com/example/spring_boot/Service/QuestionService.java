@@ -1,10 +1,14 @@
 package com.example.spring_boot.Service;
 
 import com.example.spring_boot.Model.Question;
+import com.example.spring_boot.Model.http.AnswerListResponse;
+import com.example.spring_boot.Model.http.AnswerRequest;
+import com.example.spring_boot.Model.http.AnswerResponse;
 import com.example.spring_boot.Repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +28,6 @@ public class QuestionService {
         return questionRepository.findRandomQuestions(count, category, difficulty);
     }
 
-
-    public boolean checkAnswer(Long questionId, String answer) {
-        return questionRepository.findById(questionId)
-                .map(q -> q.getCorrectAnswer().equalsIgnoreCase(answer))
-                .orElse(false);
-    }
-    
     
     public Question getQuestion(int index){
         if(index > this.questionRepository.count() || index < 1){
@@ -65,6 +62,35 @@ public class QuestionService {
 
     public Optional<Question> findById(Long id) {
         return questionRepository.findById(id);
+    }
+
+    //checking answers
+    public AnswerResponse checkAnswer(AnswerRequest answerRequest) {
+        Question question = questionRepository.findById(answerRequest.getQuestionId())
+                            .orElseThrow(() -> new IllegalArgumentException("Question not found"));
+        
+        boolean isCorrect = question.getCorrectAnswer().equals(answerRequest.getSelectedAnswer());
+
+        AnswerResponse response = new AnswerResponse(isCorrect, question.getCorrectAnswer());
+        return response;
+            
+    }
+
+    public AnswerListResponse checkAnswers(List<AnswerRequest> request) {
+        
+        ArrayList<String> correctAnswers = new ArrayList<>();
+        ArrayList<Boolean> corrects = new ArrayList<>();
+        
+        for(AnswerRequest item: request){
+            AnswerResponse itemA = checkAnswer(item);
+            corrects.add(itemA.getCorrect());
+            correctAnswers.add(itemA.getCorrectAnswer());
+        }
+
+        AnswerListResponse response = new AnswerListResponse();
+        response.setCorrectAnswers(correctAnswers);
+        response.setCorrects(corrects);
+        return response;
     }
 
 
