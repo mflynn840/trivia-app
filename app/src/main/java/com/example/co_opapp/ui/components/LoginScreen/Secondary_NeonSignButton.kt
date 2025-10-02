@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
         text: String,
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
-        neonColor: Color = Color(0xFF4B5563)
+        neonColor: Color = Color(0xFFE5E7EB)
     ) {
         // Pulsing glow animation
         val infiniteTransition = rememberInfiniteTransition()
