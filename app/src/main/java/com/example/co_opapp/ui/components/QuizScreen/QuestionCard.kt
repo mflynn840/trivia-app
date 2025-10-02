@@ -27,51 +27,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun QuestionScreen(
+fun QuestionCard(
     question: String,
-    onBack: () -> Unit
+    modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp) // overall padding for breathing room
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
     ) {
-        // Back button row
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-        }
-
-        // Heading
         Text(
-            text = "Question",
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
-        )
-
-        // Question card itself
-        QuestionCard(
-            question = question,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 8.dp)
+            text = question,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(16.dp)
         )
     }
-}
-
-@Composable
-fun QuestionCard(question: String, modifier: Modifier) {
-    TODO("Not yet implemented")
 }
