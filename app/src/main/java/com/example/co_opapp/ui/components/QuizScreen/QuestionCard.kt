@@ -43,7 +43,6 @@ fun QuestionCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ){
-            Spacer(modifier = Modifier.height(10.dp))
 
             // Scrollable question text (~2 lines visible)
             Box(
