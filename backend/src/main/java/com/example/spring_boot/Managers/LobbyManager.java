@@ -148,14 +148,14 @@ public class LobbyManager {
         Lobby lobby = getLobby(lobbyId);
         if (lobby == null) {throw new IllegalArgumentException("Lobby invalid");}
         lobby.getPlayers().remove(player.getUsername());
-
-        //if the game is over and the last person leaves
-        if(lobby.getPlayers().size() == 0){
-            lobbies.remove(lobbyId);
-        }
-        if(lobby.getPlayers().size() < 2){
-            lobby.setGameStatus(GameStatus.WAITING_FOR_PLAYERS);
-        }
     }
+
+    public void deleteLobby(String lobbyName) {
+    if (lobbies.containsKey(lobbyName)) {
+        lobbies.remove(lobbyName);
+    } else {
+        throw new IllegalArgumentException("Lobby does not exist: " + lobbyName);
+    }
+}
 }
 
