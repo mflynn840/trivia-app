@@ -20,10 +20,10 @@ fun NeonRefreshButton(onClick: () -> Unit) {
     Secondary_NeonSignButton(
         text = "Refresh",
         onClick = onClick,
-        neonColor = Color(0xFF00F0FF),
+        neonColor = Color(0xFFE5E7EB),
         modifier = Modifier
             .fillMaxWidth(0.6f) // narrower
-            .height(56.dp)      // shorter
+            .height(46.dp)      // shorter
     )
 }
 

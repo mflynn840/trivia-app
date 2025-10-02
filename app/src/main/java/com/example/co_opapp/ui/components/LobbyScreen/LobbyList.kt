@@ -8,7 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-
+import com.example.co_opapp.ui.components.LoginScreen.Primary_NeonSignButton
+import com.example.co_opapp.ui.components.LoginScreen.Secondary_NeonSignButton
 
 
 // Composable function to display each lobby card
@@ -35,7 +36,7 @@ fun LobbyCard(
         Text(
             text = "Lobby: $lobbyName",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Black
+            color = Color.Black,
         )
 
         // Action buttons (Join, Leave, Toggle Ready)
@@ -43,7 +44,10 @@ fun LobbyCard(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Button(onClick = onJoin) { Text("Join") }
+            Primary_NeonSignButton(
+                text = "Join",
+                onClick = onJoin
+            )
         }
     }
 }
