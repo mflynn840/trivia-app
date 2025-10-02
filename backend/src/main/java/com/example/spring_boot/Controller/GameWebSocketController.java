@@ -100,12 +100,42 @@ public class GameWebSocketController {
     public void leaveLobby(String lobbyId, @Payload Player player) {
         try{
             lobbyManager.leaveLobby(lobbyId, player);
-            broadcastLobbyState(lobbyManager.getLobby(lobbyId));
+            Lobby lobby = lobbyManager.getLobby(lobbyId);
+
+            //modify flags if player count drops below threshold
+            if(lobby.getPlayers().size() == 0){
+                deleteLobby(lobbyId);   
+                return;                
+            }if(lobby.getPlayers().size() < 2){
+                lobby.setGameStatus(GameStatus.WAITING_FOR_PLAYERS);
+            }
+            // broadcast updated lobby state
+            broadcastLobbyState(lobby);
+            
         }catch(IllegalArgumentException ex){
             ex.printStackTrace();
         }
         
     }
+
+    /**
+     * delete a lobby and notify all clients
+     * @param lobbyName
+     */
+    @MessageMapping("/lobby/delete/{lobbyName}")
+    public void deleteLobby(@DestinationVariable String lobbyName) {
+        try {
+            lobbyManager.deleteLobby(lobbyName);
+            sendAllLobbies(); // notify all clients the lobby list changed
+        } catch (IllegalArgumentException e) {
+            messagingTemplate.convertAndSend("/topic/lobby/errors", Map.of(
+                "error", true,
+                "message", e.getMessage()
+            ));
+        }
+    }
+
+
     /**
      * Set the given players status to ready in this given lobby
      * @param lobbyId
