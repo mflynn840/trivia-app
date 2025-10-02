@@ -31,7 +31,7 @@ fun QuestionScreen(
         modifier = Modifier.fillMaxWidth()
     ) {
         QuestionCard(
-            question = question.body,
+            question = question.body
         )
 
         options.forEach { answer ->
