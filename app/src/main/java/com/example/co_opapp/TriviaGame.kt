@@ -38,6 +38,7 @@ fun TriviaGame() {
     val navController = rememberNavController()
     var profilePicture by remember {mutableStateOf<Bitmap?>(null)}
     val currentLobbyService = remember { CurrentLobbyService() }
+    val profileService = ProfileService(authService, context)
 
     MusicWrapper(musicResId = R.raw.login_music) {
         NavHost(
@@ -233,7 +234,8 @@ fun TriviaGame() {
                                 navController.navigate("lobbySelector") {
                                     popUpTo("lobbySelector")
                                 }
-                            }
+                            },
+                            profileService = profileService
                         )
 
                     }
@@ -247,7 +249,7 @@ fun TriviaGame() {
                     CharacterCustomizationScreen(
                         modifier = Modifier.padding(innerPadding),
                         onNavigateBack = { navController.popBackStack() },
-                        profilePictureService = ProfileService(authService, context)
+                        profilePictureService = profileService
                     )
                 }
             }
