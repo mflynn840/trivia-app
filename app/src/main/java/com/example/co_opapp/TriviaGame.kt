@@ -28,7 +28,7 @@ import com.example.co_opapp.ui.layouts.GameOverScreen
 import com.example.co_opapp.ui.layouts.QuizSetupScreen
 import com.example.co_opapp.ui.layouts.LoadingScreen
 import com.example.co_opapp.ui.layouts.LoginScreen
-
+import androidx.compose.ui.graphics.Color
 @Composable
 fun TriviaGame() {
     val context = LocalContext.current
@@ -39,6 +39,9 @@ fun TriviaGame() {
     var profilePicture by remember {mutableStateOf<Bitmap?>(null)}
     val currentLobbyService = remember { CurrentLobbyService() }
     val profileService = ProfileService(authService, context)
+
+
+
 
     MusicWrapper(musicResId = R.raw.login_music) {
         NavHost(

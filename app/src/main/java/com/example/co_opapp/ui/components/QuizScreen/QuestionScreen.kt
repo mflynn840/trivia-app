@@ -2,16 +2,10 @@ package com.example.co_opapp.ui.components.QuizScreen
 
 import SubmitAnswerButton
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.TriviaQuestion
 
 @Composable
