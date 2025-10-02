@@ -97,7 +97,7 @@ public class LobbyManager {
         return lobby;
     }
 
-    public boolean isLastQuestion(Lobby lobby){;
+    public boolean outOfQuestions(Lobby lobby){;
         return lobby.getGameState().getQuestionIdx() >= 
                 lobby.getGameState().getNumQuestions();
     }

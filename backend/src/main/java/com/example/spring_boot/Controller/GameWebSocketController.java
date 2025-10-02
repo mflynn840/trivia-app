@@ -190,12 +190,15 @@ public class GameWebSocketController {
                 //TODO i dont know if i need to do this
             //2. assign points for the submitted answer
             lobbyManager.scoreResponse(lobby, answerRequest);
-            //3. check if this was the last question
-            if(lobbyManager.isLastQuestion(lobby)){
-                lobby.setGameStatus(GameStatus.FINISHED);
-            }
+
             //4. advance question for the lobby
             lobby.advanceQuestion();
+
+            //3. check if this was the last question
+            if(lobbyManager.outOfQuestions(lobby)){
+                System.out.println("Last question, game over");
+                lobby.setGameStatus(GameStatus.FINISHED);
+            }
 
             //5.broadcast the new lobby to all users
             broadcastLobbyState(lobby); 

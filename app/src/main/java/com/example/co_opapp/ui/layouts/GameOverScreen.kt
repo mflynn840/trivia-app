@@ -1,17 +1,15 @@
 package com.example.co_opapp.ui.layouts
 
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import com.example.co_opapp.Service.Coop.CurrentLobbyService
-import com.example.co_opapp.ui.components.GameOverScreen.TrophyWithProfile
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.R
-import kotlin.collections.getValue
-
+import com.example.co_opapp.Service.Coop.CurrentLobbyService
+import com.example.co_opapp.ui.components.GameOverScreen.TrophyWithProfile
 
 @Composable
 fun GameOverScreen(
@@ -19,15 +17,12 @@ fun GameOverScreen(
     modifier: Modifier = Modifier,
     onNavigateBack: () -> Unit
 ) {
-
-    //Reactively consume exposed variables in lobbyService
-    val players by currentLobbyService.players // Map<String, UserDTO>
-    val scores: Map<String, Int> by currentLobbyService.scores   // Map<String, Int>
+    // Reactively consume exposed variables from the lobby service
+    val players by currentLobbyService.players
+    val scores: Map<String, Int> by currentLobbyService.scores
 
     // Sort by score, highest first
     val sorted = players.sortedByDescending { scores[it.username] ?: 0 }
-
-    // Take top 3
     val topThree = sorted.take(3)
 
     Column(
@@ -43,8 +38,7 @@ fun GameOverScreen(
             if (topThree.size > 1) {
                 TrophyWithProfile(
                     place = 2,
-                    //imageUri = topThree[1].profilePictureUri,
-                    imageUri=null,
+                    imageUri = null, // Replace with topThree[1].profilePictureUri if available
                     trophyRes = R.drawable.silver_trophy
                 )
             } else {
@@ -55,7 +49,7 @@ fun GameOverScreen(
             if (topThree.isNotEmpty()) {
                 TrophyWithProfile(
                     place = 1,
-                    imageUri = null,
+                    imageUri = null, // Replace with topThree[0].profilePictureUri if available
                     trophyRes = R.drawable.gold_trophy
                 )
             } else {
@@ -66,7 +60,7 @@ fun GameOverScreen(
             if (topThree.size > 2) {
                 TrophyWithProfile(
                     place = 3,
-                    imageUri = null,
+                    imageUri = null, // Replace with topThree[2].profilePictureUri if available
                     trophyRes = R.drawable.bronze_trophy
                 )
             } else {

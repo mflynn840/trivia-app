@@ -1,9 +1,7 @@
 package com.example.co_opapp.ui.components.GameOverScreen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,7 +12,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 
-
 @Composable
 fun TrophyWithProfile(
     place: Int,
@@ -23,16 +20,18 @@ fun TrophyWithProfile(
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.size(120.dp)
+        modifier = Modifier.size(120.dp) // Limits max size of the trophy
     ) {
-        // Trophy image
+        // Trophy image (sized properly to avoid over-scaling)
         Image(
             painter = painterResource(id = trophyRes),
             contentDescription = "Trophy for place $place",
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .size(120.dp), // Prevents full-canvas scaling
+            contentScale = ContentScale.Fit
         )
 
-        // Profile picture overlay (circle cropped)
+        // Profile image overlaid in center (circle clipped)
         if (imageUri != null) {
             Image(
                 painter = rememberAsyncImagePainter(imageUri),
