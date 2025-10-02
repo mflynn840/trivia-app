@@ -30,9 +30,9 @@ fun QuestionScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        QuestionCard(
-            question = question.body
-        )
+        //QuestionCard(
+            //question = question.body
+        //)
 
         options.forEach { answer ->
             AnswerButton(
