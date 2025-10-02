@@ -27,8 +27,8 @@ fun AnswerButton(
     onClick: () -> Unit
 ) {
     // Determine colors
-    val backgroundColor = if (isSelected) SessionManager.ANSWER_PRIMARY_COLOR else Color.White.copy(alpha = 0.6f)
-    val textColor = if (isSelected) SessionManager.ANSWER_TEXT_COLOR else Color.Black
+    val backgroundColor = if (isSelected) SessionManager.ANSWER_SELECTED_PRIMARY_COLOR else SessionManager.ANSWER_UNSELECTED_PRIMARY_COLOR
+    val textColor = if (isSelected) SessionManager.ANSWER_SELECTED_TEXT_COLOR else SessionManager.ANSWER_UNSELECTED_TEXT_COLOR
 
     Surface(
         modifier = Modifier
