@@ -28,6 +28,9 @@ fun QuestionScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
+
+        Spacer(modifier = Modifier.height(95.dp))
+
         QuestionCard(
             question = question.body,
         )
