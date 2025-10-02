@@ -70,7 +70,6 @@ fun GameModeScreen(
                 icon = "\uD83C\uDFAF",
                 title = "Test Your Knowledge",
                 buttonText = "Story Mode",
-                neonColor = Color(0xFFFF073A),
                 onClick = onNavigateToSinglePlayer
             )
 
@@ -78,7 +77,6 @@ fun GameModeScreen(
                 icon = "⚔\uFE0F",
                 title = "Play With Friends",
                 buttonText = "Co-op Mode",
-                neonColor = Color(0xFFFF073A),
                 onClick = onNavigateToCoOp
             )
 
