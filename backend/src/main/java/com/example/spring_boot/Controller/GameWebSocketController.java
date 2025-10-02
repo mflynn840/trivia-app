@@ -18,6 +18,11 @@ import com.example.spring_boot.Model.user.Player;
 
 import java.util.Map;
 
+
+/**
+ * 
+ * Implements a STOMP endpoint for Coop gameplay
+ */
 @Controller
 public class GameWebSocketController {
 
