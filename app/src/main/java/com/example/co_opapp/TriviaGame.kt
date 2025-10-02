@@ -36,7 +36,6 @@ fun TriviaGame() {
     var playerService by remember { mutableStateOf<ProfileService?>(null) }
     val navController = rememberNavController()
     var profilePicture by remember {mutableStateOf<Bitmap?>(null)}
-
     val currentLobbyService = remember { CurrentLobbyService() }
 
     MusicWrapper(musicResId = R.raw.login_music) {
@@ -153,7 +152,6 @@ fun TriviaGame() {
             //Coop ready up / chat lobby
             composable("joinLobby/{lobbyName}") { backStackEntry ->
 
-                val username = SessionManager.currentPlayer?.username!!
                 val lobbyName = backStackEntry.arguments?.getString("lobbyName")!!
                 val gameStatus = currentLobbyService.gameStatus.value
 
@@ -192,6 +190,14 @@ fun TriviaGame() {
             }
             composable("coopGame/{lobbyName}") {backStackEntry ->
                 val lobby by currentLobbyService.lobby
+                val gameStatus = currentLobbyService.gameStatus.value
+                val lobbyName = backStackEntry.arguments?.getString("lobbyName")!!
+
+                LaunchedEffect(gameStatus){
+                    navController.navigate("coopGame/${lobbyName}") {
+                        popUpTo("coopGame/${lobbyName}") { inclusive = true }
+                    }
+                }
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     if(lobby == null){
                         LoadingScreen()
@@ -209,6 +215,28 @@ fun TriviaGame() {
                 }
             }
 
+            //Game over screen
+            composable("gameOver/{lobbyName}") {backStackEntry ->
+                val lobby by currentLobbyService.lobby
+
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    if(lobby == null){
+                        LoadingScreen()
+                    }else{
+                        GameOverScreen(
+                            currentLobbyService = currentLobbyService,
+                            modifier = Modifier.padding(innerPadding),
+                            onNavigateBack = {
+                                navController.navigate("lobbySelector") {
+                                    popUpTo("lobbySelector")
+                                }
+                            }
+                        )
+
+                    }
+
+                }
+            }
 
             // Character customization
             composable("characterCustomization") {
@@ -224,23 +252,3 @@ fun TriviaGame() {
     }
 }
 
-
-
-/*
-composable("coopQuiz") {
-Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-    QuizScreen(
-        modifier = Modifier.padding(innerPadding),
-        quizService = coopService,
-        onNavigateBack = {
-            navController.navigate("gameMode") {
-                popUpTo("gameMode") { inclusive = true }
-            }
-        },
-        onGameComplete = { score, total ->
-            // show results, maybe navigate back to menu
-        }
-    )
-}
-}
-*/
