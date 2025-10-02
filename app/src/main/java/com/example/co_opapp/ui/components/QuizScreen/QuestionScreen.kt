@@ -13,8 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.co_opapp.data_model.TriviaQuestion
-import com.example.co_opapp.ui.components.QuizScreen.AnswerButton
-import com.example.co_opapp.ui.components.QuizScreen.QuestionCard
 
 @Composable
 fun QuestionScreen(
@@ -30,9 +28,10 @@ fun QuestionScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        //QuestionCard(
-            //question = question.body
-        //)
+        QuestionCard(
+            question = question.body,
+            modifier = Modifier.fillMaxWidth(0.7f)
+        )
 
         options.forEach { answer ->
             AnswerButton(
