@@ -98,14 +98,13 @@ public class GameWebSocketController {
      */
     @MessageMapping("/lobby/leave/{lobbyId}")
     public void leaveLobby(String lobbyId, @Payload Player player) {
-        Lobby lobby = lobbyManager.getLobby(lobbyId);
-        if (lobby != null) {
-            lobby.getPlayers().remove(player.getUsername());
-            broadcastLobbyState(lobby);
-            if(lobby.getPlayers().size() < 2){
-                lobby.setGameStatus(GameStatus.WAITING_FOR_PLAYERS);
-            }
+        try{
+            lobbyManager.leaveLobby(lobbyId, player);
+            broadcastLobbyState(lobbyManager.getLobby(lobbyId));
+        }catch(IllegalArgumentException ex){
+            ex.printStackTrace();
         }
+        
     }
     /**
      * Set the given players status to ready in this given lobby

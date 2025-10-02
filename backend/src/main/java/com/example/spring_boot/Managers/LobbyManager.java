@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.spring_boot.Model.http.PlayerDTO;
+import com.example.spring_boot.Model.user.Player;
 import com.example.spring_boot.Model.http.AnswerRequest;
 import com.example.spring_boot.Repository.QuestionRepository;
 import com.example.spring_boot.Service.QuestionService;
@@ -141,6 +142,20 @@ public class LobbyManager {
         lobby.setGameStatus(GameStatus.IN_PROGRESS);
         
 
+    }
+
+    public void leaveLobby(String lobbyId, Player player) {
+        Lobby lobby = getLobby(lobbyId);
+        if (lobby == null) {throw new IllegalArgumentException("Lobby invalid");}
+        lobby.getPlayers().remove(player.getUsername());
+
+        //if the game is over and the last person leaves
+        if(lobby.getPlayers().size() == 0){
+            lobbies.remove(lobbyId);
+        }
+        if(lobby.getPlayers().size() < 2){
+            lobby.setGameStatus(GameStatus.WAITING_FOR_PLAYERS);
+        }
     }
 }
 

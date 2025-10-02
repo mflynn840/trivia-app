@@ -181,8 +181,9 @@ fun TriviaGame() {
                             currentLobbyService=currentLobbyService,
                             modifier=Modifier.padding(innerPadding),
                             onNavigateBack = {
-                                navController.navigate("gameMode") {
-                                    popUpTo("gameMode") { inclusive = true }
+                                navController.navigate("lobbySelector") {
+                                    currentLobbyService.leaveLobby(lobbyName=lobby!!.name, player=SessionManager.currentPlayer!!)
+                                    popUpTo("lobbySelector") { inclusive = true }
                                 }
                             }
                         )
@@ -190,6 +191,8 @@ fun TriviaGame() {
 
                 }
             }
+
+            //Coop gameplay loop screen
             composable("coopGame/{lobbyName}") {backStackEntry ->
                 val lobby by currentLobbyService.lobby
                 val gameStatus = currentLobbyService.gameStatus.value
@@ -211,6 +214,7 @@ fun TriviaGame() {
                             modifier = Modifier.padding(innerPadding),
                             onNavigateBack = {
                                 navController.navigate("lobbySelector") {
+                                    currentLobbyService.leaveLobby(lobbyName=lobby!!.name, player=SessionManager.currentPlayer!!)
                                     popUpTo("lobbySelector")
                                 }
                             }
@@ -232,6 +236,7 @@ fun TriviaGame() {
                             modifier = Modifier.padding(innerPadding),
                             onNavigateBack = {
                                 navController.navigate("lobbySelector") {
+                                    currentLobbyService.leaveLobby(lobbyName=lobby!!.name, player=SessionManager.currentPlayer!!)
                                     popUpTo("lobbySelector")
                                 }
                             },

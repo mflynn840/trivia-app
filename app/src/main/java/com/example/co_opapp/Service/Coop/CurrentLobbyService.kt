@@ -52,6 +52,17 @@ class CurrentLobbyService() {
         _lobby.value?.gameState?.value
     }
 
+    /**
+     * Leave the current lobby but keep the WSConnection active
+     */
+    public fun leaveLobby(lobbyName: String, player: Player) {
+        Log.d(TAG, "Leaving lobby $lobbyName as ${player.username}")
+        wsManager.send("/app/lobby/leave/$lobbyName", player.toDTO())
+        wsManager.disconnect()
+        resetLobbyState() // Reset internal state
+    }
+
+
     // Reactive chat messages for the current lobby
     private val _chatMessages = mutableStateListOf<ChatMessage>()
     val chatMessages: SnapshotStateList<ChatMessage> get() = _chatMessages
@@ -106,19 +117,21 @@ class CurrentLobbyService() {
         wsManager.send("/app/lobby/ready/$lobbyName", payload)
     }
 
-    /** Disconnect */
-    fun disconnect() {
+    /** Disconnect and leave the current lobby*/
+    fun leaveAndDisconnect() {
         Log.d(TAG, "Disconnecting from current lobby")
         leaveLobby(lobby.value?.name ?: "", SessionManager.currentPlayer!!)
         wsManager.disconnect()
         _isConnected.value = false
     }
 
-
-
-
-
+    /**
+     * Subscribe to state and chat upudates and join lobby
+     */
     fun subscribeAndJoin(lobbyName: String, player: Player) {
+        resetLobbyState()
+
+
         wsManager.connect {
             _isConnected.value = true
             // Subscribe to state first
@@ -129,7 +142,7 @@ class CurrentLobbyService() {
             wsManager.subscribeTopic("/topic/lobby/$lobbyName/chat", ChatMessage::class.java) { msg ->
                 _chatMessages.add(msg)
             }
-            // Now actually join
+            // join the lobby
             joinLobby(lobbyName, player)
         }
     }
@@ -139,10 +152,13 @@ class CurrentLobbyService() {
         wsManager.send("/app/lobby/join/$lobbyName", player.toDTO())
     }
 
-    private fun leaveLobby(lobbyName: String, player: Player) {
-        Log.d(TAG, "Leaving lobby $lobbyName as ${player.username}")
-        wsManager.send("/app/lobby/leave/$lobbyName", player.toDTO())
+    private fun resetLobbyState() {
+        _lobby.value = null
+        _chatMessages.clear()
+        _isConnected.value = false
     }
+
+
 
 
 
