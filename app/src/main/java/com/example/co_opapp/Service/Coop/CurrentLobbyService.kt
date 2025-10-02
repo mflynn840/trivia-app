@@ -17,6 +17,7 @@ import com.example.co_opapp.data_model.toDTO
 import com.example.co_opapp.data_model.toLobby
 import kotlinx.coroutines.flow.*
 import androidx.compose.runtime.snapshotFlow
+import com.example.co_opapp.data_model.AnswerRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -73,11 +74,20 @@ class CurrentLobbyService() {
     }
 
 
-    fun submitAnswer(answer: String){
-        val lobbyName = lobby.value?.name
-        if(lobbyName == null){
-            Log.w(TAG, "Cannot submit answer, lobby is null")
-        }
+    fun submitAnswer(questionId: Long, answer: String){
+        val lobbyName = lobby.value?.name!!
+        val username = SessionManager.currentPlayer?.username!!
+
+        val answerRequest = AnswerRequest(
+            roomName = lobbyName,
+            username = username,
+            questionId = questionId,
+            selectedAnswer = answer
+        )
+
+        Log.d(TAG, "Submitting answer for ${username} to $lobbyName: $answer")
+        wsManager.send("/app/lobby//submit/$lobbyName", answerRequest)
+
     }
 
     /** Send a chat message to this lobby */

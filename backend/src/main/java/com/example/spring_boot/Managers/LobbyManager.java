@@ -1,5 +1,7 @@
 package com.example.spring_boot.Managers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.example.spring_boot.Model.http.PlayerDTO;
 import com.example.spring_boot.Model.http.AnswerRequest;
 import com.example.spring_boot.Repository.QuestionRepository;
+import com.example.spring_boot.Service.QuestionService;
 import com.example.spring_boot.Model.Question;
 import com.example.spring_boot.Model.coop.GameStatus;
 import com.example.spring_boot.Model.coop.Lobby;
@@ -22,6 +25,9 @@ public class LobbyManager {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private QuestionService questionService;
 
     /**
      * 
@@ -118,6 +124,23 @@ public class LobbyManager {
         Lobby lobby = this.lobbies.get(lobbyName);
         if (lobby == null || lobby.isFull()) { throw new IllegalArgumentException("Invalid lobby");}
         lobby.addPlayer(player);
+    }
+
+    /**Pick questions for the game and set the game status to in progress */
+    public void startGame(String lobbyName) {
+        Lobby lobby = this.lobbies.get(lobbyName);
+        if (lobby == null) { throw new IllegalArgumentException("Invalid lobby");}
+        List<Question> questions = questionService.getRandomQuestions(
+            lobby.getNumQuestions(), 
+            lobby.getCategory(), 
+            lobby.getDifficulty());
+        
+        //setup questions and change flag
+        lobby.getGameState().setQuestions(questions);
+        lobby.getGameState().setQuestionIdx(0);
+        lobby.setGameStatus(GameStatus.IN_PROGRESS);
+        
+
     }
 }
 

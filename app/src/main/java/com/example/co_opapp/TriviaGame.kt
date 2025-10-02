@@ -23,7 +23,7 @@ import com.example.co_opapp.data_model.GameStatus
 import com.example.co_opapp.ui.components.MusicWrapper
 import com.example.co_opapp.ui.layouts.CharacterCustomizationScreen
 import com.example.co_opapp.ui.layouts.ChatScreen
-import com.example.co_opapp.ui.layouts.CoopGameScreen
+import com.example.co_opapp.ui.layouts.CoopQuizScreen
 import com.example.co_opapp.ui.layouts.QuizSetupScreen
 import com.example.co_opapp.ui.layouts.LoadingScreen
 import com.example.co_opapp.ui.layouts.LoginScreen
@@ -196,7 +196,7 @@ fun TriviaGame() {
                     if(lobby == null){
                         LoadingScreen()
                     }else{
-                        CoopGameScreen(
+                        CoopQuizScreen(
                             currentLobbyService = currentLobbyService,
                             modifier = Modifier.padding(innerPadding),
                             onNavigateBack = {

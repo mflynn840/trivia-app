@@ -84,7 +84,7 @@ public class GameWebSocketController {
             Lobby lobby = lobbyManager.getLobby(lobbyName);
             broadcastLobbyState(lobby); //update for other users
 
-            if(lobby.getPlayers().size() >= 2){
+            if(lobby.getPlayers().size() >= 1){
                 lobby.setGameStatus(GameStatus.WAITING_FOR_READY);
             }
         }catch(IllegalArgumentException ex){
@@ -122,7 +122,7 @@ public class GameWebSocketController {
             if(currentLobby.getGameStatus().equals(GameStatus.WAITING_FOR_READY)
                 && currentLobby.isReady() 
             ){
-                startGame(currentLobby);
+                startGame(currentLobby.getName());
             }
             broadcastLobbyState(currentLobby);
         }catch(IllegalArgumentException e){
@@ -199,9 +199,8 @@ public class GameWebSocketController {
     }
 
     //Private helper methods
-    private void startGame(Lobby currentLobby){
-        currentLobby.setGameStatus(GameStatus.IN_PROGRESS);
-
+    private void startGame(String lobby){
+        lobbyManager.startGame(lobby);
     }
 
     // Lobby state updates helper
