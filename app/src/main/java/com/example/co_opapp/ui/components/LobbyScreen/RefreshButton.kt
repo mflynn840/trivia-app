@@ -7,6 +7,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -16,14 +17,18 @@ import androidx.compose.ui.unit.sp
 import com.example.co_opapp.ui.components.LoginScreen.Secondary_NeonSignButton
 
 @Composable
-fun NeonRefreshButton(onClick: () -> Unit) {
+fun NeonRefreshButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Secondary_NeonSignButton(
         text = "Refresh",
         onClick = onClick,
         neonColor = Color(0xFFE5E7EB),
-        modifier = Modifier
-            .fillMaxWidth(0.6f) // narrower
-            .height(46.dp)      // shorter
+        modifier = modifier
+            .fillMaxWidth(0.6f)
+            .height(46.dp)
     )
 }
+
 
