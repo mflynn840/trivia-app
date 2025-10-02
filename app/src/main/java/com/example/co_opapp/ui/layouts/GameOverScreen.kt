@@ -10,7 +10,6 @@ import androidx.compose.ui.unit.dp
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.Backend.ProfileService
 import com.example.co_opapp.Service.Coop.CurrentLobbyService
-import com.example.co_opapp.SessionManager
 import com.example.co_opapp.ui.components.GameOverScreen.ScoreCard
 import com.example.co_opapp.ui.components.GameOverScreen.ScoreEntry
 import com.example.co_opapp.ui.components.GameOverScreen.TrophyWithProfile
@@ -23,7 +22,6 @@ fun GameOverScreen(
 ) {
     val players by currentLobbyService.players
     val scores: Map<String, Int> by currentLobbyService.scores
-    val username = SessionManager.currentPlayer?.username!!
 
     // Sort by score, highest first
     val sorted = players.sortedByDescending { scores[it.username] ?: 0 }
