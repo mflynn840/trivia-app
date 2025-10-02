@@ -6,12 +6,19 @@ import com.example.co_opapp.data_model.Player
 object SessionManager {
     var currentPlayer: Player? = null
     var jwtToken: String? = null
-    var PRIMARY_BUTTON_COLOR = Color(0xFFF44336)
-    var SECONDARY_BUTTON_COLOR = Color(0xFF00E1FF)
+    var PRIMARY_BUTTON_COLOR = Color(0xFF3F51B5)
+    var SECONDARY_BUTTON_COLOR = Color(0xFF262222)
 
 
-    var PRIMARY_CARD_COLOR = Color(0xFF2196F3)
-    var SECONDARY_CARD_COLOR = Color(0xFFF44336)
-    var CARD_TEXT_COLOR = Color(0xFF000000)
+    var PRIMARY_CARD_COLOR = Color(0xFF009688)
+    var SECONDARY_CARD_COLOR = Color(0xFF423737)
+    var CARD_TEXT_COLOR = Color(0xFFFFFFFF)
+
+    var QUESTION_PRIMARY_COLOR = Color(0xFF009688)
+    var QUESTION_TEXT_COLOR= Color(0xFF009688)
+    var SUBMIT_BUTTON_PRIMARY_COLOR = Color(0xFF009688)
+    var SUBMIT_BUTTON_TEXT_COLOR = Color(0xFFFFFFFF)
+    var ANSWER_PRIMARY_COLOR= Color(0xFF009688)
+    var ANSWER_TEXT_COLOR= Color(0xFF009688)
 
 }

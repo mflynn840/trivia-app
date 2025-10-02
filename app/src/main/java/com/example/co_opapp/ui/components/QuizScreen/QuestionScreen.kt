@@ -1,5 +1,6 @@
 package com.example.co_opapp.ui.components.QuizScreen
 
+import SubmitAnswerButton
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -8,10 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.TriviaQuestion
 
 @Composable
@@ -42,20 +42,11 @@ fun QuestionScreen(
 
         Spacer(modifier = Modifier.height(25.dp))
 
-        Button(
-            onClick = onSubmit,
+        SubmitAnswerButton(
             enabled = selectedAnswer != null,
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .height(56.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF4CAF50),
-                contentColor = Color.White
-            )
-        ) {
-            Text("Submit", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-        }
+            onClick = onSubmit,
+        )
+
     }
 }
 

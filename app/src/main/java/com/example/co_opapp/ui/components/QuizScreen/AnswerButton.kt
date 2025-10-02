@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.co_opapp.SessionManager
 
 @Composable
 fun AnswerButton(
@@ -26,8 +27,8 @@ fun AnswerButton(
     onClick: () -> Unit
 ) {
     // Determine colors
-    val backgroundColor = if (isSelected) Color(0xFF4CAF50) else Color.White.copy(alpha = 0.6f)
-    val textColor = if (isSelected) Color.White else Color.Black
+    val backgroundColor = if (isSelected) SessionManager.ANSWER_PRIMARY_COLOR else Color.White.copy(alpha = 0.6f)
+    val textColor = if (isSelected) SessionManager.ANSWER_TEXT_COLOR else Color.Black
 
     Surface(
         modifier = Modifier
