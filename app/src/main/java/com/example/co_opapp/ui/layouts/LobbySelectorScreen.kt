@@ -90,7 +90,7 @@ fun LobbySelectorScreen(
             Column(
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+
             ) {
                 Text(
                     text = "Create a Lobby",
