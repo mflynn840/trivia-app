@@ -49,8 +49,6 @@ fun QuestionScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp)) // space between back and heading
-
         // Heading
         Text(
             text = "Question",
