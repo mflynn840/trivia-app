@@ -84,7 +84,7 @@ public class GameWebSocketController {
             Lobby lobby = lobbyManager.getLobby(lobbyName);
             broadcastLobbyState(lobby); //update for other users
 
-            if(lobby.getPlayers().size() >= 1){
+            if(lobby.getPlayers().size() >= 2){
                 lobby.setGameStatus(GameStatus.WAITING_FOR_READY);
             }
         }catch(IllegalArgumentException ex){
@@ -175,6 +175,10 @@ public class GameWebSocketController {
         
     }
 
+    /**
+     * atomically submit the answer and advance to the next question
+     *  -broadcast new gamestate to all members
+     */
     @MessageMapping("/lobby/submit/{lobbyId}")
     public void submitAnswer(@DestinationVariable String lobbyId, 
                             @Payload AnswerRequest answerRequest){

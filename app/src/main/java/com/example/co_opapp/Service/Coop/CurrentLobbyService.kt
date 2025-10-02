@@ -35,22 +35,19 @@ class CurrentLobbyService() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
 
-    //reactive lobby members list
+    //reactively expose important variables
     val players: State<List<PlayerDTO>> = derivedStateOf {
         _lobby.value?.players?.values?.toList() ?: emptyList()
     }
-
-    // expose a reactive game state
     val gameState: State<GameState?> = derivedStateOf {
         _lobby.value?.gameState?.value
     }
-
-    //expose a reactive game status
     val gameStatus: State<GameStatus?> = derivedStateOf {
         _lobby.value?.gameState?.value?.gameStatus
     }
-
-    // Backing flow from the lobby's reactive gameState
+    val scores: State<Map<String, Int>> = derivedStateOf {
+        gameState.value?.scores ?: emptyMap()
+    }
     private val gameStateFlow: Flow<GameState?> = snapshotFlow {
         _lobby.value?.gameState?.value
     }
@@ -124,17 +121,14 @@ class CurrentLobbyService() {
     fun subscribeAndJoin(lobbyName: String, player: Player) {
         wsManager.connect {
             _isConnected.value = true
-
             // Subscribe to state first
             wsManager.subscribeTopic("/topic/lobby/$lobbyName/state", LobbyDTO::class.java) { lobbyDto ->
                 _lobby.value = lobbyDto.toLobby()
             }
-
             // Subscribe to chat
             wsManager.subscribeTopic("/topic/lobby/$lobbyName/chat", ChatMessage::class.java) { msg ->
                 _chatMessages.add(msg)
             }
-
             // Now actually join
             joinLobby(lobbyName, player)
         }
