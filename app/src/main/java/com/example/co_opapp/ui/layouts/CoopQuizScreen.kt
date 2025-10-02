@@ -48,7 +48,9 @@ public fun CoopQuizScreen(
                     selectedAnswer = selectedAnswer,
                     onAnswerSelected = { selectedAnswer = it },
                     onSubmit = {
-                        currentLobbyService.submitAnswer(selectedAnswer!!)
+                        currentLobbyService.submitAnswer(
+                            questionId=currentQuestion!!.id,
+                            answer=selectedAnswer!!)
                         selectedAnswer = null
                     },
                 )

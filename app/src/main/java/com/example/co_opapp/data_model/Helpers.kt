@@ -12,7 +12,10 @@ fun LobbyDTO.toLobby(): Lobby {
         maxPlayers = maxPlayers,
         players = mutableStateMapOf<String, PlayerDTO>().apply { putAll(players) },
         chatMessages = mutableStateListOf<ChatMessage>().apply { addAll(chatMessages) },
-        gameState = mutableStateOf( gameState.toGameState()) // fallback
+        gameState = mutableStateOf(gameState.toGameState()),
+        numQuestions = numQuestions,
+        difficulty = difficulty,
+        category = category
     )
     return lobby
 }

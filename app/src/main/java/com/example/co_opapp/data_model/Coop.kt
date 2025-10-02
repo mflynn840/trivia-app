@@ -13,6 +13,9 @@ data class Lobby(
     val chatMessages: SnapshotStateList<ChatMessage> = mutableStateListOf(),
     val gameStatus: GameStatus = GameStatus.WAITING_FOR_PLAYERS,
     val gameState: MutableState<GameState>,
+    val numQuestions: Integer,
+    val difficulty: String,
+    val category: String
 )
 
 data class LobbyDTO(
@@ -22,6 +25,9 @@ data class LobbyDTO(
     val chatMessages: List<ChatMessage> = emptyList(),
     val gameStatus: GameStatus = GameStatus.WAITING_FOR_PLAYERS,
     val gameState: GameStateDTO,
+    val numQuestions: Integer,
+    val difficulty: String,
+    val category: String
 )
 
 data class ChatMessage(

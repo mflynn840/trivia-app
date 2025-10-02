@@ -14,11 +14,14 @@ import com.example.spring_boot.Model.http.PlayerDTO;
  */
 public class Lobby {
 
-    private String name;
     private int maxPlayers = 4;
+    private String name;
     private Map<String, PlayerDTO> players = new ConcurrentHashMap<>(); // sessionId -> Player
     private List<ChatMessage> chatMessages = new CopyOnWriteArrayList<>();
     private GameState gameState = new GameState();
+    private int numQuestions = 5;
+    private String difficulty = "Easy";
+    private String category = "Geography";
 
     // --- Constructors ----
     public Lobby() { this.name = Integer.toString((new Random(1).nextInt())); }
@@ -28,20 +31,8 @@ public class Lobby {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public int getMaxPlayers() { return maxPlayers; }
-    public void setMaxPlayers(int maxPlayers) { this.maxPlayers = maxPlayers; }
-
     public Map<String, PlayerDTO> getPlayers() { return players; }
-    
-    public void addPlayer(PlayerDTO p){
-        this.players.put(p.getUsername(), p);
-        this.gameState.addUser(p.getUsername());
-    }
-
-    public void setPlayers(Map<String, PlayerDTO> players) { 
-        this.players = players; 
-    }
-
+    public void setPlayers(Map<String, PlayerDTO> players) { this.players = players; }
 
     public List<ChatMessage> getChatMessages() { return chatMessages; }
     public void setChatMessages(List<ChatMessage> chatMessages) { this.chatMessages = chatMessages; }
@@ -52,12 +43,25 @@ public class Lobby {
     public GameState getGameState(){return this.gameState;}
     public void setGameState(GameState gameState){this.gameState = gameState;}
 
+    public int getNumQuestions() {return this.numQuestions;}
+    public void setNumQuestions(int numQuestions){this.numQuestions = numQuestions;}
+
+    public String getCategory() {return this.category;}
+    public void setCategory(String category){this.category = category;}
+
+    public String getDifficulty() {return this.difficulty;}
+    public void setDifficulty(String difficulty){this.difficulty=difficulty;}
 
     // --- Convenience Methods ---
     public boolean isFull() { return players.size() >= maxPlayers; }
     public boolean isEmpty() { return players.isEmpty(); }
     public boolean isReady() { return this.getPlayers().values().stream().allMatch(PlayerDTO::isReady); }
     public void advanceQuestion(){gameState.setQuestionIdx(gameState.getQuestionIdx()+1);}
+    public void addPlayer(PlayerDTO p){
+        this.players.put(p.getUsername(), p);
+        this.gameState.addUser(p.getUsername());
+    }
+    
     
 }
 
