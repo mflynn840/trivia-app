@@ -29,17 +29,14 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.material3.CardDefaults
-
-
+import com.example.co_opapp.SessionManager
 
 
 @Composable
 fun NeonGameModeCard(
     icon: String,
     title: String,
-
     buttonText: String,
-    neonColor: Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -53,15 +50,17 @@ fun NeonGameModeCard(
             repeatMode = RepeatMode.Reverse
         )
     )
+    val primaryColor = SessionManager.PRIMARY_CARD_COLOR
+    val secondaryColor = SessionManager.SECONDARY_CARD_COLOR
 
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .border(4.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp)),
+            .border(4.dp, primaryColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF0D0D0D)
+            containerColor = secondaryColor
         )
     ) {
 
@@ -82,10 +81,10 @@ fun NeonGameModeCard(
                 text = title,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = neonColor.copy(alpha = glowAlpha),
+                color = primaryColor.copy(alpha = glowAlpha),
                 style = TextStyle(
                     shadow = Shadow(
-                        color = neonColor.copy(alpha = 0.6f),
+                        color = primaryColor.copy(alpha = 0.6f),
                         offset = Offset(0f, 0f),
                         blurRadius = 58f
                     )
@@ -97,19 +96,15 @@ fun NeonGameModeCard(
             Button(
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = neonColor.copy(alpha = 0.3f)),
+                    containerColor = primaryColor.copy(alpha = 0.3f)),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = buttonText,
                     fontSize = 24.sp,
-                    color = Color.White,
+                    color = SessionManager.CARD_TEXT_COLOR,
                     fontWeight = FontWeight.Bold,
-                    style = TextStyle(
-
-                        )
-
-
+                    style = TextStyle()
                     )
 
             }

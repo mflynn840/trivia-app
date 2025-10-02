@@ -27,13 +27,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.co_opapp.SessionManager
 
 @Composable
 fun Primary_NeonSignButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    neonColor: Color = Color(0xFF00F0FF)
+    neonColor: Color = SessionManager.PRIMARY_BUTTON_COLOR
 ) {
     // Pulsing glow animation
     val infiniteTransition = rememberInfiniteTransition()
@@ -57,7 +58,7 @@ fun Primary_NeonSignButton(
                 spotColor = neonColor.copy(alpha = glowAlpha * 0.6f)
             )
             .border(4.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp))
-            .background(Color(0xFF111111), RoundedCornerShape(16.dp)) // dark base
+            .background(SessionManager.SECONDARY_BUTTON_COLOR, RoundedCornerShape(16.dp)) // dark base
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {

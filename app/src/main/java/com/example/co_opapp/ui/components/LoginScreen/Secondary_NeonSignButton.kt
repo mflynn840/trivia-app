@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import com.example.co_opapp.SessionManager
 
 
 @Composable
@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
         text: String,
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
-        neonColor: Color = Color(0xFFE5E7EB)
+        neonColor: Color = SessionManager.SECONDARY_BUTTON_COLOR
     ) {
         // Pulsing glow animation
         val infiniteTransition = rememberInfiniteTransition()
