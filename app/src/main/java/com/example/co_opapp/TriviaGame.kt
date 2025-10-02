@@ -24,6 +24,7 @@ import com.example.co_opapp.ui.components.MusicWrapper
 import com.example.co_opapp.ui.layouts.CharacterCustomizationScreen
 import com.example.co_opapp.ui.layouts.ChatScreen
 import com.example.co_opapp.ui.layouts.CoopQuizScreen
+import com.example.co_opapp.ui.layouts.GameOverScreen
 import com.example.co_opapp.ui.layouts.QuizSetupScreen
 import com.example.co_opapp.ui.layouts.LoadingScreen
 import com.example.co_opapp.ui.layouts.LoginScreen
@@ -194,8 +195,10 @@ fun TriviaGame() {
                 val lobbyName = backStackEntry.arguments?.getString("lobbyName")!!
 
                 LaunchedEffect(gameStatus){
-                    navController.navigate("coopGame/${lobbyName}") {
-                        popUpTo("coopGame/${lobbyName}") { inclusive = true }
+                    if (gameStatus == GameStatus.FINISHED) {
+                        navController.navigate("gameOver/${lobbyName}") {
+                            popUpTo("coopGame/${lobbyName}") { inclusive = true }
+                        }
                     }
                 }
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
