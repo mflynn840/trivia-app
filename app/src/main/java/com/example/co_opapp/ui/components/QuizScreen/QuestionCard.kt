@@ -50,6 +50,7 @@ fun QuestionCard(
                     .fillMaxWidth()
                     .height(100.dp) // ~ lines of text visible
                     .verticalScroll(scrollState)
+                    .padding(top = 10.dp)
             ) {
                 Text(
                     text = question,
