@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.co_opapp.SessionManager
 
 
 @Composable
@@ -28,7 +29,6 @@ fun QuestionCard(
     question: String,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
-    backgroundColor: Color = Color.White.copy(alpha = 0.6f)
 ){
 
     val scrollState = rememberScrollState()
@@ -38,7 +38,7 @@ fun QuestionCard(
             .border(2.dp, Color.Black, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor)
+        colors = CardDefaults.cardColors(containerColor = SessionManager.QUESTION_PRIMARY_COLOR)
     ){
         Column(
             modifier = Modifier.padding(16.dp)
@@ -56,7 +56,7 @@ fun QuestionCard(
                     text = question,
                     fontFamily = FontFamily.Serif,
                     fontSize = fontSize,
-                    color = Color.Black,
+                    color = SessionManager.QUESTION_TEXT_COLOR,
                     textAlign = TextAlign.Center
                 )
             }
