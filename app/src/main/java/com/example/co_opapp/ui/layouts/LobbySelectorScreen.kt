@@ -33,20 +33,15 @@ fun LobbySelectorScreen(
 ) {
     val player = SessionManager.currentPlayer
 
-    // Lobbies state
     var lobbies by remember { mutableStateOf<List<String>>(emptyList()) }
     var selectedLobbyName by remember { mutableStateOf<String?>(null) }
-
-    // Listen for user create lobby and refresh lobbies
     var shouldRefreshLobbies by remember { mutableStateOf(true) }
     var lobbyToCreate by remember { mutableStateOf<String?>(null) }
 
-    // Fetch lobbies when requested
     LaunchedEffect(shouldRefreshLobbies) {
         if (shouldRefreshLobbies) {
             try {
-                val fetchedLobbies = availableLobbiesService.getAvailableLobbies()
-                lobbies = fetchedLobbies
+                lobbies = availableLobbiesService.getAvailableLobbies()
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
@@ -55,93 +50,79 @@ fun LobbySelectorScreen(
         }
     }
 
-    // Create a lobby when requested
     LaunchedEffect(lobbyToCreate) {
         lobbyToCreate?.let { name ->
             try {
                 val success = availableLobbiesService.createLobby(name)
-                if (success) {
-                    shouldRefreshLobbies = true // trigger reload
-                } else {
-                    println("Failed to create lobby.")
-                }
+                if (success) shouldRefreshLobbies = true
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
-                lobbyToCreate = null // reset
+                lobbyToCreate = null
             }
         }
     }
 
-    // Background image
-    Image(
-        painter = painterResource(id = R.drawable.chat_background),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxSize()
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Background
+        Image(
+            painter = painterResource(id = R.drawable.chat_background),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
 
-    // Foreground content
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(38.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-
-        IconButton(
-            onClick = onNavigateBack,
-            modifier = Modifier
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                tint = Color.White
-            )
-        }
-
+        // Main content
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(38.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-
-            Text(text = "Create a Lobby",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold, // make bold
-                color = Color.Black, // high-contrast text
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            // Create a lobby button and name selector component
-            CreateLobbyUi(
-                onCreateLobby = { name ->
-                    lobbyToCreate = name // trigger lobby creation
-                },
-                modifier = Modifier.padding(top = 8.dp)
-            )
-
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                NeonRefreshButton {
-                    shouldRefreshLobbies = true
-                }
+            IconButton(onClick = onNavigateBack) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White
+                )
             }
 
-            LobbyList(
-                lobbyNames = lobbies,
-                selectedLobbyName = selectedLobbyName.orEmpty(),
-                onLobbySelect = { lobbyName -> selectedLobbyName = lobbyName },
-                onJoinLobby = { lobbyName ->
-                    onNavigateToLobby(lobbyName)
-                },
-            )
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Create a Lobby",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(28.dp))
+
+                CreateLobbyUi(
+                    onCreateLobby = { name -> lobbyToCreate = name },
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+
+                LobbyList(
+                    lobbyNames = lobbies,
+                    selectedLobbyName = selectedLobbyName.orEmpty(),
+                    onLobbySelect = { lobbyName -> selectedLobbyName = lobbyName },
+                    onJoinLobby = { lobbyName -> onNavigateToLobby(lobbyName) }
+                )
+            }
         }
+
+        // Floating refresh button pinned at bottom center
+        NeonRefreshButton(
+            onClick = { shouldRefreshLobbies = true },
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 125.dp)
+        )
     }
 }
