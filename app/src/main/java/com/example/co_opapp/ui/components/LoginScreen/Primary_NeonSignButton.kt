@@ -33,7 +33,7 @@ fun Primary_NeonSignButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    neonColor: Color = Color(0xFFFF073A)
+    neonColor: Color = Color(0xFF00F0FF)
 ) {
     // Pulsing glow animation
     val infiniteTransition = rememberInfiniteTransition()
@@ -41,7 +41,7 @@ fun Primary_NeonSignButton(
         initialValue = 0.5f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
+            animation = tween(2000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -49,7 +49,7 @@ fun Primary_NeonSignButton(
     Box(
         modifier = modifier
             .fillMaxWidth(0.9f)
-            .height(80.dp)
+            .height(40.dp)
             .shadow(
                 elevation = 16.dp,
                 shape = RoundedCornerShape(16.dp),
