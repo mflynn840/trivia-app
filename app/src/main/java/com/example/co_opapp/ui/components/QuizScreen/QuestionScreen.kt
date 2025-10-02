@@ -19,7 +19,7 @@ fun QuestionScreen(
     question: TriviaQuestion,
     selectedAnswer: String?,
     onAnswerSelected: (String) -> Unit,
-    onSubmit: () -> Unit
+    onSubmit: () -> Unit,
 ) {
     val options = listOf(question.optionA, question.optionB, question.optionC, question.optionD)
 
@@ -30,7 +30,6 @@ fun QuestionScreen(
     ) {
         QuestionCard(
             question = question.body,
-            modifier = Modifier.fillMaxWidth(0.7f)
         )
 
         options.forEach { answer ->
