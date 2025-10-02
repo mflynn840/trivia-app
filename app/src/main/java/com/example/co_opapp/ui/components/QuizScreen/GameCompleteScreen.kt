@@ -21,6 +21,9 @@ fun GameCompleteScreen(score: Int, totalQuestions: Int, onRetry: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
+
+        Spacer(Modifier.size(200.dp))
+
         Card(
             modifier = Modifier
                 .fillMaxWidth(0.85f)
