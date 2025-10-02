@@ -15,12 +15,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import com.example.co_opapp.R
 import com.example.co_opapp.ui.components.LoginScreen.Primary_NeonSignButton
 import com.example.co_opapp.ui.components.LoginScreen.Secondary_NeonSignButton
-
 
 @Composable
 fun GameModeScreen(
@@ -29,6 +29,7 @@ fun GameModeScreen(
     onNavigateToCoOp: () -> Unit = {},
     onNavigateToCharacterMode: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
+    onNavigateToSettings: () -> Unit = {}, // add settings navigation callback
     profilePicture: Bitmap?
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -39,25 +40,41 @@ fun GameModeScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Back button (top-left)
-        IconButton(
-            onClick = onNavigateBack,
+        // Column for Back + Settings buttons (top-left)
+        Column(
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(32.dp)
+                .padding(32.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                tint = Color.White
-            )
+
+
+            IconButton(onClick = onNavigateToSettings) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Settings",
+                    tint = Color.White
+                )
+            }
+
+            IconButton(onClick = onNavigateBack) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White
+                )
+            }
+
+
         }
 
+        // Profile picture (top-right)
         CharacterImageCircle(
             modifier = Modifier.align(Alignment.TopEnd),
             profilePicture = profilePicture
         )
 
+        // Game mode options (centered)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(15.dp),
@@ -80,16 +97,13 @@ fun GameModeScreen(
                 onClick = onNavigateToCoOp
             )
 
-
             Secondary_NeonSignButton(
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
-
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
             )
-
         }
     }
 }

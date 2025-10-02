@@ -7,7 +7,7 @@ object SessionManager {
     var currentPlayer: Player? = null
     var jwtToken: String? = null
     var PRIMARY_BUTTON_COLOR = Color(0xFF3F51B5)
-    var SECONDARY_BUTTON_COLOR = Color(0xFF262222)
+    var SECONDARY_BUTTON_COLOR = Color(0xFFFFFFFF)
 
 
     var PRIMARY_CARD_COLOR = Color(0xFFFFFFFF)
