@@ -47,7 +47,7 @@ fun NeonGameModeCard(
         initialValue = 0.4f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1500, easing = LinearEasing),
+            animation = tween(durationMillis = 2000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "glowAlpha"
@@ -59,7 +59,7 @@ fun NeonGameModeCard(
             .height(120.dp)
             .clickable { onClick() }
             .border(
-                width = 2.dp,
+                width = 6.dp,
                 color = neonColor.copy(alpha = glowAlpha),
                 shape = RoundedCornerShape(16.dp)
             )
@@ -99,7 +99,7 @@ fun NeonGameModeCard(
                 // Title with glow
                 Text(
                     text = title,
-                    fontSize = 20.sp,
+                    fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
                     color = neonColor,
                     style = TextStyle(
@@ -116,7 +116,7 @@ fun NeonGameModeCard(
                 // Button text with glow
                 Text(
                     text = buttonText,
-                    fontSize = 16.sp,
+                    fontSize = 22.sp,
                     color = neonColor,
                     style = TextStyle(
                         shadow = Shadow(
