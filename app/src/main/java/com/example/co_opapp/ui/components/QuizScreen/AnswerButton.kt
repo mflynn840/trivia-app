@@ -31,7 +31,7 @@ fun AnswerButton(
     Surface(
         modifier = Modifier
             .fillMaxWidth(0.85f)
-            .height(65.dp)
+            .height(85.dp)
             .padding(vertical = 4.dp)
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(12.dp))
             .clickable { onClick() },

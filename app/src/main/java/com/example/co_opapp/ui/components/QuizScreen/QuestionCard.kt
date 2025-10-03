@@ -48,7 +48,7 @@ fun QuestionCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp) // ~ lines of text visible
+                    .height(125.dp) // ~ lines of text visible
                     .verticalScroll(scrollState)
                     .padding(top = 10.dp)
             ) {
