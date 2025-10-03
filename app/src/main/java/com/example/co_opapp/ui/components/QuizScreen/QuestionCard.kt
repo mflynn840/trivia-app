@@ -29,20 +29,20 @@ fun QuestionCard(
     question: String,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
-){
-
+    cardColor: Color = SessionManager.QUESTION_PRIMARY_COLOR,
+    textColor: Color = SessionManager.QUESTION_TEXT_COLOR
+) {
     val scrollState = rememberScrollState()
+
     Card(
         modifier = modifier
             .fillMaxWidth(0.85f)
             .border(2.dp, Color.Black, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = SessionManager.QUESTION_PRIMARY_COLOR)
-    ){
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ){
+        colors = CardDefaults.cardColors(containerColor = cardColor)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
 
             // Scrollable question text (~2 lines visible)
             Box(
@@ -56,15 +56,13 @@ fun QuestionCard(
                     text = question,
                     fontFamily = FontFamily.Serif,
                     fontSize = fontSize,
-                    color = SessionManager.QUESTION_TEXT_COLOR,
+                    color = textColor,
                     textAlign = TextAlign.Center
                 )
             }
         }
-
     }
-
-
 }
+
 
 

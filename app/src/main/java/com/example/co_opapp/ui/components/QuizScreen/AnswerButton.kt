@@ -24,20 +24,18 @@ import com.example.co_opapp.SessionManager
 fun AnswerButton(
     text: String,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    buttonColor: Color = SessionManager.SUBMIT_BUTTON_PRIMARY_COLOR,
+    textColor: Color = SessionManager.SUBMIT_BUTTON_TEXT_COLOR
 ) {
-    // Determine colors
-    val backgroundColor = if (isSelected) SessionManager.ANSWER_SELECTED_PRIMARY_COLOR else SessionManager.ANSWER_UNSELECTED_PRIMARY_COLOR
-    val textColor = if (isSelected) SessionManager.ANSWER_SELECTED_TEXT_COLOR else SessionManager.ANSWER_UNSELECTED_TEXT_COLOR
-
     Surface(
         modifier = Modifier
-            .fillMaxWidth(0.85f)              // <-- narrower width to match QuestionCard
-            .height(55.dp)
+            .fillMaxWidth(0.85f)
+            .height(65.dp)
             .padding(vertical = 4.dp)
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(12.dp))
             .clickable { onClick() },
-        color = backgroundColor,
+        color = buttonColor,
         shape = RoundedCornerShape(12.dp)
     ) {
         Box(
@@ -46,7 +44,7 @@ fun AnswerButton(
         ) {
             Text(
                 text = text,
-                fontSize = 20.sp,
+                fontSize = 22.sp,
                 fontFamily = FontFamily.SansSerif,
                 color = textColor
             )
