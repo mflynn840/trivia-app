@@ -54,7 +54,8 @@ public class GameState{
         }
     }
 
-    public Question getCurrentQuestion(){
-        return this.getQuestions().get(this.getQuestionIdx());
+    public Question getCurrentQuestion() {
+        if (questions.isEmpty() || questionIdx >= questions.size()) return null;
+        return questions.get(questionIdx);
     }
 }

@@ -177,34 +177,6 @@ public class GameWebSocketController {
 
 
     /**
-     * Removes a user from all lobbies and broadcasts the updated states
-     * @param username the username of the user to remove
-     */
-    public void removeUserFromAllLobbies(String username) {
-        boolean removedAny = false;
-        for (Lobby lobby : lobbyManager.getAllLobbies().values()) {
-            boolean removed = lobby.getPlayers().values().removeIf(p -> p.getUsername().equals(username));
-            if (removed) {
-                removedAny = true;
-                broadcastLobbyState(lobby); // update all clients in this lobby
-            }
-        }
-        if (removedAny) {
-            sendAllLobbies(); // also broadcast the updated list of lobbies
-        }
-    }
-
-    //to start a timer, send the start time, and duration to the frontend
-    public void startTimer60(Long questionId){
-        Timer t = new Timer();
-        t.setStartEpochTime(System.currentTimeMillis());
-        t.setDurationMs(Long.valueOf(60000));
-        t.setQuestionId(questionId);
-        
-        
-    }
-
-    /**
      * atomically submit the answer and advance to the next question
      *  -broadcast new gamestate to all members
      *  - start a new timer for the next question
@@ -223,16 +195,16 @@ public class GameWebSocketController {
 
             //4. advance question for the lobby and start a new timer
             lobby.advanceQuestion();
-            lobbyManager.newTimer(lobbyId);
 
             //3. check if this was the last question and end game if it was
             if(lobbyManager.outOfQuestions(lobby)){
                 System.out.println("Last question, game over");
                 lobby.setGameStatus(GameStatus.FINISHED);
+            }else{
+                lobbyManager.newTimer(lobbyId);
             }
 
-
-            //5.broadcast the new lobby to all users
+            
             broadcastLobbyState(lobby); 
         }
     }

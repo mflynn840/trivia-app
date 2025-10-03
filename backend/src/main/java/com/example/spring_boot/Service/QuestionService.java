@@ -25,7 +25,11 @@ public class QuestionService {
     }
 
     public List<Question> getRandomQuestions(int count, String category, String difficulty) {
-        return questionRepository.findRandomQuestions(count, category, difficulty);
+        List<Question> questions = questionRepository.findRandomQuestions(count, category, difficulty);
+        if (questions.isEmpty()) {
+            throw new IllegalStateException("No questions available with the requested parametrs");
+        }
+        return questions;
     }
 
     
