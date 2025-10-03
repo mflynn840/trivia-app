@@ -1,6 +1,7 @@
 package com.example.co_opapp.ui.layouts
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -25,7 +26,6 @@ import androidx.compose.ui.layout.ContentScale
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.Backend.ProfileService
 import com.example.co_opapp.SessionManager
-import com.example.co_opapp.ui.components.Popups.GradientColorPicker
 import com.example.co_opapp.ui.components.LoginScreen.Secondary_NeonSignButton
 import com.example.co_opapp.ui.components.Popups.SettingsPopup
 import kotlinx.coroutines.launch
@@ -99,8 +99,8 @@ fun GameModeScreen(
                 title = "Test Your Knowledge",
                 buttonText = "Story Mode",
                 onClick = onNavigateToSinglePlayer,
-                cardColor = SessionManager.PRIMARY_CARD_COLOR,
-                neonColor = SessionManager.NEON_CARD_COLOR
+                cardColor = Color(SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR.toULong()),
+                neonColor = Color(SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR.toULong())
             )
 
             NeonGameModeCard(
@@ -108,15 +108,15 @@ fun GameModeScreen(
                 title = "Play With Friends",
                 buttonText = "Co-op Mode",
                 onClick = onNavigateToCoOp,
-                cardColor = SessionManager.PRIMARY_CARD_COLOR,
-                neonColor = SessionManager.NEON_CARD_COLOR
+                cardColor = Color(SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR.toULong()),
+                neonColor = Color(SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR.toULong())
             )
 
             Secondary_NeonSignButton(
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
-                backgroundColor = SessionManager.PRIMARY_CARD_COLOR,
-                neonColor = SessionManager.NEON_CARD_COLOR,
+                backgroundColor = Color(SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR.toULong()),
+                neonColor = Color(SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR.toULong()),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
@@ -124,14 +124,20 @@ fun GameModeScreen(
 
             if (showSettings) {
                 SettingsPopup(
-                    primaryCardColor = Color(SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR),
-                    neonColor = Color(SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR),
+                    primaryCardColor = Color(SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR.toULong()),
+                    neonColor = Color(SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR.toULong()),
                     onPrimaryCardColorChange = { SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR = it.value.toLong() },
                     onNeonColorChange = { SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR = it.value.toLong() },
                     onDismiss = {
+
                         coroutineScope.launch {
                             profileService.uploadColorPallete(SessionManager.currentPlayer!!.colorPallete)
                         }
+                        Log.d(
+                            "GameModeScreen",
+                            "User Color Palette: PRIMARY=${SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR}, NEON=${SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR}"
+                        )
+
                         showSettings = false
                     }
                 )

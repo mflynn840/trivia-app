@@ -98,6 +98,8 @@ public class PlayerController {
     @PostMapping("/{username}/set-color-pallete")
     public ResponseEntity<ApiResponse> setColorPallete(@PathVariable String username, 
                                     @RequestBody ColorPallete colorPallete) {
+
+        System.out.println("Change color pallete: " + colorPallete.toString());
         try{
             playerService.setColorPallete(username, colorPallete);
             return ResponseEntity.ok(new ApiResponse("Success"));

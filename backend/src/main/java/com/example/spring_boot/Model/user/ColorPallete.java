@@ -41,4 +41,20 @@ public class ColorPallete {
 
     public Long getSUBMIT_BUTTON_TEXT_COLOR() { return SUBMIT_BUTTON_TEXT_COLOR; }
     public void setSUBMIT_BUTTON_TEXT_COLOR(Long SUBMIT_BUTTON_TEXT_COLOR) { this.SUBMIT_BUTTON_TEXT_COLOR = SUBMIT_BUTTON_TEXT_COLOR; }
+
+    @Override
+    public String toString() {
+        return "ColorPallete{" +
+                "PRIMARY_BUTTON_COLOR=0x" + Long.toHexString(PRIMARY_BUTTON_COLOR) +
+                ", SECONDARY_BUTTON_COLOR=0x" + Long.toHexString(SECONDARY_BUTTON_COLOR) +
+                ", PRIMARY_CARD_COLOR=0x" + Long.toHexString(PRIMARY_CARD_COLOR) +
+                ", NEON_CARD_COLOR=0x" + Long.toHexString(NEON_CARD_COLOR) +
+                ", CARD_TEXT_COLOR=0x" + Long.toHexString(CARD_TEXT_COLOR) +
+                ", QUESTION_PRIMARY_COLOR=0x" + Long.toHexString(QUESTION_PRIMARY_COLOR) +
+                ", QUESTION_TEXT_COLOR=0x" + Long.toHexString(QUESTION_TEXT_COLOR) +
+                ", SUBMIT_BUTTON_PRIMARY_COLOR=0x" + Long.toHexString(SUBMIT_BUTTON_PRIMARY_COLOR) +
+                ", SUBMIT_BUTTON_TEXT_COLOR=0x" + Long.toHexString(SUBMIT_BUTTON_TEXT_COLOR) +
+                '}';
+    }
+
 }
