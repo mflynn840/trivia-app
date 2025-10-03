@@ -17,13 +17,13 @@ import com.example.spring_boot.Service.QuestionService;
 import com.example.spring_boot.Model.Question;
 import com.example.spring_boot.Model.coop.GameStatus;
 import com.example.spring_boot.Model.coop.Lobby;
+import com.example.spring_boot.Model.coop.Timer;
 
 @Component
 public class LobbyManager {
 
 
     private final Map<String, Lobby> lobbies = new ConcurrentHashMap<>();
-
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -153,7 +153,7 @@ public class LobbyManager {
         lobby.getGameState().setQuestions(questions);
         lobby.getGameState().setQuestionIdx(0);
         lobby.setGameStatus(GameStatus.IN_PROGRESS);
-        
+        lobby.setTimer(new Timer(questions.get(0).getId(), lobby.getTimerDuration()));
 
     }
 
@@ -164,11 +164,19 @@ public class LobbyManager {
     }
 
     public void deleteLobby(String lobbyName) {
-    if (lobbies.containsKey(lobbyName)) {
-        lobbies.remove(lobbyName);
-    } else {
-        throw new IllegalArgumentException("Lobby does not exist: " + lobbyName);
+        if (lobbies.containsKey(lobbyName)) {
+            lobbies.remove(lobbyName);
+        } else {
+            throw new IllegalArgumentException("Lobby does not exist: " + lobbyName);
+        }
     }
-}
+
+    public void newTimer(String lobbyId){
+        Lobby lobby = this.getLobby(lobbyId);
+        if(lobby == null) throw new IllegalArgumentException("Invalid lobby");
+        Question currentQuestion = lobby.getGameState().getCurrentQuestion();
+        lobby.setTimer(new Timer(currentQuestion.getId(), lobby.getTimerDuration()));
+    }
+
 }
 

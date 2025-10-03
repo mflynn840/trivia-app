@@ -22,9 +22,13 @@ public class Lobby {
     private int numQuestions = 5;
     private String difficulty = "Easy";
     private String category = "Geography";
+    private Long timerDuration = 60000L;
+    private Timer timer = new Timer();
+
+
 
     // --- Constructors ----
-    public Lobby() { this.name = Integer.toString((new Random(1).nextInt())); }
+    public Lobby() {this.name = Integer.toString((new Random(1).nextInt()));}
     public Lobby(String name) { this.name = name; }
 
     // --- Getters/Setters ---
@@ -52,11 +56,21 @@ public class Lobby {
     public String getDifficulty() {return this.difficulty;}
     public void setDifficulty(String difficulty){this.difficulty=difficulty;}
 
+    public Timer getTimer(){return this.timer;}
+    public void setTimer(Timer timer){this.timer = timer;}
+
+    public Long getTimerDuration(){return this.timerDuration;}
+    public void setTimerDuration(Long timerDuration){this.timerDuration = timerDuration;}
+
+
     // --- Convenience Methods ---
     public boolean isFull() { return players.size() >= maxPlayers; }
     public boolean isEmpty() { return players.isEmpty(); }
     public boolean isReady() { return this.getPlayers().values().stream().allMatch(PlayerDTO::isReady); }
-    public void advanceQuestion(){gameState.setQuestionIdx(gameState.getQuestionIdx()+1);}
+    public void advanceQuestion(){
+        gameState.setQuestionIdx(gameState.getQuestionIdx()+1);
+
+    }
     public void addPlayer(PlayerDTO p){
         this.players.put(p.getUsername(), p);
         this.gameState.addUser(p.getUsername());

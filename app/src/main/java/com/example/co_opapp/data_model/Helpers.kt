@@ -15,7 +15,9 @@ fun LobbyDTO.toLobby(): Lobby {
         gameState = mutableStateOf(gameState.toGameState()),
         numQuestions = numQuestions,
         difficulty = difficulty,
-        category = category
+        category = category,
+        timer = timer,
+        timerDuration = timerDuration
     )
     return lobby
 }

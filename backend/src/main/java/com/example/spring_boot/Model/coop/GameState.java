@@ -53,4 +53,8 @@ public class GameState{
             throw new IllegalArgumentException("user not found in scores");
         }
     }
+
+    public Question getCurrentQuestion(){
+        return this.getQuestions().get(this.getQuestionIdx());
+    }
 }

@@ -15,7 +15,9 @@ data class Lobby(
     val gameState: MutableState<GameState>,
     val numQuestions: Integer,
     val difficulty: String,
-    val category: String
+    val category: String,
+    val timer: Timer,
+    val timerDuration: Long
 )
 
 data class LobbyDTO(
@@ -27,7 +29,9 @@ data class LobbyDTO(
     val gameState: GameStateDTO,
     val numQuestions: Integer,
     val difficulty: String,
-    val category: String
+    val category: String,
+    val timer: Timer,
+    val timerDuration: Long
 )
 
 data class ChatMessage(
@@ -63,6 +67,13 @@ data class AnswerRequest(
     val questionId: Long,
     val selectedAnswer: String
 )
+
+data class Timer(
+    val questionId: Long,
+    val startEpochTime: Long,
+    val durationMs: Long
+)
+
 
 data class AnswerListResponse(val corrects: List<Boolean>, val correctAnswers: List<String>)
 data class AnswerResponse(val correct: Boolean, val correctAnswer: String)

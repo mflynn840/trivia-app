@@ -9,11 +9,11 @@ import org.springframework.stereotype.Controller;
 import com.example.spring_boot.Managers.LobbyManager;
 import com.example.spring_boot.Model.coop.GameStatus;
 import com.example.spring_boot.Model.coop.Lobby;
+import com.example.spring_boot.Model.coop.Timer;
 import com.example.spring_boot.Model.http.AnswerRequest;
 import com.example.spring_boot.Model.http.ChatMessage;
 import com.example.spring_boot.Model.http.CreateLobbyRequest;
 import com.example.spring_boot.Model.http.PlayerDTO;
-import com.example.spring_boot.Model.http.TimerRequest;
 import com.example.spring_boot.Model.user.Player;
 
 import java.util.Map;
@@ -151,7 +151,7 @@ public class GameWebSocketController {
             if(currentLobby.getGameStatus().equals(GameStatus.WAITING_FOR_READY)
                 && currentLobby.isReady() 
             ){
-                startGame(currentLobby.getName());
+                lobbyManager.startGame(currentLobby.getName());
             }
             broadcastLobbyState(currentLobby);
         }catch(IllegalArgumentException e){
@@ -196,7 +196,7 @@ public class GameWebSocketController {
 
     //to start a timer, send the start time, and duration to the frontend
     public void startTimer60(Long questionId){
-        TimerRequest t = new TimerRequest();
+        Timer t = new Timer();
         t.setStartEpochTime(System.currentTimeMillis());
         t.setDurationMs(Long.valueOf(60000));
         t.setQuestionId(questionId);
@@ -207,6 +207,7 @@ public class GameWebSocketController {
     /**
      * atomically submit the answer and advance to the next question
      *  -broadcast new gamestate to all members
+     *  - start a new timer for the next question
      */
     @MessageMapping("/lobby/submit/{lobbyId}")
     public void submitAnswer(@DestinationVariable String lobbyId, 
@@ -220,24 +221,22 @@ public class GameWebSocketController {
             //2. assign points for the submitted answer
             lobbyManager.scoreResponse(lobby, answerRequest);
 
-            //4. advance question for the lobby
+            //4. advance question for the lobby and start a new timer
             lobby.advanceQuestion();
+            lobbyManager.newTimer(lobbyId);
 
-            //3. check if this was the last question
+            //3. check if this was the last question and end game if it was
             if(lobbyManager.outOfQuestions(lobby)){
                 System.out.println("Last question, game over");
                 lobby.setGameStatus(GameStatus.FINISHED);
             }
+
 
             //5.broadcast the new lobby to all users
             broadcastLobbyState(lobby); 
         }
     }
 
-    //Private helper methods
-    private void startGame(String lobby){
-        lobbyManager.startGame(lobby);
-    }
 
     // Lobby state updates helper
     private void broadcastLobbyState(Lobby lobby) {

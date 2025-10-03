@@ -18,6 +18,7 @@ import com.example.co_opapp.data_model.toLobby
 import kotlinx.coroutines.flow.*
 import androidx.compose.runtime.snapshotFlow
 import com.example.co_opapp.data_model.AnswerRequest
+import com.example.co_opapp.data_model.Timer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -50,6 +51,9 @@ class CurrentLobbyService() {
     }
     private val gameStateFlow: Flow<GameState?> = snapshotFlow {
         _lobby.value?.gameState?.value
+    }
+    val timer: State<Timer?> = derivedStateOf {
+        _lobby.value?.timer
     }
 
     /**

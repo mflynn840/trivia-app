@@ -1,5 +1,6 @@
 package com.example.co_opapp.ui.layouts
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import com.example.co_opapp.Service.Coop.CurrentLobbyService
 import com.example.co_opapp.ui.components.QuizScreen.QuestionScreen
 import com.example.co_opapp.ui.components.QuizScreen.QuizBackground
+import com.example.co_opapp.ui.components.QuizScreen.QuizHotbar
 
 @Composable
 public fun CoopQuizScreen(
@@ -35,13 +37,12 @@ public fun CoopQuizScreen(
         when{
             currentQuestion != null -> {
 
-                /**
+
                 //TODO: Holds timer, and shows which question you are on
-                QuizProgressHotbar(
-                    questionIndex = currentLobbyService.questionIndex,
-                    questionCount = currentLobbyService.totalQuestions,
-                    timer = currentLobbyService.timer
-                )*/
+                QuizHotbar(
+                    currentLobbyService = currentLobbyService,
+                    modifier = modifier.fillMaxSize(0.2f)
+                )
 
                 QuestionScreen(
                     question = currentQuestion!!,
