@@ -23,6 +23,8 @@ import com.example.co_opapp.SessionManager
 import com.example.co_opapp.ui.components.*
 import com.example.co_opapp.ui.components.CharacterCustomizationScreen.SendToBackendButton
 import com.example.co_opapp.ui.components.CharacterCustomizationScreen.UploadImageButton
+import com.example.co_opapp.ui.components.Popups.GradientColorPicker
+
 @Composable
 fun CharacterCustomizationScreen(
     profilePictureService: ProfileService,
