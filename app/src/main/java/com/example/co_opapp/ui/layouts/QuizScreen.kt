@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -30,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.Interfaces.GameDriver
 import com.example.co_opapp.SessionManager
+import com.example.co_opapp.ui.components.GradientColorPicker
 import com.example.co_opapp.ui.components.QuizScreen.ErrorScreen
 import com.example.co_opapp.ui.components.QuizScreen.GameCompleteScreen
 import com.example.co_opapp.ui.components.QuizScreen.QuestionScreen
@@ -72,6 +75,7 @@ fun QuizScreen(
                     buttonColor = SessionManager.SUBMIT_BUTTON_PRIMARY_COLOR,
                     buttonTextColor = SessionManager.SUBMIT_BUTTON_TEXT_COLOR
                 )
+
                 error != null -> ErrorScreen(
                     error = error!!,
                     onRetry = {
@@ -79,6 +83,7 @@ fun QuizScreen(
                         coroutineScope.launch { quizService.fetchNextQuestions() }
                     }
                 )
+
                 else -> GameCompleteScreen(
                     score = score,
                     totalQuestions = totalQuestions,
@@ -118,52 +123,61 @@ fun QuizScreen(
             }
         }
 
-        // Settings Popup
+// Settings Popup
         if (showSettings) {
             AlertDialog(
                 onDismissRequest = { showSettings = false },
                 title = { Text("Customize Colors", fontWeight = FontWeight.Bold) },
                 text = {
                     Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
-                        // 🔹 Question Card Background
-                        Text("Question Card Background", fontWeight = FontWeight.SemiBold)
-                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                            val colors = listOf(Color.White, Color.Black, Color.DarkGray, Color(0xFF423737), Color(0xFF009688))
-                            colors.forEach { color ->
-                                Box(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .clip(CircleShape)
-                                        .background(color)
-                                        .border(
-                                            width = if (SessionManager.QUESTION_PRIMARY_COLOR == color) 3.dp else 1.dp,
-                                            color = if (SessionManager.QUESTION_PRIMARY_COLOR == color) Color.Black else Color.Gray,
-                                            shape = CircleShape
-                                        )
-                                        .clickable { SessionManager.QUESTION_PRIMARY_COLOR = color }
-                                )
-                            }
-                        }
 
-                        // 🔹 Answer Button Color
+                        // 🔹 Question Card Background with Gradient Slider
+                        Text("Question Card Background", fontWeight = FontWeight.SemiBold)
+                        val questionCardGradientColors = listOf(
+                            Color.White,
+                            Color.Black,
+                            Color.DarkGray,
+                            Color(0xFF423737),
+                            Color(0xFF009688),
+                            Color(0xFFFFA500),
+                            Color(0xFF800080),
+                            Color(0xFF008080),
+                            Color(0xFFFFC0CB),
+                            Color(0xFFB0E0E6),
+                            Color(0xFFFFE4B5),
+                            Color(0xFFDC143C)
+                        )
+                        GradientColorPicker(
+                            gradientColors = questionCardGradientColors,
+                            selectedColor = SessionManager.QUESTION_PRIMARY_COLOR,
+                            onColorSelected = { SessionManager.QUESTION_PRIMARY_COLOR = it },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(40.dp)
+                        )
+
+                        // 🔹 Answer Button Color with Gradient Slider
                         Text("Answer Button Color", fontWeight = FontWeight.SemiBold)
-                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                            val buttonColors = listOf(Color(0xFF009688), Color.Red, Color.Blue, Color.Green, Color.Magenta, Color.Yellow)
-                            buttonColors.forEach { color ->
-                                Box(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .clip(CircleShape)
-                                        .background(color)
-                                        .border(
-                                            width = if (SessionManager.SUBMIT_BUTTON_PRIMARY_COLOR == color) 3.dp else 1.dp,
-                                            color = if (SessionManager.SUBMIT_BUTTON_PRIMARY_COLOR == color) Color.Black else Color.Gray,
-                                            shape = CircleShape
-                                        )
-                                        .clickable { SessionManager.SUBMIT_BUTTON_PRIMARY_COLOR = color }
-                                )
-                            }
-                        }
+                        val answerButtonGradientColors = listOf(
+                            Color(0xFF009688),
+                            Color.Red,
+                            Color.Blue,
+                            Color.Green,
+                            Color.Magenta,
+                            Color.Yellow,
+                            Color(0xFFFFA500),
+                            Color(0xFF800080),
+                            Color(0xFFFFC0CB),
+                            Color(0xFFB0E0E6)
+                        )
+                        GradientColorPicker(
+                            gradientColors = answerButtonGradientColors,
+                            selectedColor = SessionManager.SUBMIT_BUTTON_PRIMARY_COLOR,
+                            onColorSelected = { SessionManager.SUBMIT_BUTTON_PRIMARY_COLOR = it },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(40.dp)
+                        )
                     }
                 },
                 confirmButton = {
@@ -175,4 +189,3 @@ fun QuizScreen(
         }
     }
 }
-
