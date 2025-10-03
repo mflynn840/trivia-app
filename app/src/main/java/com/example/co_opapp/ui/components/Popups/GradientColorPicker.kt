@@ -28,12 +28,7 @@ fun GradientColorPicker(
     thumbSize: Dp = 28.dp
 ) {
     var thumbPosition by remember { mutableStateOf(0f) }
-
-    // Initialize thumbPosition to match the current selected color
-    LaunchedEffect(selectedColor) {
-        thumbPosition = gradientColors.indexOfFirst { it == selectedColor }
-            .takeIf { it >= 0 }?.toFloat()?.div((gradientColors.size - 1)) ?: 0f
-    }
+    var previewColor by remember { mutableStateOf(selectedColor) }
 
     BoxWithConstraints(modifier = modifier.height(thumbSize)) {
         val widthPx = constraints.maxWidth.toFloat()
@@ -46,41 +41,41 @@ fun GradientColorPicker(
                 .background(Brush.horizontalGradient(gradientColors))
         )
 
-        // Draggable Thumb
+        // Thumb
         Box(
             modifier = Modifier
                 .offset { IntOffset((thumbPosition * widthPx).roundToInt(), 0) }
                 .size(thumbSize)
                 .clip(CircleShape)
-                .background(Color.White)
+                .background(previewColor) // show preview color
                 .border(3.dp, Color.Black, CircleShape)
                 .pointerInput(Unit) {
-                    detectDragGestures { change, dragAmount ->
+                    detectDragGestures(
+                        onDragEnd = {
+                            // commit color when drag ends
+                            onColorSelected(previewColor)
+                        }
+                    ) { change, dragAmount ->
                         change.consume()
                         thumbPosition = (thumbPosition + dragAmount.x / widthPx).coerceIn(0f, 1f)
 
-                        // Smoothly interpolate color along gradient
+                        // Interpolate color smoothly
                         val scaledPos = thumbPosition * (gradientColors.size - 1)
                         val index = scaledPos.toInt().coerceIn(0, gradientColors.size - 2)
                         val fraction = scaledPos - index
-                        val interpolatedColor = lerpColorHSL(gradientColors[index], gradientColors[index + 1], fraction)
-
-                        onColorSelected(interpolatedColor)
+                        previewColor = lerpColor(gradientColors[index], gradientColors[index + 1], fraction)
                     }
                 }
         )
     }
 }
 
-fun lerpColorHSL(start: Color, end: Color, fraction: Float): Color {
-    val startHSL = FloatArray(3)
-    val endHSL = FloatArray(3)
-    ColorUtils.colorToHSL(start.toArgb(), startHSL)
-    ColorUtils.colorToHSL(end.toArgb(), endHSL)
-
-    val h = startHSL[0] + (endHSL[0] - startHSL[0]) * fraction
-    val s = startHSL[1] + (endHSL[1] - startHSL[1]) * fraction
-    val l = startHSL[2] + (endHSL[2] - startHSL[2]) * fraction
-
-    return Color(ColorUtils.HSLToColor(floatArrayOf(h, s, l)))
+// Linear interpolation
+fun lerpColor(start: Color, end: Color, fraction: Float): Color {
+    return Color(
+        red = start.red + (end.red - start.red) * fraction,
+        green = start.green + (end.green - start.green) * fraction,
+        blue = start.blue + (end.blue - start.blue) * fraction,
+        alpha = start.alpha + (end.alpha - start.alpha) * fraction
+    )
 }
