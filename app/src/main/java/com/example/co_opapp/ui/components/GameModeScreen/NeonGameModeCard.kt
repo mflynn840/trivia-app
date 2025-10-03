@@ -32,6 +32,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.draw.shadow
 import com.example.co_opapp.SessionManager
+
 @Composable
 fun NeonGameModeCard(
     icon: String,
@@ -44,7 +45,7 @@ fun NeonGameModeCard(
     // 🔹 Animate alpha for pulsing glow
     val infiniteTransition = rememberInfiniteTransition(label = "neonTransition")
     val glowAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.4f,
+        initialValue = 0.5f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 2000, easing = LinearEasing),
@@ -56,7 +57,7 @@ fun NeonGameModeCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
+            .height(175.dp)
             .clickable { onClick() }
             .border(
                 width = 4.dp,
@@ -73,15 +74,17 @@ fun NeonGameModeCard(
         elevation = CardDefaults.cardElevation(12.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.padding(16.dp)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp)
         ) {
-            // Icon
+            // 🔹 Icon on top
             Text(
                 text = icon,
-                fontSize = 28.sp,
+                fontSize = 40.sp,
                 color = neonColor,
                 style = TextStyle(
                     shadow = Shadow(
@@ -92,41 +95,40 @@ fun NeonGameModeCard(
                 )
             )
 
-            Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.weight(1f)
-            ) {
-                // Title with glow
-                Text(
-                    text = title,
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = neonColor,
-                    style = TextStyle(
-                        shadow = Shadow(
-                            color = neonColor.copy(alpha = glowAlpha),
-                            blurRadius = 20f,
-                            offset = Offset(0f, 0f)
-                        )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // 🔹 Title
+            Text(
+                text = title,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = neonColor,
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    shadow = Shadow(
+                        color = neonColor.copy(alpha = glowAlpha),
+                        blurRadius = 20f,
+                        offset = Offset(0f, 0f)
                     )
                 )
+            )
 
-                Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
-                // Button text with glow
-                Text(
-                    text = buttonText,
-                    fontSize = 22.sp,
-                    color = neonColor,
-                    style = TextStyle(
-                        shadow = Shadow(
-                            color = neonColor.copy(alpha = glowAlpha),
-                            blurRadius = 12f,
-                            offset = Offset(0f, 0f)
-                        )
+            // 🔹 Button text
+            Text(
+                text = buttonText,
+                fontSize = 22.sp,
+                color = neonColor,
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    shadow = Shadow(
+                        color = neonColor.copy(alpha = glowAlpha),
+                        blurRadius = 12f,
+                        offset = Offset(0f, 0f)
                     )
                 )
-            }
+            )
         }
     }
 }

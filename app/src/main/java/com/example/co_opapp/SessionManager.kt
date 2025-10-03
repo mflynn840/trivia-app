@@ -8,8 +8,8 @@ object SessionManager {
     var jwtToken: String? = null
 
     // Buttons
-    var PRIMARY_BUTTON_COLOR = Color.Red
-    var SECONDARY_BUTTON_COLOR = Color(0xFFFFFFFF)
+    var PRIMARY_BUTTON_COLOR = Color(0xFF00F0FF)
+    var SECONDARY_BUTTON_COLOR = Color.Black
 
     // Cards
     var PRIMARY_CARD_COLOR = Color(0xFFFFFFFF)   // background

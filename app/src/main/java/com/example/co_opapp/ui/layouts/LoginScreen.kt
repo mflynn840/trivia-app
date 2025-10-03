@@ -66,7 +66,7 @@ fun LoginScreen(
                 initialValue = 0.5f,
                 targetValue = 1f,
                 animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 1000, easing = LinearEasing),
+                    animation = tween(durationMillis = 2000, easing = LinearEasing),
                     repeatMode = RepeatMode.Reverse
                 )
             )
@@ -93,7 +93,7 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             // Username
             TextField(
@@ -106,7 +106,7 @@ fun LoginScreen(
                     .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Password
             TextField(
@@ -120,7 +120,7 @@ fun LoginScreen(
                     .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             // Login/Register buttons
             LoginButtons(

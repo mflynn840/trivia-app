@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.TriviaQuestion
 
 @Composable
@@ -14,6 +16,9 @@ fun QuestionScreen(
     selectedAnswer: String?,
     onAnswerSelected: (String) -> Unit,
     onSubmit: () -> Unit,
+    cardColor: Color = SessionManager.QUESTION_PRIMARY_COLOR,
+    buttonColor: Color = SessionManager.SUBMIT_BUTTON_PRIMARY_COLOR,
+    buttonTextColor: Color = SessionManager.SUBMIT_BUTTON_TEXT_COLOR
 ) {
     val options = listOf(question.optionA, question.optionB, question.optionC, question.optionD)
 
@@ -27,13 +32,18 @@ fun QuestionScreen(
 
         QuestionCard(
             question = question.body,
+            cardColor = cardColor,
+            textColor = Color.White // optional: or make it dynamic
         )
+
 
         options.forEach { answer ->
             AnswerButton(
                 text = answer,
                 isSelected = answer == selectedAnswer,
-                onClick = { onAnswerSelected(answer) }
+                onClick = { onAnswerSelected(answer) },
+                buttonColor = buttonColor,
+                textColor = buttonTextColor
             )
         }
 
