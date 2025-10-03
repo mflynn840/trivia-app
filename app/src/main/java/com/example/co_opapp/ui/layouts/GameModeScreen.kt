@@ -53,24 +53,26 @@ fun GameModeScreen(
         )
 
         // Column for Settings + Back buttons (top-left)
-        Column(
+        // Row for Back + Settings buttons (top-left)
+        Row(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(32.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { showSettings = true }) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings",
-                    tint = Color.White
-                )
-            }
-
             IconButton(onClick = onNavigateBack) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Back",
+                    tint = Color.White
+                )
+            }
+
+            IconButton(onClick = { showSettings = true }) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Settings",
                     tint = Color.White
                 )
             }
@@ -83,11 +85,12 @@ fun GameModeScreen(
         )
 
         // Game mode options (centered)
+        // Game mode options (centered)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(15.dp),
             modifier = Modifier
-                .padding(start = 38.dp, end = 38.dp, top = 70.dp)
+                .padding(start = 38.dp, end = 38.dp, top = 50.dp)
                 .align(Alignment.Center)
         ) {
             NeonGameModeCard(
@@ -95,7 +98,8 @@ fun GameModeScreen(
                 title = "Test Your Knowledge",
                 buttonText = "Story Mode",
                 onClick = onNavigateToSinglePlayer,
-                cardColor = SessionManager.PRIMARY_CARD_COLOR // use SessionManager color
+                cardColor = SessionManager.PRIMARY_CARD_COLOR,
+                neonColor = SessionManager.NEON_CARD_COLOR
             )
 
             NeonGameModeCard(
@@ -103,94 +107,98 @@ fun GameModeScreen(
                 title = "Play With Friends",
                 buttonText = "Co-op Mode",
                 onClick = onNavigateToCoOp,
-                cardColor = SessionManager.PRIMARY_CARD_COLOR
+                cardColor = SessionManager.PRIMARY_CARD_COLOR,
+                neonColor = SessionManager.NEON_CARD_COLOR
             )
 
             Secondary_NeonSignButton(
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
+                backgroundColor = SessionManager.PRIMARY_CARD_COLOR,
+                neonColor = SessionManager.NEON_CARD_COLOR,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(55.dp),
+                    .height(55.dp)
             )
-        }
 
-        if (showSettings) {
-            AlertDialog(
-                onDismissRequest = { showSettings = false },
-                title = { Text("Customize Colors", fontWeight = FontWeight.Bold) },
-                text = {
-                    Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
-                        // 🔹 Card Background Picker
-                        Text("Card Background", fontWeight = FontWeight.SemiBold)
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            val colors = listOf(
-                                Color.White,
-                                Color.Black,
-                                Color.DarkGray,
-                                Color(0xFF423737),
-                                Color(0xFF009688)
-                            )
-                            colors.forEach { color ->
-                                Box(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .clip(CircleShape)
-                                        .background(color)
-                                        .border(
-                                            width = if (SessionManager.PRIMARY_CARD_COLOR == color) 3.dp else 1.dp,
-                                            color = if (SessionManager.PRIMARY_CARD_COLOR == color) Color.Black else Color.Gray,
-                                            shape = CircleShape
-                                        )
-                                        .clickable {
-                                            SessionManager.PRIMARY_CARD_COLOR = color
-                                        }
+
+            if (showSettings) {
+                AlertDialog(
+                    onDismissRequest = { showSettings = false },
+                    title = { Text("Customize Colors", fontWeight = FontWeight.Bold) },
+                    text = {
+                        Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                            // 🔹 Card Background Picker
+                            Text("Card Background", fontWeight = FontWeight.SemiBold)
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                val colors = listOf(
+                                    Color.White,
+                                    Color.Black,
+                                    Color.DarkGray,
+                                    Color(0xFF423737),
+                                    Color(0xFF009688)
                                 )
+                                colors.forEach { color ->
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .clip(CircleShape)
+                                            .background(color)
+                                            .border(
+                                                width = if (SessionManager.PRIMARY_CARD_COLOR == color) 3.dp else 1.dp,
+                                                color = if (SessionManager.PRIMARY_CARD_COLOR == color) Color.Black else Color.Gray,
+                                                shape = CircleShape
+                                            )
+                                            .clickable {
+                                                SessionManager.PRIMARY_CARD_COLOR = color
+                                            }
+                                    )
+                                }
+                            }
+
+                            // 🔹 Neon Glow Picker
+                            Text("Neon Glow", fontWeight = FontWeight.SemiBold)
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                val neonColors = listOf(
+                                    Color.Cyan,
+                                    Color.Magenta,
+                                    Color.Yellow,
+                                    Color.Green,
+                                    Color.Red,
+                                    Color.Blue
+                                )
+                                neonColors.forEach { color ->
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .clip(CircleShape)
+                                            .background(color)
+                                            .border(
+                                                width = if (SessionManager.NEON_CARD_COLOR == color) 3.dp else 1.dp,
+                                                color = if (SessionManager.NEON_CARD_COLOR == color) Color.Black else Color.Gray,
+                                                shape = CircleShape
+                                            )
+                                            .clickable {
+                                                SessionManager.NEON_CARD_COLOR = color
+                                            }
+                                    )
+                                }
                             }
                         }
-
-                        // 🔹 Neon Glow Picker
-                        Text("Neon Glow", fontWeight = FontWeight.SemiBold)
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            val neonColors = listOf(
-                                Color.Cyan,
-                                Color.Magenta,
-                                Color.Yellow,
-                                Color.Green,
-                                Color.Red,
-                                Color.Blue
-                            )
-                            neonColors.forEach { color ->
-                                Box(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .clip(CircleShape)
-                                        .background(color)
-                                        .border(
-                                            width = if (SessionManager.NEON_CARD_COLOR == color) 3.dp else 1.dp,
-                                            color = if (SessionManager.NEON_CARD_COLOR == color) Color.Black else Color.Gray,
-                                            shape = CircleShape
-                                        )
-                                        .clickable {
-                                            SessionManager.NEON_CARD_COLOR = color
-                                        }
-                                )
-                            }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showSettings = false }) {
+                            Text("Done")
                         }
                     }
-                },
-                confirmButton = {
-                    TextButton(onClick = { showSettings = false }) {
-                        Text("Done")
-                    }
-                }
-            )
+                )
+            }
         }
     }
 }

@@ -27,54 +27,53 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.co_opapp.SessionManager
 
-
 @Composable
-    fun Secondary_NeonSignButton(
-        text: String,
-        onClick: () -> Unit,
-        modifier: Modifier = Modifier,
-        neonColor: Color = SessionManager.SECONDARY_BUTTON_COLOR
+fun Secondary_NeonSignButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = SessionManager.PRIMARY_CARD_COLOR, // new: customizable background
+    neonColor: Color = SessionManager.NEON_CARD_COLOR // customizable neon glow
+) {
+    // Pulsing glow animation
+    val infiniteTransition = rememberInfiniteTransition()
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth(0.9f)
+            .height(60.dp)
+            .shadow(
+                elevation = 16.dp,
+                shape = RoundedCornerShape(16.dp),
+                ambientColor = neonColor.copy(alpha = glowAlpha * 0.6f),
+                spotColor = neonColor.copy(alpha = glowAlpha * 0.6f)
+            )
+            .border(4.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp))
+            .background(backgroundColor, RoundedCornerShape(16.dp))
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
     ) {
-        // Pulsing glow animation
-        val infiniteTransition = rememberInfiniteTransition()
-        val glowAlpha by infiniteTransition.animateFloat(
-            initialValue = 0.3f,
-            targetValue = 1f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(2000, easing = LinearEasing),
-                repeatMode = RepeatMode.Reverse
+        Text(
+            text = text,
+            style = TextStyle(
+                color = neonColor.copy(alpha = glowAlpha),
+                fontWeight = FontWeight.Medium,
+                fontSize = 26.sp,
+                fontFamily = FontFamily.SansSerif,
+                shadow = Shadow(
+                    color = neonColor.copy(alpha = glowAlpha),
+                    offset = Offset(0f, 0f),
+                    blurRadius = 58f
+                )
             )
         )
-
-        Box(
-            modifier = modifier
-                .fillMaxWidth(0.9f)
-                .height(60.dp)
-                .shadow(
-                    elevation = 16.dp,
-                    shape = RoundedCornerShape(16.dp),
-                    ambientColor = neonColor.copy(alpha = glowAlpha * 0.6f),
-                    spotColor = neonColor.copy(alpha = glowAlpha * 0.6f)
-                )
-                .border(4.dp, neonColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp))
-                .background(Color(0xFF111111), RoundedCornerShape(16.dp)) // dark base
-                .clickable { onClick() },
-            contentAlignment = Alignment.Center
-        ) {
-
-            Text(
-                text = text,
-                style = TextStyle(
-                    color = neonColor.copy(alpha = glowAlpha),
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 26.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    shadow = Shadow(
-                        color = neonColor.copy(alpha = glowAlpha),
-                        offset = Offset(0f, 0f),
-                        blurRadius = 58f
-                    )
-                )
-            )
     }
 }
