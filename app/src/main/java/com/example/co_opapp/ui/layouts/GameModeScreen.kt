@@ -16,6 +16,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -30,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import com.example.co_opapp.R
 import com.example.co_opapp.SessionManager
+import com.example.co_opapp.ui.components.GradientColorPicker
 import com.example.co_opapp.ui.components.LoginScreen.Primary_NeonSignButton
 import com.example.co_opapp.ui.components.LoginScreen.Secondary_NeonSignButton
 
@@ -121,75 +123,46 @@ fun GameModeScreen(
                     .height(55.dp)
             )
 
-
             if (showSettings) {
                 AlertDialog(
                     onDismissRequest = { showSettings = false },
                     title = { Text("Customize Colors", fontWeight = FontWeight.Bold) },
                     text = {
                         Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
-                            // 🔹 Card Background Picker
-                            Text("Card Background", fontWeight = FontWeight.SemiBold)
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                val colors = listOf(
-                                    Color.White,
-                                    Color.Black,
-                                    Color.DarkGray,
-                                    Color(0xFF423737),
-                                    Color(0xFF009688)
-                                )
-                                colors.forEach { color ->
-                                    Box(
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .clip(CircleShape)
-                                            .background(color)
-                                            .border(
-                                                width = if (SessionManager.PRIMARY_CARD_COLOR == color) 3.dp else 1.dp,
-                                                color = if (SessionManager.PRIMARY_CARD_COLOR == color) Color.Black else Color.Gray,
-                                                shape = CircleShape
-                                            )
-                                            .clickable {
-                                                SessionManager.PRIMARY_CARD_COLOR = color
-                                            }
-                                    )
-                                }
-                            }
 
-                            // 🔹 Neon Glow Picker
+                            // 🔹 Card Background Picker with Gradient Slider
+                            Text("Card Background", fontWeight = FontWeight.SemiBold)
+                            val cardGradientColors = listOf(
+                                Color.White, Color.Black, Color.DarkGray, Color(0xFF423737),
+                                Color(0xFF009688), Color(0xFFFFA500), Color(0xFF800080),
+                                Color(0xFF008080), Color(0xFFFFC0CB), Color(0xFFB0E0E6),
+                                Color(0xFFFFE4B5), Color(0xFFDC143C)
+                            )
+                            GradientColorPicker(
+                                gradientColors = cardGradientColors,
+                                selectedColor = SessionManager.PRIMARY_CARD_COLOR,
+                                onColorSelected = { SessionManager.PRIMARY_CARD_COLOR = it },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(40.dp)
+                            )
+
+                            // 🔹 Neon Glow Picker with Gradient Slider
                             Text("Neon Glow", fontWeight = FontWeight.SemiBold)
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                val neonColors = listOf(
-                                    Color.Cyan,
-                                    Color.Magenta,
-                                    Color.Yellow,
-                                    Color.Green,
-                                    Color.Red,
-                                    Color.Blue
-                                )
-                                neonColors.forEach { color ->
-                                    Box(
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .clip(CircleShape)
-                                            .background(color)
-                                            .border(
-                                                width = if (SessionManager.NEON_CARD_COLOR == color) 3.dp else 1.dp,
-                                                color = if (SessionManager.NEON_CARD_COLOR == color) Color.Black else Color.Gray,
-                                                shape = CircleShape
-                                            )
-                                            .clickable {
-                                                SessionManager.NEON_CARD_COLOR = color
-                                            }
-                                    )
-                                }
-                            }
+                            val neonGradientColors = listOf(
+                                Color(0xFF00FFFF), Color(0xFFFF00FF), Color(0xFFFFFF00),
+                                Color(0xFF00FF00), Color(0xFFFF4500), Color(0xFF1E90FF),
+                                Color(0xFFFF1493), Color(0xFF7CFC00), Color(0xFF8A2BE2),
+                                Color(0xFFFF6347), Color(0xFF00CED1), Color(0xFFFFD700)
+                            )
+                            GradientColorPicker(
+                                gradientColors = neonGradientColors,
+                                selectedColor = SessionManager.NEON_CARD_COLOR,
+                                onColorSelected = { SessionManager.NEON_CARD_COLOR = it },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(40.dp)
+                            )
                         }
                     },
                     confirmButton = {
