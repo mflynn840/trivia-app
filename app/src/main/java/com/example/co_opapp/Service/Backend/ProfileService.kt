@@ -7,6 +7,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import com.example.co_opapp.Repository.ProfileRepository
+import com.example.co_opapp.SessionManager
 import com.example.co_opapp.data_model.ColorPallete
 
 /**
@@ -51,6 +52,21 @@ class ProfileService(private val authService: AuthService, context: Context) {
 
         }
         return profilePicture.value
+    }
+
+    suspend fun uploadColorPallete(colorPallete: ColorPallete): Boolean {
+        val username = authService.getUsername() ?: return false
+        val token = authService.getJwtToken() ?: return false
+        return try{
+            val response = repository.uploadColorPallete(username, "Bearer $token", colorPallete)
+            Log.d("ProfilePictureService", "Upload success: true")
+            true
+        }catch(e: Exception){
+            Log.e("ProfilePictureService", "Exception uploading color pallete", e)
+            false
+
+        }
+
     }
 
 
