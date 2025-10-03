@@ -59,7 +59,7 @@ public class GameWebSocketController {
     @MessageMapping("/lobby/create")
     public void createLobby(@Payload CreateLobbyRequest request) {
         try {
-            lobbyManager.createLobby(request.getName());
+            lobbyManager.createLobby(request);
             sendAllLobbies();  // Notify all clients about the updated list of lobbies
         } catch (IllegalArgumentException e) {
             messagingTemplate.convertAndSend("/topic/lobby/errors", Map.of(

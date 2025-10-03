@@ -17,7 +17,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.co_opapp.R
 import com.example.co_opapp.Service.Backend.AvailableLobbiesService
+import com.example.co_opapp.Service.Hooks.CategorySelectorService
 import com.example.co_opapp.SessionManager
+import com.example.co_opapp.data_model.CreateLobbyRequest
 import com.example.co_opapp.ui.components.LobbyScreen.*
 
 
@@ -29,14 +31,15 @@ fun LobbySelectorScreen(
     availableLobbiesService: AvailableLobbiesService,
     modifier: Modifier = Modifier,
     onNavigateToLobby: (String) -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    catSelService: CategorySelectorService
 ) {
     val player = SessionManager.currentPlayer
 
     var lobbies by remember { mutableStateOf<List<String>>(emptyList()) }
     var selectedLobbyName by remember { mutableStateOf<String?>(null) }
     var shouldRefreshLobbies by remember { mutableStateOf(true) }
-    var lobbyToCreate by remember { mutableStateOf<String?>(null) }
+    var lobbyToCreate by remember { mutableStateOf<CreateLobbyRequest?>(null) }
 
     LaunchedEffect(shouldRefreshLobbies) {
         if (shouldRefreshLobbies) {
@@ -51,9 +54,14 @@ fun LobbySelectorScreen(
     }
 
     LaunchedEffect(lobbyToCreate) {
-        lobbyToCreate?.let { name ->
+        lobbyToCreate?.let { request ->
             try {
-                val success = availableLobbiesService.createLobby(name)
+                val success = availableLobbiesService.createLobby(
+                    lobbyName = request.name,
+                    category = request.category,
+                    difficulty = request.difficulty,
+                    numQuestions = request.numQuestions,
+                )
                 if (success) shouldRefreshLobbies = true
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -104,8 +112,12 @@ fun LobbySelectorScreen(
                 Spacer(modifier = Modifier.height(28.dp))
 
                 CreateLobbyUi(
-                    onCreateLobby = { name -> lobbyToCreate = name },
-                    modifier = Modifier.padding(top = 8.dp)
+                    onCreateLobby = {name, category, difficulty, numQuestions ->
+                        lobbyToCreate = CreateLobbyRequest(name=name, difficulty=difficulty,
+                                                            category=category,numQuestions=numQuestions)
+                    },
+                    modifier = Modifier.padding(top = 8.dp),
+                    catSelService = catSelService
                 )
 
                 LobbyList(

@@ -39,7 +39,7 @@ public class LobbyInfoController {
     @PostMapping("/create")
     public ResponseEntity<?> createLobby(@RequestBody CreateLobbyRequest request) {
         try {
-            lobbyManager.createLobby(request.getName());
+            lobbyManager.createLobby(request);
             return ResponseEntity.status(HttpStatus.CREATED).body("Lobby created successfully.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());

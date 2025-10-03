@@ -36,7 +36,10 @@ data class ChatMessage(
 )
 
 data class CreateLobbyRequest(
-    val name: String
+    val name: String,
+    val difficulty: String,
+    val category: String,
+    val numQuestions: Int
 )
 
 enum class GameStatus {

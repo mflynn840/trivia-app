@@ -149,7 +149,8 @@ fun TriviaGame() {
                                 popUpTo("joinLobby") { inclusive = true }
                             }
                         },
-                        availableLobbiesService = availableLobbiesService
+                        availableLobbiesService = availableLobbiesService,
+                        catSelService = CategorySelectorService(context, authService.getJwtToken()!!)
                     )
                 }
             }

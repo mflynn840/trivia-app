@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.example.spring_boot.Model.http.PlayerDTO;
 import com.example.spring_boot.Model.user.Player;
 import com.example.spring_boot.Model.http.AnswerRequest;
+import com.example.spring_boot.Model.http.CreateLobbyRequest;
 import com.example.spring_boot.Repository.QuestionRepository;
 import com.example.spring_boot.Service.QuestionService;
 import com.example.spring_boot.Model.Question;
@@ -37,8 +38,13 @@ public class LobbyManager {
      * @param name
      * @return
      */
-    public Lobby createLobby(String name) {
+    public Lobby createLobby(CreateLobbyRequest request) {
         
+        String name = request.getName();
+        int numQuestions = request.getNumQuestions();
+        String difficulty = request.getDifficulty();
+        String category = request.getCategory();
+
         // Enforce non-null and non-empty names
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Lobby name cannot be null or empty.");
@@ -52,9 +58,16 @@ public class LobbyManager {
             throw new IllegalArgumentException("A lobby with the name '" + name + "' already exists.");
         }
 
+        //Make sure a category and difficulty were selected
+        if(difficulty == null || category == null){
+            throw new IllegalArgumentException("Error: game configuration not set (difficulty/category/numQuestions)");
+        }
         //Create a new lobby and gamestate
         Lobby lobby = new Lobby();
         lobby.setName(name);
+        lobby.setDifficulty(difficulty);
+        lobby.setCategory(category);
+        lobby.setNumQuestions(numQuestions);
         lobbies.put(name, lobby);
         return lobby;
     }

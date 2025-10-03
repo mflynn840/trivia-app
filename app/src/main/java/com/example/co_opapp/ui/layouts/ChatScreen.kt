@@ -45,7 +45,7 @@ fun ChatScreen(
         IconButton(
             onClick = onNavigateBack,
             modifier = Modifier
-                .align(Alignment.TopStart as Alignment.Horizontal)
+                .align(Alignment.Start)
                 .padding(32.dp)
         ) {
             Icon(

@@ -54,9 +54,12 @@ class AvailableLobbiesService {
     }
 
 
-    suspend fun createLobby(lobbyName: String): Boolean{
+    suspend fun createLobby(lobbyName: String, category: String, difficulty: String, numQuestions: Int): Boolean{
         return try {
-            val request = CreateLobbyRequest(name = lobbyName)
+            val request = CreateLobbyRequest(name = lobbyName,
+                                            category = category,
+                                            difficulty = difficulty,
+                                            numQuestions = numQuestions)
             val response = api.createLobby(request)
             true  // Assuming success if no exception is thrown
         } catch (e: Exception) {
