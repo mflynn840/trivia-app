@@ -65,7 +65,6 @@ fun GameModeScreen(
                 )
             }
 
-
         }
 
         // Profile picture (top-right)
