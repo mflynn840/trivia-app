@@ -47,15 +47,34 @@ public class QuestionService {
     public Map<String, Map<String, Long>> getQuestionCountsByCategoryAndDifficulty() {
         List<Object[]> results = questionRepository.countQuestionsByCategoryAndDifficulty();
         Map<String, Map<String, Long>> counts = new HashMap<>();
-
+        long totalAll = 0L;
+        
         for (Object[] row : results) {
             String category = (String) row[0];
             String difficulty = (String) row[1];
             Number countNum = (Number) row[2];
             Long count = countNum.longValue();
+
+            // Normal category/difficulty
             counts.computeIfAbsent(category, k -> new HashMap<>())
-                  .put(difficulty, count);
+                .put(difficulty, count);
+
+            // Mixed category (aggregating difficulties)
+            counts.computeIfAbsent("Mixed", k -> new HashMap<>())
+                .merge(difficulty, count, Long::sum);
+
+            // Mixed difficulty (aggregating categories)
+            counts.computeIfAbsent(category, k -> new HashMap<>())
+                .merge("Mixed", count, Long::sum);
+            
+            // Track grand total
+            totalAll += count;
         }
+        // Mixed / Mixed = everything
+        counts.computeIfAbsent("Mixed", k -> new HashMap<>())
+            .put("Mixed", totalAll);
+
+
         return counts;
     }
     
