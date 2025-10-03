@@ -95,7 +95,7 @@ public class PlayerController {
         }
     }
 
-    @PostMapping("/{username}/get-color-pallete")
+    @PostMapping("/{username}/set-color-pallete")
     public ResponseEntity<ApiResponse> setColorPallete(@PathVariable String username, 
                                     @RequestBody ColorPallete colorPallete) {
         try{

@@ -82,7 +82,8 @@ fun TriviaGame() {
                                 }
                             }
                         },
-                        profilePicture = profilePicture
+                        profilePicture = profilePicture,
+                        profileService = profileService
                     )
                 }
             }

@@ -25,8 +25,8 @@ data class PlayerDTO(
 data class ColorPallete(
     val PRIMARY_BUTTON_COLOR: Long,
     val SECONDARY_BUTTON_COLOR: Long,
-    val PRIMARY_CARD_COLOR: Long,
-    val NEON_CARD_COLOR: Long,
+    var PRIMARY_CARD_COLOR: Long,
+    var NEON_CARD_COLOR: Long,
     val CARD_TEXT_COLOR: Long,
     val QUESTION_PRIMARY_COLOR: Long,
     val QUESTION_TEXT_COLOR: Long,

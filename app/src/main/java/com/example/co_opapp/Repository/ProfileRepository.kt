@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.example.co_opapp.RetrofitApi.ProfileApiService
+import com.example.co_opapp.data_model.ColorPallete
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -48,6 +49,10 @@ class ProfileRepository(private val context: Context) {
     suspend fun getProfilePictureBytes(username: String, token: String): ByteArray? {
         val response = profileApi.getAvatar(username, token)
         return if (response.isSuccessful) response.body()?.bytes() else null
+    }
+
+    suspend fun uploadColorPallete(username: String, token:String, colorPallete: ColorPallete){
+        val response = profileApi.uploadColorPallete(username, token, colorPallete)
     }
 
     private fun Uri.toMultipartBody(context: Context, name: String): MultipartBody.Part? {
