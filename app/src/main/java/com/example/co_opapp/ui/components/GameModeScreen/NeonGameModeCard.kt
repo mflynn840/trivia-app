@@ -56,10 +56,10 @@ fun NeonGameModeCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(150.dp)
             .clickable { onClick() }
             .border(
-                width = 6.dp,
+                width = 4.dp,
                 color = neonColor.copy(alpha = glowAlpha),
                 shape = RoundedCornerShape(16.dp)
             )
