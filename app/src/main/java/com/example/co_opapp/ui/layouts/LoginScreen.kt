@@ -66,14 +66,14 @@ fun LoginScreen(
                 initialValue = 0.5f,
                 targetValue = 1f,
                 animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 1000, easing = LinearEasing),
+                    animation = tween(durationMillis = 2000, easing = LinearEasing),
                     repeatMode = RepeatMode.Reverse
                 )
             )
 
             Box(
                 modifier = Modifier
-                    .size(230.dp)
+                    .size(240.dp)
                     .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.2f))
                     .border(4.dp, Color(0xFF00F0FF).copy(alpha = glowAlpha), CircleShape) // pulsing border
@@ -93,7 +93,7 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             // Username
             TextField(

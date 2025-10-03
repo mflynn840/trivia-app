@@ -52,7 +52,7 @@ fun LoginButtons(
             },
             modifier = Modifier
                 .fillMaxWidth(0.9f)
-                .height(38.dp)
+                .height(48.dp)
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -80,7 +80,7 @@ fun LoginButtons(
             },
             modifier = Modifier
                 .fillMaxWidth(0.9f)
-                .height(38.dp)
+                .height(48.dp)
         )
     }
 }
