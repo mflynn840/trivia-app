@@ -73,7 +73,7 @@ fun LoginScreen(
 
             Box(
                 modifier = Modifier
-                    .size(240.dp)
+                    .size(230.dp)
                     .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.2f))
                     .border(4.dp, Color(0xFF00F0FF).copy(alpha = glowAlpha), CircleShape) // pulsing border
@@ -93,7 +93,7 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             // Username
             TextField(
@@ -106,7 +106,7 @@ fun LoginScreen(
                     .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Password
             TextField(
@@ -120,7 +120,7 @@ fun LoginScreen(
                     .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(12.dp))
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             // Login/Register buttons
             LoginButtons(
