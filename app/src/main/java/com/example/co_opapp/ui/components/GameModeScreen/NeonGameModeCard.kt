@@ -28,85 +28,104 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.draw.shadow
 import com.example.co_opapp.SessionManager
-
-
 @Composable
 fun NeonGameModeCard(
     icon: String,
     title: String,
     buttonText: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    cardColor: Color = SessionManager.PRIMARY_CARD_COLOR,
+    neonColor: Color = SessionManager.NEON_CARD_COLOR
 ) {
-    // Pulsing glow animation
-    val infiniteTransition = rememberInfiniteTransition()
+    // 🔹 Animate alpha for pulsing glow
+    val infiniteTransition = rememberInfiniteTransition(label = "neonTransition")
     val glowAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.3f,
+        initialValue = 0.4f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearEasing),
+            animation = tween(durationMillis = 1500, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
-        )
+        ),
+        label = "glowAlpha"
     )
-    val primaryColor = SessionManager.PRIMARY_CARD_COLOR
-    val secondaryColor = SessionManager.SECONDARY_CARD_COLOR
 
     Card(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .border(4.dp, primaryColor.copy(alpha = glowAlpha), RoundedCornerShape(16.dp)),
+            .height(120.dp)
+            .clickable { onClick() }
+            .border(
+                width = 2.dp,
+                color = neonColor.copy(alpha = glowAlpha),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .shadow(
+                elevation = 30.dp,
+                shape = RoundedCornerShape(16.dp),
+                ambientColor = neonColor.copy(alpha = glowAlpha),
+                spotColor = neonColor.copy(alpha = glowAlpha)
+            ),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = secondaryColor
-        )
+        elevation = CardDefaults.cardElevation(12.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
-
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(16.dp)
         ) {
-
             // Icon
             Text(
                 text = icon,
-                fontSize = 36.sp,
-                modifier = Modifier.padding(bottom = 18.dp, top = 4.dp)
-            )
-
-            // Title
-            Text(
-                text = title,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold,
-                color = primaryColor.copy(alpha = glowAlpha),
+                fontSize = 28.sp,
+                color = neonColor,
                 style = TextStyle(
                     shadow = Shadow(
-                        color = primaryColor.copy(alpha = 0.6f),
-                        offset = Offset(0f, 0f),
-                        blurRadius = 58f
+                        color = neonColor.copy(alpha = glowAlpha),
+                        blurRadius = 16f,
+                        offset = Offset(0f, 0f)
                     )
-                ),
-                modifier = Modifier.padding(bottom = 18.dp)
+                )
             )
 
-            // Action Button
-            Button(
-                onClick = onClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = primaryColor.copy(alpha = 0.3f)),
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.weight(1f)
             ) {
+                // Title with glow
+                Text(
+                    text = title,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = neonColor,
+                    style = TextStyle(
+                        shadow = Shadow(
+                            color = neonColor.copy(alpha = glowAlpha),
+                            blurRadius = 20f,
+                            offset = Offset(0f, 0f)
+                        )
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Button text with glow
                 Text(
                     text = buttonText,
-                    fontSize = 24.sp,
-                    color = SessionManager.CARD_TEXT_COLOR,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle()
+                    fontSize = 16.sp,
+                    color = neonColor,
+                    style = TextStyle(
+                        shadow = Shadow(
+                            color = neonColor.copy(alpha = glowAlpha),
+                            blurRadius = 12f,
+                            offset = Offset(0f, 0f)
+                        )
                     )
-
+                )
             }
         }
     }

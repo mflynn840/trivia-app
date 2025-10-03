@@ -6,14 +6,18 @@ import com.example.co_opapp.data_model.Player
 object SessionManager {
     var currentPlayer: Player? = null
     var jwtToken: String? = null
+
+    // Buttons
     var PRIMARY_BUTTON_COLOR = Color(0xFF3F51B5)
     var SECONDARY_BUTTON_COLOR = Color(0xFFFFFFFF)
 
+    // Cards
+    var PRIMARY_CARD_COLOR = Color(0xFFFFFFFF)   // background
+    var NEON_CARD_COLOR = Color(0xFF00FFFF)      // neon glow
 
-    var PRIMARY_CARD_COLOR = Color(0xFFFFFFFF)
-    var SECONDARY_CARD_COLOR = Color(0xFF423737)
     var CARD_TEXT_COLOR = Color(0xFFFFFFFF)
 
+    // Questions
     var QUESTION_PRIMARY_COLOR = Color.White.copy(alpha = 0.6f)
     var QUESTION_TEXT_COLOR= Color.Black
     var SUBMIT_BUTTON_PRIMARY_COLOR = Color(0xFF009688)
@@ -22,5 +26,5 @@ object SessionManager {
     var ANSWER_SELECTED_TEXT_COLOR= Color(0xFF009688)
     var ANSWER_UNSELECTED_PRIMARY_COLOR = Color.White.copy(alpha = 0.6f)
     var ANSWER_UNSELECTED_TEXT_COLOR = Color.Black
-
 }
+
