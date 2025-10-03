@@ -3,6 +3,8 @@ import kotlinx.coroutines.delay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +35,8 @@ fun CircularTimer(
 
     Box(
         modifier = modifier
-            .size(60.dp)
+            .fillMaxHeight()
+            .aspectRatio(1f)
             .background(Color.White, CircleShape)
             .border(2.dp, Color.Black, CircleShape),
         contentAlignment = Alignment.Center

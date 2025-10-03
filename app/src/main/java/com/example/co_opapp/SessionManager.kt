@@ -22,9 +22,5 @@ object SessionManager {
     var QUESTION_TEXT_COLOR= Color.Black
     var SUBMIT_BUTTON_PRIMARY_COLOR = Color(0xFF009688)
     var SUBMIT_BUTTON_TEXT_COLOR = Color(0xFFFFFFFF)
-    var ANSWER_SELECTED_PRIMARY_COLOR = Color(0xFF009688)
-    var ANSWER_SELECTED_TEXT_COLOR= Color(0xFF009688)
-    var ANSWER_UNSELECTED_PRIMARY_COLOR = Color.White.copy(alpha = 0.6f)
-    var ANSWER_UNSELECTED_TEXT_COLOR = Color.Black
 }
 

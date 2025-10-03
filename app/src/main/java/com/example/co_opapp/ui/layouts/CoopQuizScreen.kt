@@ -1,6 +1,10 @@
 package com.example.co_opapp.ui.layouts
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -8,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.co_opapp.Service.Coop.CurrentLobbyService
 import com.example.co_opapp.ui.components.QuizScreen.QuestionScreen
 import com.example.co_opapp.ui.components.QuizScreen.QuizBackground
@@ -36,25 +41,30 @@ public fun CoopQuizScreen(
     QuizBackground(onBack=onNavigateBack, modifier = modifier){
         when{
             currentQuestion != null -> {
+                Column(modifier.fillMaxSize()){
+                    //TODO: Holds timer, and shows which question you are on
+                    QuizHotbar(
+                        currentLobbyService = currentLobbyService,
+                        modifier = modifier.fillMaxWidth().height(80.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    QuestionScreen(
+                        question = currentQuestion!!,
+                        selectedAnswer = selectedAnswer,
+                        onAnswerSelected = { selectedAnswer = it },
+                        onSubmit = {
+                            currentLobbyService.submitAnswer(
+                                questionId=currentQuestion!!.id,
+                                answer=selectedAnswer!!)
+                            selectedAnswer = null
+                        },
+                    )
+
+                }
 
 
-                //TODO: Holds timer, and shows which question you are on
-                QuizHotbar(
-                    currentLobbyService = currentLobbyService,
-                    modifier = modifier.fillMaxSize(0.2f)
-                )
-
-                QuestionScreen(
-                    question = currentQuestion!!,
-                    selectedAnswer = selectedAnswer,
-                    onAnswerSelected = { selectedAnswer = it },
-                    onSubmit = {
-                        currentLobbyService.submitAnswer(
-                            questionId=currentQuestion!!.id,
-                            answer=selectedAnswer!!)
-                        selectedAnswer = null
-                    },
-                )
 
             }
         }

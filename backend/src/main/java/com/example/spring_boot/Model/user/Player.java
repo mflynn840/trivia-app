@@ -32,7 +32,6 @@ public class Player implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-
     private Role role;
 
     @JsonProperty("isReady")
@@ -42,6 +41,8 @@ public class Player implements UserDetails {
 
 
     private Long score = (long) 0;
+
+    private ColorPallete colorPallete = new ColorPallete();
 
     // Constructors
     public Player() {}
@@ -72,6 +73,8 @@ public class Player implements UserDetails {
     public byte[] getProfilePicture(){return this.profilePicture;}
     public void setProfilePicture(byte[] profilePicture){this.profilePicture = profilePicture;}
 
+    public ColorPallete getColorPallete(){return this.colorPallete;}
+    public void setColorPallete(ColorPallete colorPallete){this.colorPallete=colorPallete;}
 
 
     // Return a list of the user's privileges

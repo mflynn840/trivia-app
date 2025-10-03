@@ -1,5 +1,6 @@
 package com.example.spring_boot.Model.http;
 
+import com.example.spring_boot.Model.user.ColorPallete;
 import com.example.spring_boot.Model.user.Player;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,6 +15,7 @@ public class PlayerDTO {
     private boolean isReady;
     private Long id;
     private Long score;
+    private ColorPallete colorPallete;
 
     //public String getSessionId(){return this.sessionId;}
     //public void setSessionId(String sessionId){this.sessionId = sessionId;}
@@ -29,6 +31,8 @@ public class PlayerDTO {
     public Long getScore(){return this.score;}
     public void setScore(Long score){this.score = score;}
 
+    public ColorPallete getColorPallete(){return colorPallete;}
+    public void setColorPallete(ColorPallete colorPallete){this.colorPallete=colorPallete;}
     public Long getId() {
         return this.id;
     }
@@ -48,6 +52,7 @@ public class PlayerDTO {
         this.isReady = p.isReady();
         this.id = p.getId();
         this.score = p.getScore();
+        this.colorPallete = p.getColorPallete();
         
     }
     

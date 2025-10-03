@@ -7,6 +7,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import com.example.co_opapp.Repository.ProfileRepository
+import com.example.co_opapp.data_model.ColorPallete
 
 /**
  * UI-facing service for uploading and fetching profile pictures.
@@ -51,6 +52,8 @@ class ProfileService(private val authService: AuthService, context: Context) {
         }
         return profilePicture.value
     }
+
+
 
 
 

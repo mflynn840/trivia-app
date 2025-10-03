@@ -39,6 +39,7 @@ fun Player.toDTO(): PlayerDTO {
         isReady = this.ready,
         id = this.id,
         score = this.score,
+        colorPallete = this.colorPallete
         //profilePicture = this.profilePicture
     )
 }

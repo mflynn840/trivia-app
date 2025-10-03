@@ -1,5 +1,6 @@
 package com.example.spring_boot.Service;
 
+import com.example.spring_boot.Model.user.ColorPallete;
 import com.example.spring_boot.Model.user.Player;
 import com.example.spring_boot.Repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,25 @@ public class PlayerService {
         }
 
         return profilePicture;
+    }
+
+    public ColorPallete getColorPallete(String username) {
+        Player p = this.playerRepository.findByUsername(username);
+        if(p==null){
+            throw new IllegalArgumentException("Player not found: "+ username);
+        }
+        ColorPallete colorPallete = p.getColorPallete();
+        if(colorPallete == null) throw new IllegalStateException("Profile picture not found");
+        return colorPallete;
+    }
+
+    public void setColorPallete(String username, ColorPallete colorPallete) {
+        if(colorPallete==null) throw new IllegalArgumentException("Color pallete invalid");
+        Player player = playerRepository.findByUsername(username);
+        if(player == null) throw new IllegalArgumentException("Player not found");
+        player.setColorPallete(colorPallete);
+        playerRepository.save(player);
+        playerRepository.flush();
     }
 
 

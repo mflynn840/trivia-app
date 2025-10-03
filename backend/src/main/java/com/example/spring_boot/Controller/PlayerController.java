@@ -1,5 +1,6 @@
 package com.example.spring_boot.Controller;
 
+import com.example.spring_boot.Model.user.ColorPallete;
 import com.example.spring_boot.Service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +13,9 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/api/players")
@@ -78,4 +82,29 @@ public class PlayerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/{username}/get-color-pallete")
+    public ResponseEntity<?> getColorPallete(@PathVariable String username){
+        try{
+            ColorPallete colorPallete = this.playerService.getColorPallete(username);
+            return ResponseEntity.ok(colorPallete);
+            
+        }catch(IllegalArgumentException ex){
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/{username}/get-color-pallete")
+    public ResponseEntity<ApiResponse> setColorPallete(@PathVariable String username, 
+                                    @RequestBody ColorPallete colorPallete) {
+        try{
+            playerService.setColorPallete(username, colorPallete);
+            return ResponseEntity.ok(new ApiResponse("Success"));
+        }catch(IllegalArgumentException ex){
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
 }
