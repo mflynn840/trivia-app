@@ -28,17 +28,6 @@ fun QuizBackground(onBack: () -> Unit, modifier: Modifier = Modifier, content: @
             modifier = Modifier.fillMaxSize()
         )
 
-        IconButton(
-            onClick = onBack,
-            modifier = Modifier.align(Alignment.TopStart).padding(32.dp)
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                tint = Color.White
-            )
-        }
-
         content()
     }
 }
