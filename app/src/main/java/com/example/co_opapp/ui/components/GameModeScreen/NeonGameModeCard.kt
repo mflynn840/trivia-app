@@ -1,6 +1,8 @@
 package com.example.co_opapp.ui.components.GameModeScreen
 
 import android.graphics.drawable.Icon
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -31,8 +33,14 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.font.Font
+
+import androidx.compose.ui.text.font.FontFamily
+import com.example.co_opapp.R
 import com.example.co_opapp.SessionManager
 
+
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun NeonGameModeCard(
     icon: String,
@@ -42,8 +50,14 @@ fun NeonGameModeCard(
     cardColor: Color = SessionManager.PRIMARY_CARD_COLOR,
     neonColor: Color = SessionManager.NEON_CARD_COLOR
 ) {
+
     // 🔹 Animate alpha for pulsing glow
     val infiniteTransition = rememberInfiniteTransition(label = "neonTransition")
+
+    val orbitronFont = FontFamily(
+        Font(R.font.orbitron_variable_wght)
+    )
+
     val glowAlpha by infiniteTransition.animateFloat(
         initialValue = 0.5f,
         targetValue = 1f,
@@ -81,11 +95,12 @@ fun NeonGameModeCard(
                 .fillMaxSize()
                 .padding(12.dp)
         ) {
-            // 🔹 Icon on top
+            // 🔹 Icon
             Text(
                 text = icon,
                 fontSize = 40.sp,
                 color = neonColor,
+                fontFamily = orbitronFont,
                 style = TextStyle(
                     shadow = Shadow(
                         color = neonColor.copy(alpha = glowAlpha),
@@ -104,6 +119,7 @@ fun NeonGameModeCard(
                 fontWeight = FontWeight.Bold,
                 color = neonColor,
                 textAlign = TextAlign.Center,
+                fontFamily = orbitronFont,
                 style = TextStyle(
                     shadow = Shadow(
                         color = neonColor.copy(alpha = glowAlpha),
@@ -121,6 +137,7 @@ fun NeonGameModeCard(
                 fontSize = 22.sp,
                 color = neonColor,
                 textAlign = TextAlign.Center,
+                fontFamily = orbitronFont,
                 style = TextStyle(
                     shadow = Shadow(
                         color = neonColor.copy(alpha = glowAlpha),
