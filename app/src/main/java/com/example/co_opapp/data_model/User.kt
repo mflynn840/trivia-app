@@ -23,14 +23,13 @@ data class PlayerDTO(
 )
 
 data class ColorPallete(
-    val PRIMARY_BUTTON_COLOR: Long,
-    val SECONDARY_BUTTON_COLOR: Long,
-    var PRIMARY_CARD_COLOR: Long,
-    var NEON_CARD_COLOR: Long,
-    val CARD_TEXT_COLOR: Long,
-    val QUESTION_PRIMARY_COLOR: Long,
-    val QUESTION_TEXT_COLOR: Long,
-    val SUBMIT_BUTTON_PRIMARY_COLOR: Long,
-    val SUBMIT_BUTTON_TEXT_COLOR: Long
-
+    var primaryButtonColor: Int = 0xFF00F0FF.toInt(),
+    var secondaryButtonColor: Int = 0xFF000000.toInt(),
+    var primaryCardColor: Int = 0xFFFFFFFF.toInt(),
+    var neonCardColor: Int = 0xFF00FFFF.toInt(),
+    var cardTextColor: Int = 0xFFFFFFFF.toInt(),
+    var questionPrimaryColor: Int = 0x99FFFFFF.toInt(),
+    var questionTextColor: Int = 0xFF000000.toInt(),
+    var submitButtonPrimaryColor: Int = 0xFF009688.toInt(),
+    var submitButtonTextColor: Int = 0xFFFFFFFF.toInt()
 )

@@ -99,8 +99,8 @@ fun GameModeScreen(
                 title = "Test Your Knowledge",
                 buttonText = "Story Mode",
                 onClick = onNavigateToSinglePlayer,
-                cardColor = Color(SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR.toULong()),
-                neonColor = Color(SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR.toULong())
+                cardColor = Color(SessionManager.currentPlayer!!.colorPallete.primaryCardColor),
+                neonColor = Color(SessionManager.currentPlayer!!.colorPallete.neonCardColor)
             )
 
             NeonGameModeCard(
@@ -108,15 +108,15 @@ fun GameModeScreen(
                 title = "Play With Friends",
                 buttonText = "Co-op Mode",
                 onClick = onNavigateToCoOp,
-                cardColor = Color(SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR.toULong()),
-                neonColor = Color(SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR.toULong())
+                cardColor = Color(SessionManager.currentPlayer!!.colorPallete.primaryCardColor),
+                neonColor = Color(SessionManager.currentPlayer!!.colorPallete.neonCardColor)
             )
 
             Secondary_NeonSignButton(
                 text = "Character Customization",
                 onClick = onNavigateToCharacterMode,
-                backgroundColor = Color(SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR.toULong()),
-                neonColor = Color(SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR.toULong()),
+                backgroundColor = Color(SessionManager.currentPlayer!!.colorPallete.primaryCardColor),
+                neonColor = Color(SessionManager.currentPlayer!!.colorPallete.neonCardColor),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
@@ -124,10 +124,10 @@ fun GameModeScreen(
 
             if (showSettings) {
                 SettingsPopup(
-                    primaryCardColor = Color(SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR.toULong()),
-                    neonColor = Color(SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR.toULong()),
-                    onPrimaryCardColorChange = { SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR = it.value.toLong() },
-                    onNeonColorChange = { SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR = it.value.toLong() },
+                    primaryCardColor = Color(SessionManager.currentPlayer!!.colorPallete.primaryCardColor),
+                    neonColor = Color(SessionManager.currentPlayer!!.colorPallete.neonCardColor),
+                    onPrimaryCardColorChange = { SessionManager.currentPlayer!!.colorPallete.primaryCardColor = it.value.toInt() },
+                    onNeonColorChange = { SessionManager.currentPlayer!!.colorPallete.neonCardColor = it.value.toInt() },
                     onDismiss = {
 
                         coroutineScope.launch {
@@ -135,7 +135,7 @@ fun GameModeScreen(
                         }
                         Log.d(
                             "GameModeScreen",
-                            "User Color Palette: PRIMARY=${SessionManager.currentPlayer!!.colorPallete.PRIMARY_CARD_COLOR}, NEON=${SessionManager.currentPlayer!!.colorPallete.NEON_CARD_COLOR}"
+                            "User Color Palette: PRIMARY=${SessionManager.currentPlayer!!.colorPallete.primaryCardColor}, NEON=${SessionManager.currentPlayer!!.colorPallete.neonCardColor}"
                         )
 
                         showSettings = false

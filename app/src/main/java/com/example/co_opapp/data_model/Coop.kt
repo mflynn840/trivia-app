@@ -54,12 +54,6 @@ enum class GameStatus {
     WAITING_FOR_READY
 }
 
-data class TimerRequest(
-    val type: String,
-    val questionId: Int,
-    val startEpochTime: Long?,
-    val durationMs: Long?
-)
 
 data class AnswerRequest(
     val roomName: String,
